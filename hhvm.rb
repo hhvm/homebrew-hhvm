@@ -44,6 +44,7 @@ class Hhvm < Formula
   depends_on "libevent"
   depends_on "libmemcached"
   depends_on "libpng"
+  depends_on "libzip"
   depends_on "mcrypt"
   depends_on "oniguruma"
   depends_on "openssl"
@@ -73,13 +74,6 @@ class Hhvm < Formula
     # where readline is, so be more aggressive in a way that makes it through.
     cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib}"
     cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib}"
-
-    # Brew's libzip includes libzip.h but not always zipconf.h, causing compile
-    # failures depending on how you have the package installed and how you
-    # squint at it. Force usage of ours in third-party.
-    #
-    # TODO figure out the right way to use brew's libzip, that's better.
-    cmake_args << "-DLIBZIP_INCLUDE_DIR_ZIP=0"
 
     # Dependency information.
     cmake_args += %W[
@@ -119,6 +113,9 @@ class Hhvm < Formula
       -DTBB_INSTALL_DIR=#{Formula["tbb"].opt_prefix}
       -DLIBSQLITE3_INCLUDE_DIR=#{Formula["sqlite"].opt_include}
       -DLIBSQLITE3_LIBRARY=#{Formula["sqlite"].opt_lib}/libsqlite3.dylib
+      -DLIBZIP_INCLUDE_DIR_ZIP=#{Formula["libzip"].opt_include}
+      -DLIBZIP_INCLUDE_DIR_ZIPCONF=#{Formula["libzip"].opt_lib}/libzip/include
+      -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
     ]
 
     # Debug builds. This switch is all that's needed, it sets all the right
