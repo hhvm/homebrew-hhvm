@@ -74,6 +74,13 @@ class Hhvm < Formula
     cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib}"
     cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib}"
 
+    # Brew's libzip includes libzip.h but not always zipconf.h, causing compile
+    # failures depending on how you have the package installed and how you
+    # squint at it. Force usage of ours in third-party.
+    #
+    # TODO figure out the right way to use brew's libzip, that's better.
+    cmake_args << "-DLIBZIP_INCLUDE_DIR_ZIP=0"
+
     # Dependency information.
     cmake_args += %W[
       -DCMAKE_INSTALL_PREFIX=#{prefix}
