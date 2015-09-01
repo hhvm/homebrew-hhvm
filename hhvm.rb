@@ -45,6 +45,7 @@ class Hhvm < Formula
   depends_on "libmemcached"
   depends_on "libpng"
   depends_on "libzip"
+  depends_on "lz4"
   depends_on "mcrypt"
   depends_on "oniguruma"
   depends_on "openssl"
@@ -116,6 +117,8 @@ class Hhvm < Formula
       -DLIBZIP_INCLUDE_DIR_ZIP=#{Formula["libzip"].opt_include}
       -DLIBZIP_INCLUDE_DIR_ZIPCONF=#{Formula["libzip"].opt_lib}/libzip/include
       -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
+      -DLZ4_INCLUDE_DIR=#{Formula["lz4"].opt_include}
+      -DLZ4_LIBRARY=#{Formula["lz4"].opt_lib}/liblz4.dylib
     ]
 
     # Debug builds. This switch is all that's needed, it sets all the right
