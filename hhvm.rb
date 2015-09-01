@@ -3,6 +3,7 @@ class Hhvm < Formula
   homepage "http://hhvm.com/"
   url "http://dl.hhvm.com/source/hhvm-3.9.1.tar.bz2"
   sha256 "3d1f25ce8956863f71bea3d64ebf4ee52d67669277865057f72cc0aba9eaab86"
+  revision 1
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -64,7 +65,11 @@ class Hhvm < Formula
     cmake_args = %W[
       -DENABLE_MCROUTER=OFF
       -DENABLE_EXTENSION_MCROUTER=OFF
+      -DENABLE_EXTENSION_IMAP=OFF
     ]
+
+    # More aggressively disable imap extension, only needed for 3.9.
+    cmake_args << "-DCCLIENT_INCLUDE_PATH=0"
 
     # Required to specify a socket path if you are using the bundled async SQL
     # client (which is very strongly recommended).
