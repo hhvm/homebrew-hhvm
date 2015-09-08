@@ -165,6 +165,37 @@ class Hhvm < Formula
     system "#{bin}/hhvm", testpath/"test.php"
   end
 
+  plist_options :manual => "hhvm -m daemon -c #{HOMEBREW_PREFIX}/etc/hhvm/php.ini -c #{HOMEBREW_PREFIX}/etc/hhvm/server.ini"
+
+  def plist
+    <<-EOS.undent
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+      <plist version="1.0">
+        <dict>
+          <key>Label</key>
+          <string>#{plist_name}</string>
+          <key>RunAtLoad</key>
+          <true/>
+          <key>KeepAlive</key>
+          <true/>
+          <key>ProgramArguments</key>
+          <array>
+              <string>#{opt_bin}/hhvm</string>
+              <string>-m</string>
+              <string>server</string>
+              <string>-c</string>
+              <string>#{etc}/hhvm/php.ini</string>
+              <string>-c</string>
+              <string>#{etc}/hhvm/server.ini</string>
+          </array>
+          <key>WorkingDirectory</key>
+          <string>#{HOMEBREW_PREFIX}</string>
+        </dict>
+      </plist>
+    EOS
+  end
+
   # https://github.com/hhvm/packaging/blob/master/hhvm/deb/skeleton/etc/hhvm/php.ini
   def php_ini
     <<-EOS.undent
