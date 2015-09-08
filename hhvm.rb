@@ -151,6 +151,10 @@ class Hhvm < Formula
     system "cmake", *cmake_args
     system "make"
     system "make", "install"
+
+    ini = etc/"hhvm"
+    (ini/"php.ini").write php_ini unless File.exist? (ini/"php.ini")
+    (ini/"server.ini").write server_ini unless File.exist? (ini/"server.ini")
   end
 
   test do
@@ -159,5 +163,39 @@ class Hhvm < Formula
       exit(is_integer(HHVM_VERSION_ID) ? 0 : 1);
     EOS
     system "#{bin}/hhvm", testpath/"test.php"
+  end
+
+  # https://github.com/hhvm/packaging/blob/master/hhvm/deb/skeleton/etc/hhvm/php.ini
+  def php_ini
+    <<-EOS.undent
+      ; php options
+      session.save_handler = files
+      session.save_path = #{var}/lib/hhvm/sessions
+      session.gc_maxlifetime = 1440
+
+      ; hhvm specific
+      hhvm.log.level = Warning
+      hhvm.log.always_log_unhandled_exceptions = true
+      hhvm.log.runtime_error_reporting_level = 8191
+      hhvm.mysql.typed_results = false
+    EOS
+  end
+
+  # https://github.com/hhvm/packaging/blob/master/hhvm/deb/skeleton/etc/hhvm/server.ini
+  def server_ini
+    <<-EOS.undent
+      ; php options
+
+      pid = #{var}/run/hhvm/pid
+
+      ; hhvm specific
+
+      hhvm.server.port = 9000
+      hhvm.server.type = fastcgi
+      hhvm.server.default_document = index.php
+      hhvm.log.use_log_file = true
+      hhvm.log.file = #{var}/log/hhvm/error.log
+      hhvm.repo.central.path = #{var}/run/hhvm/hhvm.hhbc
+    EOS
   end
 end
