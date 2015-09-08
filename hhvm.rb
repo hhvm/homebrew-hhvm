@@ -55,6 +55,16 @@ class Hhvm < Formula
   depends_on "sqlite"
   depends_on "tbb"
 
+  # Backports of patches in master that we don't want to merge into the 3.9 LTS
+  # branch.
+  stable do
+    # Allow overriding the location to find the default php.ini (D2358603)
+    patch do
+      url "https://github.com/facebook/hhvm/commit/ed1ec181734a2826d2fd1e49d12b1d51f2785061.patch"
+      sha256 "3b8b4c75181fa7c3154e41530040d061b2f1a6c1357101a43eb65bf307875cf3"
+    end
+  end
+
   def install
     # Work around https://github.com/Homebrew/homebrew/issues/42957 by making
     # brew's superenv forget which libraries it wants to inject into ld
@@ -88,6 +98,7 @@ class Hhvm < Formula
       -DCMAKE_CXX_COMPILER=#{Formula["llvm"].opt_bin}/clang++
       -DCMAKE_C_COMPILER=#{Formula["llvm"].opt_bin}/clang
       -DCMAKE_ASM_COMPILER=#{Formula["llvm"].opt_bin}/clang
+      -DDEFAULT_CONFIG_DIR=#{etc}/hhvm
       -DLIBEVENT_INCLUDE_DIR=#{Formula["libevent"].opt_include}
       -DLIBEVENT_LIB=#{Formula["libevent"].opt_lib}/libevent.dylib
       -DICU_INCLUDE_DIR=#{Formula["icu4c"].opt_include}
