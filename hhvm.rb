@@ -50,6 +50,7 @@ class Hhvm < Formula
   depends_on "mcrypt"
   depends_on "oniguruma"
   depends_on "openssl"
+  depends_on "pcre"
   depends_on "readline"
   depends_on "sqlite"
   depends_on "tbb"
@@ -124,7 +125,13 @@ class Hhvm < Formula
       -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
       -DLZ4_INCLUDE_DIR=#{Formula["lz4"].opt_include}
       -DLZ4_LIBRARY=#{Formula["lz4"].opt_lib}/liblz4.dylib
+      -DPCRE_INCLUDE_DIR=#{Formula["pcre"].opt_include}
+      -DPCRE_LIBRARY=#{Formula["pcre"].opt_lib}/libpcre.dylib
     ]
+
+    # brew's PCRE always has the JIT enabled; work around issue where the CMake
+    # scripts will pick up the wrong PCRE and think it is disabled.
+    cmake_args << "-DSYSTEM_PCRE_HAS_JIT=1"
 
     # Debug builds. This switch is all that's needed, it sets all the right
     # cflags and other config changes.
