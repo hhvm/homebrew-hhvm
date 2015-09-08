@@ -63,6 +63,12 @@ class Hhvm < Formula
       url "https://github.com/facebook/hhvm/commit/ed1ec181734a2826d2fd1e49d12b1d51f2785061.patch"
       sha256 "3b8b4c75181fa7c3154e41530040d061b2f1a6c1357101a43eb65bf307875cf3"
     end
+
+    # Work around clang ICE differently (no more -march=native) (D2406210)
+    patch do
+      url "https://github.com/facebook/hhvm/commit/0c72b0e6abcca7ee1ab76c181126a0ee9c98ff77.patch"
+      sha256 "3b975c206bf56f6e5f7aa93546c3cd76a7e0b8d5f68e0f685bc85d2dee7effb5"
+    end
   end
 
   def install
