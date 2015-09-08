@@ -3,7 +3,7 @@ class Hhvm < Formula
   homepage "http://hhvm.com/"
   url "http://dl.hhvm.com/source/hhvm-3.9.1.tar.bz2"
   sha256 "3d1f25ce8956863f71bea3d64ebf4ee52d67669277865057f72cc0aba9eaab86"
-  revision 1
+  revision 2
 
   head "https://github.com/facebook/hhvm.git"
 
