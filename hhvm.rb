@@ -135,6 +135,7 @@ class Hhvm < Formula
       -DOPENSSL_SSL_LIBRARY=#{Formula["openssl"].opt_lib}/libssl.dylib
       -DOPENSSL_CRYPTO_LIBRARY=#{Formula["openssl"].opt_lib}/libcrypto.dylib
       -DTBB_INSTALL_DIR=#{Formula["tbb"].opt_prefix}
+      -DPC_SQLITE3_FOUND=1
       -DLIBSQLITE3_INCLUDE_DIR=#{Formula["sqlite"].opt_include}
       -DLIBSQLITE3_LIBRARY=#{Formula["sqlite"].opt_lib}/libsqlite3.dylib
       -DLIBZIP_INCLUDE_DIR_ZIP=#{Formula["libzip"].opt_include}
