@@ -78,8 +78,20 @@ class Hhvm < Formula
     # them to be injected like that.)
     ENV["HOMEBREW_LIBRARY_PATHS"] = ""
 
-    # Features which don't work on OS X yet since they haven't been ported yet.
     cmake_args = %W[
+      -DCMAKE_INSTALL_PREFIX=#{prefix}
+      -DDEFAULT_CONFIG_DIR=#{etc}/hhvm
+    ]
+
+    # Must use upstream clang -- see above.
+    cmake_args += %W[
+      -DCMAKE_CXX_COMPILER=#{Formula["llvm"].opt_bin}/clang++
+      -DCMAKE_C_COMPILER=#{Formula["llvm"].opt_bin}/clang
+      -DCMAKE_ASM_COMPILER=#{Formula["llvm"].opt_bin}/clang
+    ]
+
+    # Features which don't work on OS X yet since they haven't been ported yet.
+    cmake_args += %W[
       -DENABLE_MCROUTER=OFF
       -DENABLE_EXTENSION_MCROUTER=OFF
       -DENABLE_EXTENSION_IMAP=OFF
@@ -100,51 +112,46 @@ class Hhvm < Formula
 
     # Dependency information.
     cmake_args += %W[
-      -DCMAKE_INSTALL_PREFIX=#{prefix}
-      -DCMAKE_CXX_COMPILER=#{Formula["llvm"].opt_bin}/clang++
-      -DCMAKE_C_COMPILER=#{Formula["llvm"].opt_bin}/clang
-      -DCMAKE_ASM_COMPILER=#{Formula["llvm"].opt_bin}/clang
-      -DDEFAULT_CONFIG_DIR=#{etc}/hhvm
-      -DLIBEVENT_INCLUDE_DIR=#{Formula["libevent"].opt_include}
-      -DLIBEVENT_LIB=#{Formula["libevent"].opt_lib}/libevent.dylib
-      -DICU_INCLUDE_DIR=#{Formula["icu4c"].opt_include}
-      -DICU_LIBRARY=#{Formula["icu4c"].opt_lib}/libicuuc.dylib
-      -DICU_I18N_LIBRARY=#{Formula["icu4c"].opt_lib}/libicui18n.dylib
-      -DICU_DATA_LIBRARY=#{Formula["icu4c"].opt_lib}/libicudata.dylib
-      -DREADLINE_INCLUDE_DIR=#{Formula["readline"].opt_include}
-      -DREADLINE_LIBRARY=#{Formula["readline"].opt_lib}/libreadline.dylib
       -DBOOST_INCLUDEDIR=#{Formula["boost"].opt_include}
       -DBOOST_LIBRARYDIR=#{Formula["boost"].opt_lib}
-      -DJEMALLOC_INCLUDE_DIR=#{Formula["jemalloc"].opt_include}
-      -DJEMALLOC_LIB=#{Formula["jemalloc"].opt_lib}/libjemalloc.dylib
-      -DLIBINTL_INCLUDE_DIR=#{Formula["gettext"].opt_include}
-      -DLIBINTL_LIBRARIES=#{Formula["gettext"].opt_lib}/libintl.dylib
-      -DLIBDWARF_INCLUDE_DIRS=#{Formula["dwarfutils"].opt_include}
-      -DLIBDWARF_LIBRARIES=#{Formula["dwarfutils"].opt_lib}/libdwarf.a
-      -DLIBMAGICKWAND_INCLUDE_DIRS=#{Formula["imagemagick"].opt_include}/ImageMagick-6
-      -DLIBMAGICKWAND_LIBRARIES=#{Formula["imagemagick"].opt_lib}/libMagickWand-6.Q16.dylib
       -DFREETYPE_INCLUDE_DIRS=#{Formula["freetype"].opt_include}/freetype2
       -DFREETYPE_LIBRARIES=#{Formula["freetype"].opt_lib}/libfreetype.dylib
-      -DLIBMEMCACHED_INCLUDE_DIR=#{Formula["libmemcached"].opt_include}
-      -DLIBMEMCACHED_LIBRARY=#{Formula["libmemcached"].opt_lib}/libmemcached.dylib
+      -DICU_INCLUDE_DIR=#{Formula["icu4c"].opt_include}
+      -DICU_I18N_LIBRARY=#{Formula["icu4c"].opt_lib}/libicui18n.dylib
+      -DICU_LIBRARY=#{Formula["icu4c"].opt_lib}/libicuuc.dylib
+      -DICU_DATA_LIBRARY=#{Formula["icu4c"].opt_lib}/libicudata.dylib
+      -DJEMALLOC_INCLUDE_DIR=#{Formula["jemalloc"].opt_include}
+      -DJEMALLOC_LIB=#{Formula["jemalloc"].opt_lib}/libjemalloc.dylib
+      -DLIBDWARF_INCLUDE_DIRS=#{Formula["dwarfutils"].opt_include}
+      -DLIBDWARF_LIBRARIES=#{Formula["dwarfutils"].opt_lib}/libdwarf.a
       -DLIBELF_INCLUDE_DIRS=#{Formula["libelf"].opt_include}/libelf
       -DLIBELF_LIBRARIES=#{Formula["libelf"].opt_lib}/libelf.a
+      -DLIBEVENT_INCLUDE_DIR=#{Formula["libevent"].opt_include}
+      -DLIBEVENT_LIB=#{Formula["libevent"].opt_lib}/libevent.dylib
       -DLIBGLOG_INCLUDE_DIR=#{Formula["glog"].opt_include}
       -DLIBGLOG_LIBRARY=#{Formula["glog"].opt_lib}/libglog.dylib
-      -DOPENSSL_INCLUDE_DIR=#{Formula["openssl"].opt_include}
-      -DOPENSSL_SSL_LIBRARY=#{Formula["openssl"].opt_lib}/libssl.dylib
-      -DOPENSSL_CRYPTO_LIBRARY=#{Formula["openssl"].opt_lib}/libcrypto.dylib
-      -DTBB_INSTALL_DIR=#{Formula["tbb"].opt_prefix}
-      -DPC_SQLITE3_FOUND=1
+      -DLIBINTL_INCLUDE_DIR=#{Formula["gettext"].opt_include}
+      -DLIBINTL_LIBRARIES=#{Formula["gettext"].opt_lib}/libintl.dylib
+      -DLIBMAGICKWAND_INCLUDE_DIRS=#{Formula["imagemagick"].opt_include}/ImageMagick-6
+      -DLIBMAGICKWAND_LIBRARIES=#{Formula["imagemagick"].opt_lib}/libMagickWand-6.Q16.dylib
+      -DLIBMEMCACHED_INCLUDE_DIR=#{Formula["libmemcached"].opt_include}
+      -DLIBMEMCACHED_LIBRARY=#{Formula["libmemcached"].opt_lib}/libmemcached.dylib
       -DLIBSQLITE3_INCLUDE_DIR=#{Formula["sqlite"].opt_include}
       -DLIBSQLITE3_LIBRARY=#{Formula["sqlite"].opt_lib}/libsqlite3.dylib
+      -DPC_SQLITE3_FOUND=1
       -DLIBZIP_INCLUDE_DIR_ZIP=#{Formula["libzip"].opt_include}
       -DLIBZIP_INCLUDE_DIR_ZIPCONF=#{Formula["libzip"].opt_lib}/libzip/include
       -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
       -DLZ4_INCLUDE_DIR=#{Formula["lz4"].opt_include}
       -DLZ4_LIBRARY=#{Formula["lz4"].opt_lib}/liblz4.dylib
+      -DOPENSSL_INCLUDE_DIR=#{Formula["openssl"].opt_include}
+      -DOPENSSL_CRYPTO_LIBRARY=#{Formula["openssl"].opt_lib}/libcrypto.dylib
+      -DOPENSSL_SSL_LIBRARY=#{Formula["openssl"].opt_lib}/libssl.dylib
       -DPCRE_INCLUDE_DIR=#{Formula["pcre"].opt_include}
       -DPCRE_LIBRARY=#{Formula["pcre"].opt_lib}/libpcre.dylib
+      -DREADLINE_INCLUDE_DIR=#{Formula["readline"].opt_include}
+      -DREADLINE_LIBRARY=#{Formula["readline"].opt_lib}/libreadline.dylib
+      -DTBB_INSTALL_DIR=#{Formula["tbb"].opt_prefix}
     ]
 
     # brew's PCRE always has the JIT enabled; work around issue where the CMake
