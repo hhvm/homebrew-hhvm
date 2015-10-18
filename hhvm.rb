@@ -1,9 +1,8 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.9.1.tar.bz2"
-  sha256 "3d1f25ce8956863f71bea3d64ebf4ee52d67669277865057f72cc0aba9eaab86"
-  revision 2
+  url "http://dl.hhvm.com/source/hhvm-3.10.0.tar.bz2"
+  sha256 "acf74760df427cbea39b9333ac440e276624473ce13b9f1e29864fbad1bb48b5"
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -55,22 +54,6 @@ class Hhvm < Formula
   depends_on "sqlite"
   depends_on "tbb"
 
-  # Backports of patches in master that we don't want to merge into the 3.9 LTS
-  # branch.
-  stable do
-    # Allow overriding the location to find the default php.ini (D2358603)
-    patch do
-      url "https://github.com/facebook/hhvm/commit/ed1ec181734a2826d2fd1e49d12b1d51f2785061.patch"
-      sha256 "3b8b4c75181fa7c3154e41530040d061b2f1a6c1357101a43eb65bf307875cf3"
-    end
-
-    # Work around clang ICE differently (no more -march=native) (D2406210)
-    patch do
-      url "https://github.com/facebook/hhvm/commit/0c72b0e6abcca7ee1ab76c181126a0ee9c98ff77.patch"
-      sha256 "3b975c206bf56f6e5f7aa93546c3cd76a7e0b8d5f68e0f685bc85d2dee7effb5"
-    end
-  end
-
   def install
     # Work around https://github.com/Homebrew/homebrew/issues/42957 by making
     # brew's superenv forget which libraries it wants to inject into ld
@@ -96,9 +79,6 @@ class Hhvm < Formula
       -DENABLE_EXTENSION_MCROUTER=OFF
       -DENABLE_EXTENSION_IMAP=OFF
     ]
-
-    # More aggressively disable imap extension, only needed for 3.9.
-    cmake_args << "-DCCLIENT_INCLUDE_PATH=0"
 
     # Required to specify a socket path if you are using the bundled async SQL
     # client (which is very strongly recommended).
