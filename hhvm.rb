@@ -1,8 +1,8 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.10.1.tar.bz2"
-  sha256 "69d60778033c912536ba39f2914930ef754c04fc65f4e421acb50db27c93dbbb"
+  url "http://dl.hhvm.com/source/hhvm-3.11.0.tar.bz2"
+  sha256 "cc813d1de7bd2a30b29b1c99dcf3d4ae8865c0044bdf838283ed5ded4097759c"
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -126,6 +126,7 @@ class Hhvm < Formula
       -DLZ4_LIBRARY=#{Formula["lz4"].opt_lib}/liblz4.dylib
       -DOPENSSL_INCLUDE_DIR=#{Formula["openssl"].opt_include}
       -DOPENSSL_CRYPTO_LIBRARY=#{Formula["openssl"].opt_lib}/libcrypto.dylib
+      -DCRYPT_LIB=#{Formula["openssl"].opt_lib}/libcrypto.dylib
       -DOPENSSL_SSL_LIBRARY=#{Formula["openssl"].opt_lib}/libssl.dylib
       -DPCRE_INCLUDE_DIR=#{Formula["pcre"].opt_include}
       -DPCRE_LIBRARY=#{Formula["pcre"].opt_lib}/libpcre.dylib
