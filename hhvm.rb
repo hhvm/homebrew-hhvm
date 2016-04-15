@@ -1,8 +1,8 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.12.1.tar.bz2"
-  sha256 "6b95f0f01fe544be84a59927ed0b071afd391d32fb3d40f5e094ec95979885e9"
+  url "http://dl.hhvm.com/source/hhvm-3.13.1.tar.bz2"
+  sha256 "62dd50ff5615acf6b2a350f9f571ef3571bc4304ee8ed94ac9a3fe62d5cbe8a1"
 
   head "https://github.com/facebook/hhvm.git"
 
