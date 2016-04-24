@@ -164,6 +164,53 @@ class Hhvm < Formula
     # cflags and other config changes.
     cmake_args << "-DCMAKE_BUILD_TYPE=Debug" if build.with? "debug"
 
+    # TBB looks for itself in a different place than brew installs to.
+    ENV["TBB_ARCH_PLATFORM"] = "."
+
+    # CMake loves to pick up things automagically out of directories it
+    # shouldn't, e.g., from a MacPorts installation in /opt/local. Force it to
+    # read only from the explicit dependency information we give it.
+    # Unfortunately this means we have to also explicitly specify stuff in /usr
+    # that's a core part of OS X that would normally also be picked up
+    # automatically.
+    cmake_args += %W[
+      -DCMAKE_FIND_ROOT_PATH=/tmp
+      -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY
+      -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY
+      -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY
+      -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=ONLY
+      -DCMAKE_SYSTEM_NAME=Darwin
+      -DCMAKE_CROSSCOMPILING=0
+      -DCMAKE_AR=/usr/bin/ar
+      -DCMAKE_RANLIB=/usr/bin/ranlib
+      -DBZIP2_INCLUDE_DIR=/usr/include
+      -DBZIP2_LIBRARIES=/usr/lib/libbz2.dylib
+      -DCURL_INCLUDE_DIR=/usr/include
+      -DCURL_LIBRARY=/usr/lib/libcurl.dylib
+      -DDL_LIB=/usr/lib/libdl.dylib
+      -DEXPAT_INCLUDE_DIR=/usr/include
+      -DEXPAT_LIBRARY=/usr/lib/libexpat.dylib
+      -DGPERF_EXECUTABLE=/usr/bin/gperf
+      -DKERBEROS_LIB=/usr/lib/libgssapi_krb5.dylib
+      -DLBER_LIBRARIES=/usr/lib/liblber.dylib
+      -DLDAP_INCLUDE_DIR=/usr/include
+      -DLDAP_LIBRARIES=/usr/lib/libldap.dylib
+      -DLIBDL_INCLUDE_DIRS=/usr/include
+      -DLIBDL_LIBRARIES=/usr/lib/libdl.dylib
+      -DLIBICONV_INCLUDE_DIR=/usr/include
+      -DLIBICONV_LIBRARY=/usr/lib/libiconv.dylib
+      -DLIBPTHREAD_INCLUDE_DIRS=/usr/include
+      -DLIBPTHREAD_LIBRARIES=/usr/lib/libpthread.dylib
+      -DLIBXML2_INCLUDE_DIR=/usr/include/libxml2
+      -DLIBXML2_LIBRARIES=/usr/lib/libxml2.dylib
+      -DLIBXSLT_EXSLT_LIBRARY=/usr/lib/libexslt.dylib
+      -DLIBXSLT_INCLUDE_DIR=/usr/include
+      -DLIBXSLT_LIBRARIES=/usr/lib/libxslt.dylib
+      -DRESOLV_LIB=/usr/lib/libresolv.dylib
+      -DZLIB_INCLUDE_DIR=/usr/include
+      -DZLIB_LIBRARY=/usr/lib/libz.dylib
+    ]
+
     system "cmake", *cmake_args
     system "make"
     system "make", "install"
