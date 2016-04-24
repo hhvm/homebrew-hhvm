@@ -92,10 +92,13 @@ class Hhvm < Formula
 
     # Dependency information.
     cmake_args += %W[
-      -DBOOST_INCLUDEDIR=#{Formula["boost"].opt_include}
-      -DBOOST_LIBRARYDIR=#{Formula["boost"].opt_lib}
+      -DAWK_EXECUTABLE=#{Formula["gawk"].opt_bin}/gawk
+      -DBoost_INCLUDE_DIR=#{Formula["boost"].opt_include}
+      -DBoost_LIBRARY_DIR=#{Formula["boost"].opt_lib}
       -DFREETYPE_INCLUDE_DIRS=#{Formula["freetype"].opt_include}/freetype2
       -DFREETYPE_LIBRARIES=#{Formula["freetype"].opt_lib}/libfreetype.dylib
+      -DGMP_INCLUDE_DIR=#{Formula["gmp"].opt_include}
+      -DGMP_LIBRARY=#{Formula["gmp"].opt_lib}/libgmp.dylib
       -DICU_INCLUDE_DIR=#{Formula["icu4c"].opt_include}
       -DICU_I18N_LIBRARY=#{Formula["icu4c"].opt_lib}/libicui18n.dylib
       -DICU_LIBRARY=#{Formula["icu4c"].opt_lib}/libicuuc.dylib
@@ -112,27 +115,45 @@ class Hhvm < Formula
       -DLIBGLOG_LIBRARY=#{Formula["glog"].opt_lib}/libglog.dylib
       -DLIBINTL_INCLUDE_DIR=#{Formula["gettext"].opt_include}
       -DLIBINTL_LIBRARIES=#{Formula["gettext"].opt_lib}/libintl.dylib
+      -DLIBJPEG_INCLUDE_DIRS=#{Formula["jpeg"].opt_include}
+      -DLIBJPEG_LIBRARIES=#{Formula["jpeg"].opt_lib}/libjpeg.dylib
+      -DLIBMAGICKCORE_LIBRARIES=#{Formula["imagemagick"].opt_lib}/libMagickCore-6.Q16.dylib
       -DLIBMAGICKWAND_INCLUDE_DIRS=#{Formula["imagemagick"].opt_include}/ImageMagick-6
       -DLIBMAGICKWAND_LIBRARIES=#{Formula["imagemagick"].opt_lib}/libMagickWand-6.Q16.dylib
       -DLIBMEMCACHED_INCLUDE_DIR=#{Formula["libmemcached"].opt_include}
       -DLIBMEMCACHED_LIBRARY=#{Formula["libmemcached"].opt_lib}/libmemcached.dylib
+      -DLIBPNG_INCLUDE_DIRS=#{Formula["libpng"].opt_include}
+      -DLIBPNG_LIBRARIES=#{Formula["libpng"].opt_lib}/libpng.dylib
       -DLIBSQLITE3_INCLUDE_DIR=#{Formula["sqlite"].opt_include}
       -DLIBSQLITE3_LIBRARY=#{Formula["sqlite"].opt_lib}/libsqlite3.dylib
+      -DMcrypt_INCLUDE_DIR=#{Formula["mcrypt"].opt_include}
+      -DMcrypt_LIB=#{Formula["mcrypt"].opt_lib}/libmcrypt.dylib
       -DPC_SQLITE3_FOUND=1
       -DLIBZIP_INCLUDE_DIR_ZIP=#{Formula["libzip"].opt_include}
       -DLIBZIP_INCLUDE_DIR_ZIPCONF=#{Formula["libzip"].opt_lib}/libzip/include
       -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
       -DLZ4_INCLUDE_DIR=#{Formula["lz4"].opt_include}
       -DLZ4_LIBRARY=#{Formula["lz4"].opt_lib}/liblz4.dylib
+      -DOCAMLC_EXECUTABLE=#{Formula["ocaml"].opt_bin}/ocamlc
+      -DOCAMLC_OPT_EXECUTABLE=#{Formula["ocaml"].opt_bin}/ocamlc.opt
+      -DONIGURUMA_INCLUDE_DIR=#{Formula["oniguruma"].opt_include}
+      -DONIGURUMA_LIBRARY=#{Formula["oniguruma"].opt_lib}/libonig.dylib
       -DOPENSSL_INCLUDE_DIR=#{Formula["openssl"].opt_include}
       -DOPENSSL_CRYPTO_LIBRARY=#{Formula["openssl"].opt_lib}/libcrypto.dylib
       -DCRYPT_LIB=#{Formula["openssl"].opt_lib}/libcrypto.dylib
       -DOPENSSL_SSL_LIBRARY=#{Formula["openssl"].opt_lib}/libssl.dylib
       -DPCRE_INCLUDE_DIR=#{Formula["pcre"].opt_include}
       -DPCRE_LIBRARY=#{Formula["pcre"].opt_lib}/libpcre.dylib
+      -DPKG_CONFIG_EXECUTABLE=#{Formula["pkg-config"].opt_bin}/pkg-config
       -DREADLINE_INCLUDE_DIR=#{Formula["readline"].opt_include}
       -DREADLINE_LIBRARY=#{Formula["readline"].opt_lib}/libreadline.dylib
+      -DTBB_INCLUDE_DIR=#{Formula["tbb"].opt_include}
       -DTBB_INSTALL_DIR=#{Formula["tbb"].opt_prefix}
+      -DTBB_LIBRARY=#{Formula["tbb"].opt_lib}/libtbb.dylib
+      -DTBB_LIBRARY_DEBUG=#{Formula["tbb"].opt_lib}/libtbb.dylib
+      -DTBB_LIBRARY_DIR=#{Formula["tbb"].opt_lib}
+      -DTBB_MALLOC_LIBRARY=#{Formula["tbb"].opt_lib}/libtbbmalloc.dylib
+      -DTBB_MALLOC_LIBRARY_DEBUG=#{Formula["tbb"].opt_lib}/libtbbmalloc.dylib
     ]
 
     # brew's PCRE always has the JIT enabled; work around issue where the CMake
