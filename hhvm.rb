@@ -3,6 +3,7 @@ class Hhvm < Formula
   homepage "http://hhvm.com/"
   url "http://dl.hhvm.com/source/hhvm-3.13.1.tar.bz2"
   sha256 "62dd50ff5615acf6b2a350f9f571ef3571bc4304ee8ed94ac9a3fe62d5cbe8a1"
+  revision 1
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -53,6 +54,12 @@ class Hhvm < Formula
   depends_on "readline"
   depends_on "sqlite"
   depends_on "tbb"
+
+  # Fix hh_server.
+  patch do
+    url "https://github.com/facebook/hhvm/commit/fead9b7c43b03f4b3d711019bc6395ef140f265c.patch"
+    sha256 "8245b7da1804d8afe8a24f3e079a46829927cdd1fcf7335b9147dabf3d60c92f"
+  end
 
   def install
     # Work around https://github.com/Homebrew/homebrew/issues/42957 by making
