@@ -55,10 +55,12 @@ class Hhvm < Formula
   depends_on "sqlite"
   depends_on "tbb"
 
-  # Fix hh_server.
-  patch do
-    url "https://github.com/facebook/hhvm/commit/fead9b7c43b03f4b3d711019bc6395ef140f265c.patch"
-    sha256 "8245b7da1804d8afe8a24f3e079a46829927cdd1fcf7335b9147dabf3d60c92f"
+  stable do
+    # Fix hh_server.
+    patch do
+      url "https://github.com/facebook/hhvm/commit/fead9b7c43b03f4b3d711019bc6395ef140f265c.patch"
+      sha256 "8245b7da1804d8afe8a24f3e079a46829927cdd1fcf7335b9147dabf3d60c92f"
+    end
   end
 
   def install
