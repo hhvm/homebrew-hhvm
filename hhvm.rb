@@ -30,6 +30,7 @@ class Hhvm < Formula
   depends_on "libtool" => :build
   depends_on "md5sha1sum" => :build
   depends_on "ocaml" => :build
+  depends_on "ocamlbuild" => :build
   depends_on "pkg-config" => :build
 
   depends_on "boost"
