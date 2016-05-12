@@ -62,6 +62,18 @@ class Hhvm < Formula
       url "https://github.com/facebook/hhvm/commit/fead9b7c43b03f4b3d711019bc6395ef140f265c.patch"
       sha256 "8245b7da1804d8afe8a24f3e079a46829927cdd1fcf7335b9147dabf3d60c92f"
     end
+
+    # Fix build with OCaml 4.03 (part 1)
+    patch do
+      url "https://github.com/facebook/hhvm/commit/59d7d2885e21cfda51ea3d436522807383d5bfff.patch"
+      sha256 "e63e1a460ff8e62b8aa5cc90d5a155b2b159e67a7fe5e131f1dc4f69a5c825a6"
+    end
+
+    # Fix build with OCaml 4.03 (part 2)
+    patch do
+      url "https://github.com/facebook/hhvm/commit/57580d81e4b1da628c82d6d28d257f483aaa7b14.patch"
+      sha256 "9c1dfda6a3ca98b8ba7a3956a74bfd43b4a6a185b7503addd2c8fc6c6f0e9d0c"
+    end
   end
 
   def install
