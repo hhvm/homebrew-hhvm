@@ -1,9 +1,8 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.14.2.tar.bz2"
-  sha256 "6726dcc43a1d045cad2c94ead3cf1f4f240135630ccd942bc55f6d3860190ab7"
-  revision 1
+  url "http://dl.hhvm.com/source/hhvm-3.14.3.tar.bz2"
+  sha256 "dbdba9f50b217571efe76b78a7d97b7314681802c078181e8255a53932314deb"
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -55,14 +54,6 @@ class Hhvm < Formula
   depends_on "readline"
   depends_on "sqlite"
   depends_on "tbb"
-
-  stable do
-    # Fix Hack build from source tarballs.
-    patch do
-      url "https://github.com/facebook/hhvm/commit/39fc688e1aac618783af1aa8a499658dd4a8b09d.patch"
-      sha256 "d1169de8a61dcc8baa0a59010f7d682d85024071201973d705731b52751c646f"
-    end
-  end
 
   def install
     # Work around https://github.com/Homebrew/homebrew/issues/42957 by making
