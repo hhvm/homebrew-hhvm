@@ -32,7 +32,7 @@ class Hhvm < Formula
   depends_on "ocamlbuild" => :build
   depends_on "pkg-config" => :build
 
-  depends_on "boost"
+  depends_on "boost" => "c++11"
   depends_on "freetype"
   depends_on "gd"
   depends_on "gettext"
