@@ -32,7 +32,10 @@ class Hhvm < Formula
   depends_on "ocamlbuild" => :build
   depends_on "pkg-config" => :build
 
-  depends_on "boost"
+  # Folly is currently incompatible with boost >1.6.0 due to changes in the
+  # fibers api
+  depends_on "homebrew/versions/boost160"
+
   depends_on "freetype"
   depends_on "gd"
   depends_on "gettext"
@@ -94,8 +97,8 @@ class Hhvm < Formula
     # Dependency information.
     cmake_args += %W[
       -DAWK_EXECUTABLE=#{Formula["gawk"].opt_bin}/gawk
-      -DBoost_INCLUDE_DIR=#{Formula["boost"].opt_include}
-      -DBoost_LIBRARY_DIR=#{Formula["boost"].opt_lib}
+      -DBoost_INCLUDE_DIR=#{Formula["homebrew/versions/boost160"].opt_include}
+      -DBoost_LIBRARY_DIR=#{Formula["homebrew/versions/boost160"].opt_lib}
       -DFREETYPE_INCLUDE_DIRS=#{Formula["freetype"].opt_include}/freetype2
       -DFREETYPE_LIBRARIES=#{Formula["freetype"].opt_lib}/libfreetype.dylib
       -DGMP_INCLUDE_DIR=#{Formula["gmp"].opt_include}
