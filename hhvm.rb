@@ -18,7 +18,7 @@ class Hhvm < Formula
   # We need to build with upstream clang -- the version Apple ships doesn't
   # support TLS, which HHVM uses heavily. (And gcc compiles HHVM fine, but
   # causes ld to trip an assert and fail, for unclear reasons.)
-  depends_on "llvm" => [:build, "with-clang", "with-libcxx"]
+  depends_on "llvm" => :build
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
