@@ -1,7 +1,7 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.15.1.tar.bz2"
+  url "http://dl.hhvm.com/source/hhvm-3.15.1.tar.bz2"  # Remove hacks for sierra.
   sha256 "2c2ef4fd9fe0853ab992c22c6dccdfe4e2b502c70a48378028a6fb3fee476701"
 
   head "https://github.com/facebook/hhvm.git"
@@ -59,6 +59,43 @@ class Hhvm < Formula
   depends_on "tbb"
 
   def install
+    # HACKS for Sierra
+    cd "third-party/folly/src/folly" do
+      # Workaround for "no matching function for call to 'clock_gettime'"
+      # See upstream PR from 2 Oct 2016 facebook/folly#488
+      if DevelopmentTools.clang_build_version >= 800
+        inreplace ["Benchmark.cpp", "Benchmark.h"] do |s|
+          s.gsub! "detail::DEFAULT_CLOCK_ID",
+                  "(clockid_t)detail::DEFAULT_CLOCK_ID"
+          s.gsub! "clock_gettime(CLOCK_REALTIME",
+                  "clock_gettime((clockid_t)CLOCK_REALTIME", false
+        end
+      end
+
+      # Fix "candidate function not viable: no known conversion from
+      # 'folly::detail::Clock' to 'clockid_t' for 1st argument"
+      # See upstream PR mentioned above
+      inreplace "portability/Time.h", "typedef uint8_t clockid_t;", ""
+    end
+
+    cd "hphp" do
+      if DevelopmentTools.clang_build_version >= 800
+        inreplace ["runtime/ext/scrypt/crypto/params.cpp", "util/test/job-queue.cpp",
+                   "util/timer.cpp", "runtime/ext/scrypt/crypto/params.cpp",
+                   "runtime/vm/debug/perf-jitdump.cpp"] do |s|
+          s.gsub! "clock_gettime(",
+                  "clock_gettime((clockid_t)"
+        end
+        inreplace "runtime/ext/std/ext_std_options.cpp" do |s|
+          s.gsub! "gettime(",
+                  "gettime((clockid_t)"
+        end 
+      end
+      
+      inreplace "util/compatibility.h", "typedef int clockid_t;", ""
+    end
+    # end HACKS for Sierra
+
     # Work around https://github.com/Homebrew/homebrew/issues/42957 by making
     # brew's superenv forget which libraries it wants to inject into ld
     # invocations. (We tell cmake below where they all are, so we don't need
