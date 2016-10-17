@@ -1,8 +1,8 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.15.1.tar.bz2"  # Remove hacks for sierra.
-  sha256 "2c2ef4fd9fe0853ab992c22c6dccdfe4e2b502c70a48378028a6fb3fee476701"
+  url "http://dl.hhvm.com/source/hhvm-3.15.2.tar.bz2"  # Remove hacks for sierra.
+  sha256 "34ca89da3bf2a63cae64bad44835a0ca3ff1a0b3b5681a197520cf30c1d97271"
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -70,12 +70,12 @@ class Hhvm < Formula
           s.gsub! "clock_gettime(CLOCK_REALTIME",
                   "clock_gettime((clockid_t)CLOCK_REALTIME", false
         end
-      end
 
-      # Fix "candidate function not viable: no known conversion from
-      # 'folly::detail::Clock' to 'clockid_t' for 1st argument"
-      # See upstream PR mentioned above
-      inreplace "portability/Time.h", "typedef uint8_t clockid_t;", ""
+        # Fix "candidate function not viable: no known conversion from
+        # 'folly::detail::Clock' to 'clockid_t' for 1st argument"
+        # See upstream PR mentioned above
+        inreplace "portability/Time.h", "typedef uint8_t clockid_t;", ""
+      end
     end
 
     cd "hphp" do
@@ -90,11 +90,18 @@ class Hhvm < Formula
           s.gsub! "gettime(",
                   "gettime((clockid_t)"
         end 
-      end
       
-      inreplace "util/compatibility.h", "typedef int clockid_t;", ""
+        inreplace "util/compatibility.h", "typedef int clockid_t;", ""
+      end
     end
     # end HACKS for Sierra
+
+    # Fix for 'dyld: lazy symbol binding failed: Symbol not found: _clock_gettime' issue
+    if MacOS.version == "10.11" && MacOS::Xcode.installed? && MacOS::Xcode.version >= "8.0"
+        inreplace "third-party/webscalesqlclient/mysql-5.6/config.h.cmake", "#cmakedefine HAVE_CLOCK_GETTIME 1", ""
+        ENV["ac_cv_search_clock_gettime"] = "no"
+        ENV["ac_have_clock_syscall"] = "no"
+    end
 
     # Work around https://github.com/Homebrew/homebrew/issues/42957 by making
     # brew's superenv forget which libraries it wants to inject into ld
