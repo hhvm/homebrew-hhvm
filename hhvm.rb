@@ -3,6 +3,7 @@ class Hhvm < Formula
   homepage "http://hhvm.com/"
   url "http://dl.hhvm.com/source/hhvm-3.15.2.tar.bz2"  # Remove hacks for sierra.
   sha256 "34ca89da3bf2a63cae64bad44835a0ca3ff1a0b3b5681a197520cf30c1d97271"
+  revision 1
 
   head "https://github.com/facebook/hhvm.git"
 
