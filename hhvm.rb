@@ -81,7 +81,7 @@ class Hhvm < Formula
     cd "hphp" do
       if DevelopmentTools.clang_build_version >= 800
         inreplace ["runtime/ext/scrypt/crypto/params.cpp", "util/test/job-queue.cpp",
-                   "util/timer.cpp", "runtime/ext/scrypt/crypto/params.cpp",
+                   "util/timer.cpp",
                    "runtime/vm/debug/perf-jitdump.cpp"] do |s|
           s.gsub! "clock_gettime(",
                   "clock_gettime((clockid_t)"
@@ -141,6 +141,7 @@ class Hhvm < Formula
     # Dependency information.
     cmake_args += %W[
       -DAWK_EXECUTABLE=#{Formula["gawk"].opt_bin}/gawk
+      -DBoost_ROOT=#{Formula["homebrew/versions/boost160"]}
       -DBoost_INCLUDE_DIR=#{Formula["homebrew/versions/boost160"].opt_include}
       -DBoost_LIBRARY_DIR=#{Formula["homebrew/versions/boost160"].opt_lib}
       -DFREETYPE_INCLUDE_DIRS=#{Formula["freetype"].opt_include}/freetype2
