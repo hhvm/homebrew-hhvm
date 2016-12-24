@@ -1,8 +1,8 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.15.3.tar.bz2"  # Remove hacks for sierra.
-  sha256 "15bce7dfc77a9d9f8439799929783e20b99828567558465eaecd770f40fcfebe"
+  url "http://dl.hhvm.com/source/hhvm-3.15.4.tar.bz2"  # Remove hacks for sierra.
+  sha256 "e0be6fdcd3f70f44177f22a977524645cca18f1921602dc1cdce6537fa29f47e"
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -81,7 +81,7 @@ class Hhvm < Formula
     cd "hphp" do
       if DevelopmentTools.clang_build_version >= 800
         inreplace ["runtime/ext/scrypt/crypto/params.cpp", "util/test/job-queue.cpp",
-                   "util/timer.cpp", "runtime/ext/scrypt/crypto/params.cpp",
+                   "util/timer.cpp",
                    "runtime/vm/debug/perf-jitdump.cpp"] do |s|
           s.gsub! "clock_gettime(",
                   "clock_gettime((clockid_t)"
@@ -141,6 +141,7 @@ class Hhvm < Formula
     # Dependency information.
     cmake_args += %W[
       -DAWK_EXECUTABLE=#{Formula["gawk"].opt_bin}/gawk
+      -DBoost_ROOT=#{Formula["homebrew/versions/boost160"]}
       -DBoost_INCLUDE_DIR=#{Formula["homebrew/versions/boost160"].opt_include}
       -DBoost_LIBRARY_DIR=#{Formula["homebrew/versions/boost160"].opt_lib}
       -DFREETYPE_INCLUDE_DIRS=#{Formula["freetype"].opt_include}/freetype2
