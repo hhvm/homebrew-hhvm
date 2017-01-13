@@ -1,8 +1,8 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.15.3.tar.bz2"  # Remove hacks for sierra.
-  sha256 "15bce7dfc77a9d9f8439799929783e20b99828567558465eaecd770f40fcfebe"
+  url "http://dl.hhvm.com/source/hhvm-3.17.1.tar.bz2"  # Remove hacks for sierra.
+  sha256 "617f2bfe19d999a358a7bc5a4b74a6833cc037e5259a074c4b36819f8b0d8085"
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -42,7 +42,6 @@ class Hhvm < Formula
   depends_on "glog"
   depends_on "gmp"
   depends_on "icu4c"
-  depends_on "imagemagick"
   depends_on "jemalloc"
   depends_on "jpeg"
   depends_on "libevent"
@@ -59,48 +58,18 @@ class Hhvm < Formula
   depends_on "tbb"
 
   def install
-    # HACKS for Sierra
-    cd "third-party/folly/src/folly" do
-      # Workaround for "no matching function for call to 'clock_gettime'"
-      # See upstream PR from 2 Oct 2016 facebook/folly#488
-      if DevelopmentTools.clang_build_version >= 800
-        inreplace ["Benchmark.cpp", "Benchmark.h"] do |s|
-          s.gsub! "detail::DEFAULT_CLOCK_ID",
-                  "(clockid_t)detail::DEFAULT_CLOCK_ID"
-          s.gsub! "clock_gettime(CLOCK_REALTIME",
-                  "clock_gettime((clockid_t)CLOCK_REALTIME", false
-        end
-
-        # Fix "candidate function not viable: no known conversion from
-        # 'folly::detail::Clock' to 'clockid_t' for 1st argument"
-        # See upstream PR mentioned above
-        inreplace "portability/Time.h", "typedef uint8_t clockid_t;", ""
-      end
-    end
-
-    cd "hphp" do
-      if DevelopmentTools.clang_build_version >= 800
-        inreplace ["runtime/ext/scrypt/crypto/params.cpp", "util/test/job-queue.cpp",
-                   "util/timer.cpp", "runtime/ext/scrypt/crypto/params.cpp",
-                   "runtime/vm/debug/perf-jitdump.cpp"] do |s|
-          s.gsub! "clock_gettime(",
-                  "clock_gettime((clockid_t)"
-        end
-        inreplace "runtime/ext/std/ext_std_options.cpp" do |s|
-          s.gsub! "gettime(",
-                  "gettime((clockid_t)"
-        end 
-      
-        inreplace "util/compatibility.h", "typedef int clockid_t;", ""
-      end
-    end
-    # end HACKS for Sierra
-
     # Fix for 'dyld: lazy symbol binding failed: Symbol not found: _clock_gettime' issue
     if MacOS.version == "10.11" && MacOS::Xcode.installed? && MacOS::Xcode.version >= "8.0"
         inreplace "third-party/webscalesqlclient/mysql-5.6/config.h.cmake", "#cmakedefine HAVE_CLOCK_GETTIME 1", ""
         ENV["ac_cv_search_clock_gettime"] = "no"
         ENV["ac_have_clock_syscall"] = "no"
+    end
+
+    if MacOS.version == "10.10"
+      inreplace "third-party/folly/src/folly/detail/SocketFastOpen.h" do |s|
+        s.gsub! "#define FOLLY_ALLOW_TFO 1",
+                "#define FOLLY_ALLOW_TFO 0"
+      end
     end
 
     # Work around https://github.com/Homebrew/homebrew/issues/42957 by making
@@ -126,6 +95,7 @@ class Hhvm < Formula
       -DENABLE_MCROUTER=OFF
       -DENABLE_EXTENSION_MCROUTER=OFF
       -DENABLE_EXTENSION_IMAP=OFF
+      -DENABLE_EXTENSION_IMAGICK=OFF # brew is using ImageMagick-7 and we currently only support 6
     ]
 
     # Required to specify a socket path if you are using the bundled async SQL
@@ -165,9 +135,6 @@ class Hhvm < Formula
       -DLIBINTL_LIBRARIES=#{Formula["gettext"].opt_lib}/libintl.dylib
       -DLIBJPEG_INCLUDE_DIRS=#{Formula["jpeg"].opt_include}
       -DLIBJPEG_LIBRARIES=#{Formula["jpeg"].opt_lib}/libjpeg.dylib
-      -DLIBMAGICKCORE_LIBRARIES=#{Formula["imagemagick"].opt_lib}/libMagickCore-6.Q16.dylib
-      -DLIBMAGICKWAND_INCLUDE_DIRS=#{Formula["imagemagick"].opt_include}/ImageMagick-6
-      -DLIBMAGICKWAND_LIBRARIES=#{Formula["imagemagick"].opt_lib}/libMagickWand-6.Q16.dylib
       -DLIBMEMCACHED_INCLUDE_DIR=#{Formula["libmemcached"].opt_include}
       -DLIBMEMCACHED_LIBRARY=#{Formula["libmemcached"].opt_lib}/libmemcached.dylib
       -DLIBPNG_INCLUDE_DIRS=#{Formula["libpng"].opt_include}
