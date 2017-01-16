@@ -95,8 +95,10 @@ class Hhvm < Formula
       -DENABLE_MCROUTER=OFF
       -DENABLE_EXTENSION_MCROUTER=OFF
       -DENABLE_EXTENSION_IMAP=OFF
-      -DENABLE_EXTENSION_IMAGICK=OFF # brew is using ImageMagick-7 and we currently only support 6
     ]
+
+    # brew is using ImageMagick-7 and we currently only support 6
+    cmake_args << "-DENABLE_EXTENSION_IMAGICK=OFF"
 
     # Required to specify a socket path if you are using the bundled async SQL
     # client (which is very strongly recommended).
