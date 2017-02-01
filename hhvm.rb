@@ -1,8 +1,8 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.17.1.tar.bz2"  # Remove hacks for sierra.
-  sha256 "617f2bfe19d999a358a7bc5a4b74a6833cc037e5259a074c4b36819f8b0d8085"
+  url "http://dl.hhvm.com/source/hhvm-3.17.2.tar.bz2"
+  sha256 "b89c5989e536b3a167e7b5277daffeb2a702522e90ca16a663768d7cb7b84d73"
 
   head "https://github.com/facebook/hhvm.git"
 
