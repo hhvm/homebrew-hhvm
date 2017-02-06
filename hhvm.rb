@@ -3,6 +3,7 @@ class Hhvm < Formula
   homepage "http://hhvm.com/"
   url "http://dl.hhvm.com/source/hhvm-3.17.2.tar.bz2"
   sha256 "b89c5989e536b3a167e7b5277daffeb2a702522e90ca16a663768d7cb7b84d73"
+  revision 1
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -42,11 +43,13 @@ class Hhvm < Formula
   depends_on "glog"
   depends_on "gmp"
   depends_on "icu4c"
+  depends_on "imagemagick@6"
   depends_on "jemalloc"
   depends_on "jpeg"
   depends_on "libevent"
   depends_on "libmemcached"
   depends_on "libpng"
+  depends_on "libxml2"
   depends_on "libzip"
   depends_on "lz4"
   depends_on "mcrypt"
@@ -96,10 +99,7 @@ class Hhvm < Formula
       -DENABLE_EXTENSION_MCROUTER=OFF
       -DENABLE_EXTENSION_IMAP=OFF
     ]
-
-    # brew is using ImageMagick-7 and we currently only support 6
-    cmake_args << "-DENABLE_EXTENSION_IMAGICK=OFF"
-
+    
     # Required to specify a socket path if you are using the bundled async SQL
     # client (which is very strongly recommended).
     cmake_args << "-DMYSQL_UNIX_SOCK_ADDR=/tmp/mysql.sock"
@@ -115,6 +115,9 @@ class Hhvm < Formula
       -DAWK_EXECUTABLE=#{Formula["gawk"].opt_bin}/gawk
       -DBoost_INCLUDE_DIR=#{Formula["homebrew/versions/boost160"].opt_include}
       -DBoost_LIBRARY_DIR=#{Formula["homebrew/versions/boost160"].opt_lib}
+      -DLIBMAGICKWAND_INCLUDE_DIRS=#{Formula["imagemagick@6"].opt_include}/ImageMagick-6
+      -DLIBMAGICKWAND_LIBRARIES=#{Formula["imagemagick@6"].opt_lib}/libMagickWand-6.Q16.dylib
+      -DLIBMAGICKCORE_LIBRARIES=#{Formula["imagemagick@6"].opt_lib}/libMagickCore-6.Q16.dylib
       -DFREETYPE_INCLUDE_DIRS=#{Formula["freetype"].opt_include}/freetype2
       -DFREETYPE_LIBRARIES=#{Formula["freetype"].opt_lib}/libfreetype.dylib
       -DGMP_INCLUDE_DIR=#{Formula["gmp"].opt_include}
@@ -146,6 +149,8 @@ class Hhvm < Formula
       -DMcrypt_INCLUDE_DIR=#{Formula["mcrypt"].opt_include}
       -DMcrypt_LIB=#{Formula["mcrypt"].opt_lib}/libmcrypt.dylib
       -DPC_SQLITE3_FOUND=1
+      -DLIBXML2_INCLUDE_DIR=#{Formula["libxml2"].opt_include}/libxml2
+      -DLIBXML2_LIBRARIES=#{Formula["libxml2"].opt_lib}/libxml2.dylib
       -DLIBZIP_INCLUDE_DIR_ZIP=#{Formula["libzip"].opt_include}
       -DLIBZIP_INCLUDE_DIR_ZIPCONF=#{Formula["libzip"].opt_lib}/libzip/include
       -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
@@ -218,8 +223,6 @@ class Hhvm < Formula
       -DLIBICONV_LIBRARY=/usr/lib/libiconv.dylib
       -DLIBPTHREAD_INCLUDE_DIRS=/usr/include
       -DLIBPTHREAD_LIBRARIES=/usr/lib/libpthread.dylib
-      -DLIBXML2_INCLUDE_DIR=/usr/include/libxml2
-      -DLIBXML2_LIBRARIES=/usr/lib/libxml2.dylib
       -DLIBXSLT_EXSLT_LIBRARY=/usr/lib/libexslt.dylib
       -DLIBXSLT_INCLUDE_DIR=/usr/include
       -DLIBXSLT_LIBRARIES=/usr/lib/libxslt.dylib
