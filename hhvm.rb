@@ -7,6 +7,11 @@ class Hhvm < Formula
 
   head "https://github.com/facebook/hhvm.git"
 
+  bottle do
+    root_url "https://github.com/PranayAgarwal/homebrew-hhvm/releases/download/v3.18.1"
+    sha256 "d23599f45899373718bfef7facfadf8f967e74df6df0c34ed493ed87eb049d79" => :sierra
+  end
+
   option "with-debug", <<-EOS.undent
     Make an unoptimized build with assertions enabled. This will run PHP and
     Hack code dramatically slower than a release build, and is suitable mostly
