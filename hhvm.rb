@@ -239,7 +239,9 @@ class Hhvm < Formula
     system "cmake", *cmake_args
     system "make"
     system "make", "install"
+  end
 
+  def post_install
     ini = etc/"hhvm"
     (ini/"php.ini").write php_ini unless File.exist? (ini/"php.ini")
     (ini/"server.ini").write server_ini unless File.exist? (ini/"server.ini")
