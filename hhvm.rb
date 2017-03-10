@@ -10,6 +10,7 @@ class Hhvm < Formula
   bottle do
     root_url "https://github.com/PranayAgarwal/homebrew-hhvm/releases/download/v3.18.1"
     sha256 "d23599f45899373718bfef7facfadf8f967e74df6df0c34ed493ed87eb049d79" => :sierra
+    sha256 "4f946a43c5496c02d6c3fc8ed2450b4e0ce3c8c59f777be1c83fb50b9933ee31" => :el_capitan
   end
 
   option "with-debug", <<-EOS.undent
@@ -104,7 +105,7 @@ class Hhvm < Formula
       -DENABLE_EXTENSION_MCROUTER=OFF
       -DENABLE_EXTENSION_IMAP=OFF
     ]
-    
+
     # Required to specify a socket path if you are using the bundled async SQL
     # client (which is very strongly recommended).
     cmake_args << "-DMYSQL_UNIX_SOCK_ADDR=/tmp/mysql.sock"
