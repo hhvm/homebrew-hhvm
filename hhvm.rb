@@ -119,8 +119,8 @@ class Hhvm < Formula
     # Dependency information.
     cmake_args += %W[
       -DAWK_EXECUTABLE=#{Formula["gawk"].opt_bin}/gawk
-      -DBoost_INCLUDE_DIR=#{Formula["homebrew/versions/boost160"].opt_include}
-      -DBoost_LIBRARY_DIR=#{Formula["homebrew/versions/boost160"].opt_lib}
+      -DBoost_INCLUDE_DIR=#{Formula["boost@1.60"].opt_include}
+      -DBoost_LIBRARY_DIR=#{Formula["boost@1.60"].opt_lib}
       -DLIBMAGICKWAND_INCLUDE_DIRS=#{Formula["imagemagick@6"].opt_include}/ImageMagick-6
       -DLIBMAGICKWAND_LIBRARIES=#{Formula["imagemagick@6"].opt_lib}/libMagickWand-6.Q16.dylib
       -DLIBMAGICKCORE_LIBRARIES=#{Formula["imagemagick@6"].opt_lib}/libMagickCore-6.Q16.dylib
