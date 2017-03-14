@@ -3,7 +3,7 @@ class Hhvm < Formula
   homepage "http://hhvm.com/"
   url "http://dl.hhvm.com/source/hhvm-3.18.1.tar.bz2"
   sha256 "10d5f73db9544c94e7852464fcb4431799251355b26ffbef86f6775c47aac78b"
-  revision 2
+  revision 3
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -35,7 +35,7 @@ class Hhvm < Formula
 
   # Folly is currently incompatible with boost >1.6.0 due to changes in the
   # fibers api
-  depends_on "boost@1.60"
+  depends_on "boost"
 
   depends_on "freetype"
   depends_on "gd"
@@ -119,8 +119,8 @@ class Hhvm < Formula
     # Dependency information.
     cmake_args += %W[
       -DAWK_EXECUTABLE=#{Formula["gawk"].opt_bin}/gawk
-      -DBoost_INCLUDE_DIR=#{Formula["homebrew/versions/boost160"].opt_include}
-      -DBoost_LIBRARY_DIR=#{Formula["homebrew/versions/boost160"].opt_lib}
+      -DBoost_INCLUDE_DIR=#{Formula["boost"].opt_include}
+      -DBoost_LIBRARY_DIR=#{Formula["boost"].opt_lib}
       -DLIBMAGICKWAND_INCLUDE_DIRS=#{Formula["imagemagick@6"].opt_include}/ImageMagick-6
       -DLIBMAGICKWAND_LIBRARIES=#{Formula["imagemagick@6"].opt_lib}/libMagickWand-6.Q16.dylib
       -DLIBMAGICKCORE_LIBRARIES=#{Formula["imagemagick@6"].opt_lib}/libMagickCore-6.Q16.dylib
