@@ -3,7 +3,7 @@ class Hhvm < Formula
   homepage "http://hhvm.com/"
   url "http://dl.hhvm.com/source/hhvm-3.18.1.tar.bz2"
   sha256 "10d5f73db9544c94e7852464fcb4431799251355b26ffbef86f6775c47aac78b"
-  revision 1
+  revision 2
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -35,7 +35,7 @@ class Hhvm < Formula
 
   # Folly is currently incompatible with boost >1.6.0 due to changes in the
   # fibers api
-  depends_on "homebrew/versions/boost160"
+  depends_on "boost@1.60"
 
   depends_on "freetype"
   depends_on "gd"
@@ -74,6 +74,12 @@ class Hhvm < Formula
                 "#define FOLLY_ALLOW_TFO 0"
       end
     end
+
+    # Fix for explicit constructors in Intel TBB.
+    inreplace "hphp/hhbbc/index.cpp", "ContextRetTyMap contextualReturnTypes;",
+              "ContextRetTyMap contextualReturnTypes{};"
+    inreplace "hphp/hhbbc/stats.cpp", "BuiltinInfo builtinsInfo;",
+              "BuiltinInfo builtinsInfo{};"
 
     # Work around https://github.com/Homebrew/homebrew/issues/42957 by making
     # brew's superenv forget which libraries it wants to inject into ld
