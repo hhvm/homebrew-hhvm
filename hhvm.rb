@@ -3,7 +3,7 @@ class Hhvm < Formula
   homepage "http://hhvm.com/"
   url "http://dl.hhvm.com/source/hhvm-3.18.1.tar.bz2"
   sha256 "10d5f73db9544c94e7852464fcb4431799251355b26ffbef86f6775c47aac78b"
-  revision 3
+  revision 4
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -80,6 +80,10 @@ class Hhvm < Formula
               "ContextRetTyMap contextualReturnTypes{};"
     inreplace "hphp/hhbbc/stats.cpp", "BuiltinInfo builtinsInfo;",
               "BuiltinInfo builtinsInfo{};"
+    # Fix missing move constructor.
+    inreplace "hphp/runtime/base/req-containers.h",
+              "// Unlike the rest, we don't want to ignore the base. Its easy to type-scan",
+              "unique_ptr(Base&& other) : Base(std::move(other)) {}"
 
     # Work around https://github.com/Homebrew/homebrew/issues/42957 by making
     # brew's superenv forget which libraries it wants to inject into ld
