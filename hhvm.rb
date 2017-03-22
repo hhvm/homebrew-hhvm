@@ -241,6 +241,14 @@ class Hhvm < Formula
       -DZLIB_LIBRARY=/usr/lib/libz.dylib
     ]
 
+    # Compile with PGSQL
+    cmake_args += %W[
+      -DENABLE_EXTENSION_PGSQL=ON
+      -DPGSQL_INCLUDE_DIR=/usr/local/opt/postgres/include
+      -DPGSQL_LIBRARY=/usr/local/opt/postgres/lib/libpq.dylib
+    ]
+    inreplace "hphp/runtime/ext/pgsql/pdo_pgsql_connection.cpp", "long", "int64_t"
+
     system "cmake", *cmake_args
     system "make"
     system "make", "install"
