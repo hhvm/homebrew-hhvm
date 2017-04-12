@@ -11,7 +11,7 @@ To install,
 
 ```
 brew tap hhvm/hhvm
-brew install hhvm
+brew install hhvm/hhvm/hhvm
 ```
 
 And then wait a long time for it to compile since we don't provide bottles yet.
