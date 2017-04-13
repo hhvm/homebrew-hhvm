@@ -1,8 +1,8 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.18.2.tar.bz2"
-  sha256 "9bc89dde7e1fc6f8f81516d95e04874a993e85f875b25f588c6d9d885ece51f6"
+  url "http://dl.hhvm.com/source/hhvm-3.19.0.tar.bz2"
+  sha256 "9702f0733cc24f972045b5c372d76b73cb6dbbcf48fecac2e036186c909a7edf"
   revision 4
 
   head "https://github.com/facebook/hhvm.git"
@@ -74,16 +74,6 @@ class Hhvm < Formula
                 "#define FOLLY_ALLOW_TFO 0"
       end
     end
-
-    # Fix for explicit constructors in Intel TBB.
-    inreplace "hphp/hhbbc/index.cpp", "ContextRetTyMap contextualReturnTypes;",
-              "ContextRetTyMap contextualReturnTypes{};"
-    inreplace "hphp/hhbbc/stats.cpp", "BuiltinInfo builtinsInfo;",
-              "BuiltinInfo builtinsInfo{};"
-    # Fix missing move constructor.
-    inreplace "hphp/runtime/base/req-containers.h",
-              "// Unlike the rest, we don't want to ignore the base. Its easy to type-scan",
-              "unique_ptr(Base&& other) : Base(std::move(other)) {}"
 
     # Work around https://github.com/Homebrew/homebrew/issues/42957 by making
     # brew's superenv forget which libraries it wants to inject into ld
