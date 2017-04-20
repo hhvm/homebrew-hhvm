@@ -156,8 +156,10 @@ class Hhvm < Formula
       -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
       -DLZ4_INCLUDE_DIR=#{Formula["lz4"].opt_include}
       -DLZ4_LIBRARY=#{Formula["lz4"].opt_lib}/liblz4.dylib
-      -DOCAMLC_EXECUTABLE=#{Formula["ocaml"].opt_bin}/ocamlc
-      -DOCAMLC_OPT_EXECUTABLE=#{Formula["ocaml"].opt_bin}/ocamlc.opt
+      -DOCAML=#{Formula["ocaml"].opt_bin}/ocaml
+      -DOCAMLC=#{Formula["ocaml"].opt_bin}/ocamlc.opt
+      -DOCAMLOPT=#{Formula["ocaml"].opt_bin}/ocamlopt.opt
+      -DOCAMLBUILD=#{Formula["ocamlbuild"].opt_bin}/ocamlbuild
       -DONIGURUMA_INCLUDE_DIR=#{Formula["oniguruma"].opt_include}
       -DONIGURUMA_LIBRARY=#{Formula["oniguruma"].opt_lib}/libonig.dylib
       -DOPENSSL_INCLUDE_DIR=#{Formula["openssl"].opt_include}
