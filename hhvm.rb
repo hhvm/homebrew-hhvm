@@ -1,9 +1,9 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.19.1.tar.bz2"
-  sha256 "c6ca91c4fbbc04be51260340825f96f03a590fa0f4362a00b046059a6b5c313b"
-  revision 4
+  url "http://dl.hhvm.com/source/hhvm-3.20.1.tar.bz2"
+  sha256 "3b3359ff028fff902f946c310eaba93d72d4ae17c76b674aebb9d327f41c2bf1"
+  revision 0
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -48,6 +48,7 @@ class Hhvm < Formula
   depends_on "jpeg"
   depends_on "libevent"
   depends_on "libmemcached"
+  depends_on "libsodium"
   depends_on "libpng"
   depends_on "libxml2"
   depends_on "libzip"
@@ -107,8 +108,8 @@ class Hhvm < Formula
     # We tell HHVM below where readline is, but due to the machinery of CMake's
     # subprojects, it's hard for HHVM to tell one of its subproject dependencies
     # where readline is, so be more aggressive in a way that makes it through.
-    cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib}"
-    cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib}"
+    cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib} -I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib}"
+    cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib} -I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib}"
 
     # Dependency information.
     cmake_args += %W[
@@ -178,6 +179,8 @@ class Hhvm < Formula
       -DTBB_LIBRARY_DIR=#{Formula["tbb"].opt_lib}
       -DTBB_MALLOC_LIBRARY=#{Formula["tbb"].opt_lib}/libtbbmalloc.dylib
       -DTBB_MALLOC_LIBRARY_DEBUG=#{Formula["tbb"].opt_lib}/libtbbmalloc.dylib
+      -DLIBSODIUM_INCLUDE_DIRS=#{Formula["libsodium"].opt_include}
+      -DLIBSODIUM_LIBRARIES=#{Formula["libsodium"].opt_lib}/libsodium.dylib
     ]
 
     # brew's PCRE always has the JIT enabled; work around issue where the CMake
