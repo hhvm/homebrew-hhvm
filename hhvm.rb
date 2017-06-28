@@ -37,6 +37,9 @@ class Hhvm < Formula
   # fibers api
   depends_on "boost"
 
+  # HHVM uses a jemalloc config option that was removed in 5.0.0
+  depends_on "jemalloc@4.5.0"
+
   depends_on "freetype"
   depends_on "gd"
   depends_on "gettext"
@@ -44,7 +47,6 @@ class Hhvm < Formula
   depends_on "gmp"
   depends_on "icu4c"
   depends_on "imagemagick@6"
-  depends_on "jemalloc"
   depends_on "jpeg"
   depends_on "libevent"
   depends_on "libmemcached"
@@ -100,7 +102,7 @@ class Hhvm < Formula
       -DENABLE_EXTENSION_MCROUTER=OFF
       -DENABLE_EXTENSION_IMAP=OFF
     ]
-    
+
     # Required to specify a socket path if you are using the bundled async SQL
     # client (which is very strongly recommended).
     cmake_args << "-DMYSQL_UNIX_SOCK_ADDR=/tmp/mysql.sock"
