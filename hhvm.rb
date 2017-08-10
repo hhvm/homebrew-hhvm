@@ -6,7 +6,7 @@ class Hhvm < Formula
   revision 0
 
   head "https://github.com/facebook/hhvm.git"
-  
+
   bottle do
     root_url "https://github.com/PranayAgarwal/homebrew-hhvm/releases/download/v3.21.0"
     sha256 "6ff0f9b6ba19a82a6a60809c53917d1077f4c7fcb72a4d1d8bfbf49f5c137354" => :sierra
