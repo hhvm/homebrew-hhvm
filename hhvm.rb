@@ -7,6 +7,11 @@ class Hhvm < Formula
 
   head "https://github.com/facebook/hhvm.git"
 
+  bottle do
+    root_url "https://github.com/PranayAgarwal/homebrew-hhvm/releases/download/v3.21.0"
+    sha256 "6ff0f9b6ba19a82a6a60809c53917d1077f4c7fcb72a4d1d8bfbf49f5c137354" => :sierra
+  end
+
   option "with-debug", <<-EOS.undent
     Make an unoptimized build with assertions enabled. This will run PHP and
     Hack code dramatically slower than a release build, and is suitable mostly
@@ -100,7 +105,7 @@ class Hhvm < Formula
       -DENABLE_EXTENSION_MCROUTER=OFF
       -DENABLE_EXTENSION_IMAP=OFF
     ]
-    
+
     # Required to specify a socket path if you are using the bundled async SQL
     # client (which is very strongly recommended).
     cmake_args << "-DMYSQL_UNIX_SOCK_ADDR=/tmp/mysql.sock"
@@ -239,7 +244,9 @@ class Hhvm < Formula
     system "cmake", *cmake_args
     system "make"
     system "make", "install"
+  end
 
+  def post_install
     ini = etc/"hhvm"
     (ini/"php.ini").write php_ini unless File.exist? (ini/"php.ini")
     (ini/"server.ini").write server_ini unless File.exist? (ini/"server.ini")
