@@ -1,9 +1,9 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.18.1.tar.bz2"
-  sha256 "10d5f73db9544c94e7852464fcb4431799251355b26ffbef86f6775c47aac78b"
-  revision 1
+  url "http://dl.hhvm.com/source/hhvm-3.21.0.tar.bz2"
+  sha256 "702a47053b88f499514edf88e71b409abbcc0d77ce01799d76d2adf5bac07478"
+  revision 0
 
   head "https://github.com/facebook/hhvm.git"
 
@@ -41,7 +41,7 @@ class Hhvm < Formula
 
   # Folly is currently incompatible with boost >1.6.0 due to changes in the
   # fibers api
-  depends_on "homebrew/versions/boost160"
+  depends_on "boost"
 
   depends_on "freetype"
   depends_on "gd"
@@ -54,6 +54,7 @@ class Hhvm < Formula
   depends_on "jpeg"
   depends_on "libevent"
   depends_on "libmemcached"
+  depends_on "libsodium"
   depends_on "libpng"
   depends_on "libxml2"
   depends_on "libzip"
@@ -113,14 +114,14 @@ class Hhvm < Formula
     # We tell HHVM below where readline is, but due to the machinery of CMake's
     # subprojects, it's hard for HHVM to tell one of its subproject dependencies
     # where readline is, so be more aggressive in a way that makes it through.
-    cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib}"
-    cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib}"
+    cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib} -I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib}"
+    cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib} -I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib}"
 
     # Dependency information.
     cmake_args += %W[
       -DAWK_EXECUTABLE=#{Formula["gawk"].opt_bin}/gawk
-      -DBoost_INCLUDE_DIR=#{Formula["homebrew/versions/boost160"].opt_include}
-      -DBoost_LIBRARY_DIR=#{Formula["homebrew/versions/boost160"].opt_lib}
+      -DBoost_INCLUDE_DIR=#{Formula["boost"].opt_include}
+      -DBoost_LIBRARY_DIR=#{Formula["boost"].opt_lib}
       -DLIBMAGICKWAND_INCLUDE_DIRS=#{Formula["imagemagick@6"].opt_include}/ImageMagick-6
       -DLIBMAGICKWAND_LIBRARIES=#{Formula["imagemagick@6"].opt_lib}/libMagickWand-6.Q16.dylib
       -DLIBMAGICKCORE_LIBRARIES=#{Formula["imagemagick@6"].opt_lib}/libMagickCore-6.Q16.dylib
@@ -162,8 +163,10 @@ class Hhvm < Formula
       -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
       -DLZ4_INCLUDE_DIR=#{Formula["lz4"].opt_include}
       -DLZ4_LIBRARY=#{Formula["lz4"].opt_lib}/liblz4.dylib
-      -DOCAMLC_EXECUTABLE=#{Formula["ocaml"].opt_bin}/ocamlc
-      -DOCAMLC_OPT_EXECUTABLE=#{Formula["ocaml"].opt_bin}/ocamlc.opt
+      -DOCAML=#{Formula["ocaml"].opt_bin}/ocaml
+      -DOCAMLC=#{Formula["ocaml"].opt_bin}/ocamlc.opt
+      -DOCAMLOPT=#{Formula["ocaml"].opt_bin}/ocamlopt.opt
+      -DOCAMLBUILD=#{Formula["ocamlbuild"].opt_bin}/ocamlbuild
       -DONIGURUMA_INCLUDE_DIR=#{Formula["oniguruma"].opt_include}
       -DONIGURUMA_LIBRARY=#{Formula["oniguruma"].opt_lib}/libonig.dylib
       -DOPENSSL_INCLUDE_DIR=#{Formula["openssl"].opt_include}
@@ -182,6 +185,8 @@ class Hhvm < Formula
       -DTBB_LIBRARY_DIR=#{Formula["tbb"].opt_lib}
       -DTBB_MALLOC_LIBRARY=#{Formula["tbb"].opt_lib}/libtbbmalloc.dylib
       -DTBB_MALLOC_LIBRARY_DEBUG=#{Formula["tbb"].opt_lib}/libtbbmalloc.dylib
+      -DLIBSODIUM_INCLUDE_DIRS=#{Formula["libsodium"].opt_include}
+      -DLIBSODIUM_LIBRARIES=#{Formula["libsodium"].opt_lib}/libsodium.dylib
     ]
 
     # brew's PCRE always has the JIT enabled; work around issue where the CMake
