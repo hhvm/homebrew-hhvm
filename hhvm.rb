@@ -52,7 +52,8 @@ class Hhvm < Formula
   depends_on "libpng"
   depends_on "libxml2"
   depends_on "libzip"
-  depends_on "lz4"
+  # 1.8.0 is broken for clang + C++, needs https://github.com/lz4/lz4/commit/252ce14fd2ce8e4ff6038e79fe48a6b38643f8c9
+  depends_on "lz4@1.7.5"
   depends_on "mcrypt"
   depends_on "oniguruma"
   depends_on "openssl"
@@ -155,8 +156,8 @@ class Hhvm < Formula
       -DLIBZIP_INCLUDE_DIR_ZIP=#{Formula["libzip"].opt_include}
       -DLIBZIP_INCLUDE_DIR_ZIPCONF=#{Formula["libzip"].opt_lib}/libzip/include
       -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
-      -DLZ4_INCLUDE_DIR=#{Formula["lz4"].opt_include}
-      -DLZ4_LIBRARY=#{Formula["lz4"].opt_lib}/liblz4.dylib
+      -DLZ4_INCLUDE_DIR=#{Formula["lz4@1.7.5"].opt_include}
+      -DLZ4_LIBRARY=#{Formula["lz4@1.7.5"].opt_lib}/liblz4.dylib
       -DOCAML=#{Formula["ocaml"].opt_bin}/ocaml
       -DOCAMLC=#{Formula["ocaml"].opt_bin}/ocamlc.opt
       -DOCAMLOPT=#{Formula["ocaml"].opt_bin}/ocamlopt.opt
