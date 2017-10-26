@@ -13,11 +13,6 @@ class Hhvm < Formula
     for debugging HHVM itself.
   EOS
 
-  # DANGER: we can't link against this when building bottles, but MySQL currently
-  # depends on it. We don't actually include anything using it, but need it to
-  # make cmake happy
-  depends_on "readline"
-
   # Needs very recent xcode
   depends_on :macos => :sierra
 
@@ -208,10 +203,11 @@ class Hhvm < Formula
       -DZLIB_INCLUDE_DIR=/usr/include
       -DZLIB_LIBRARY=/usr/lib/libz.dylib
       -DEDITLINE_INCLUDE_DIRS=/usr/include
-      -DEDITLINE_LIBRARY=/usr/lib/libedit.dylib
-      -DREADLINE_INCLUDE_DIR=#{Formula["readline"].opt_include}
-      -DREADLINE_LIBRARY=#{Formula["readline"].opt_lib}/libreadline.dylib
+      -DEDITLINE_LIBRARIES=/usr/lib/libedit.dylib
     ]
+    # Don't want to have to install readline just to keep CMake happy;
+    # we can't distribute bottles if using readline
+    inreplace "third-party/webscalesqlclient/src/CMakeLists.txt", /^.*readline.*/i, ''
 
     system "cmake", *cmake_args
     system "make"
