@@ -5,6 +5,11 @@ class Hhvm < Formula
   sha256 "a5febae81b1f2d643924e8b31d66aa7538272dfef1bf87967813362b45f19621"
   revision 1 # package version - reset to 0 when HHVM version changes
 
+  bottle do
+    root_url "https://d1teh552r2q4oq.cloudfront.net/homebrew-bottles"
+    sha256 "5c832e2a86dd41b5147ea02ba83e7cad0d0ccbead83b7b3cbf39041577e16752" => :high_sierra
+  end
+
   head "https://github.com/facebook/hhvm.git"
 
   option "with-debug", <<-EOS.undent
