@@ -206,6 +206,8 @@ class Hhvm < Formula
       -DEDITLINE_INCLUDE_DIRS=/usr/include
       -DEDITLINE_LIBRARIES=/usr/lib/libedit.dylib
     ]
+    # https://github.com/hhvm/homebrew-hhvm/issues/93
+    inreplace "hphp/util/alloc.cpp", /",metadata_thp:[^"]+"/, ''
     # Don't want to have to install readline just to keep CMake happy;
     # we can't distribute bottles if using readline
     inreplace "third-party/webscalesqlclient/src/CMakeLists.txt", /^.*readline.*/i, ''
