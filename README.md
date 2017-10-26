@@ -14,9 +14,10 @@ brew tap hhvm/hhvm
 brew install hhvm
 ```
 
-And then wait a long time for it to compile since we don't provide bottles yet.
-(This will be anywhere from twenty minutes on a beefy Mac Pro to a couple of
-hours on a MacBook Air.)
+We only provide bottles for macOS High Sierra yet. If you have another
+version of macOS then wait a long time for it to compile. (This will be
+anywhere from twenty minutes on a beefy Mac Pro to a couple of hours on a
+MacBook Air.)
 
 ## Reporting Issues
 
