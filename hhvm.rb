@@ -3,7 +3,7 @@ class Hhvm < Formula
   homepage "http://hhvm.com/"
   url "http://dl.hhvm.com/source/hhvm-3.22.0.tar.bz2" # search for tp_notices below when updating
   sha256 "a5febae81b1f2d643924e8b31d66aa7538272dfef1bf87967813362b45f19621"
-  revision 0
+  revision 1 # package version - reset to 0 when HHVM version changes
 
   head "https://github.com/facebook/hhvm.git"
 
