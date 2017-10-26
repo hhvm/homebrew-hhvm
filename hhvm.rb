@@ -1,7 +1,7 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.22.0.tar.bz2"
+  url "http://dl.hhvm.com/source/hhvm-3.22.0.tar.bz2" # search for tp_notices below when updating
   sha256 "a5febae81b1f2d643924e8b31d66aa7538272dfef1bf87967813362b45f19621"
   revision 0
 
@@ -12,6 +12,11 @@ class Hhvm < Formula
     Hack code dramatically slower than a release build, and is suitable mostly
     for debugging HHVM itself.
   EOS
+
+  # DANGER: we can't link against this when building bottles, but MySQL currently
+  # depends on it. We don't actually include anything using it, but need it to
+  # make cmake happy
+  depends_on "readline"
 
   # Needs very recent xcode
   depends_on :macos => :sierra
@@ -31,7 +36,6 @@ class Hhvm < Formula
   # Folly is currently incompatible with boost >1.6.0 due to changes in the
   # fibers api
   depends_on "boost"
-
   depends_on "freetype"
   depends_on "gd"
   depends_on "gettext"
@@ -53,7 +57,6 @@ class Hhvm < Formula
   depends_on "oniguruma"
   depends_on "openssl"
   depends_on "pcre"
-  depends_on "readline"
   depends_on "sqlite"
   depends_on "tbb"
 
@@ -75,16 +78,13 @@ class Hhvm < Formula
       -DENABLE_EXTENSION_MCROUTER=OFF
       -DENABLE_EXTENSION_IMAP=OFF
     ]
-    
+
     # Required to specify a socket path if you are using the bundled async SQL
     # client (which is very strongly recommended).
     cmake_args << "-DMYSQL_UNIX_SOCK_ADDR=/tmp/mysql.sock"
 
-    # We tell HHVM below where readline is, but due to the machinery of CMake's
-    # subprojects, it's hard for HHVM to tell one of its subproject dependencies
-    # where readline is, so be more aggressive in a way that makes it through.
-    cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib} -I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib}"
-    cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["readline"].opt_include} -L#{Formula["readline"].opt_lib} -I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib}"
+    cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib}"
+    cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib}"
 
     # Dependency information.
     cmake_args += %W[
@@ -145,8 +145,6 @@ class Hhvm < Formula
       -DPCRE_INCLUDE_DIR=#{Formula["pcre"].opt_include}
       -DPCRE_LIBRARY=#{Formula["pcre"].opt_lib}/libpcre.dylib
       -DPKG_CONFIG_EXECUTABLE=#{Formula["pkg-config"].opt_bin}/pkg-config
-      -DREADLINE_INCLUDE_DIR=#{Formula["readline"].opt_include}
-      -DREADLINE_LIBRARY=#{Formula["readline"].opt_lib}/libreadline.dylib
       -DTBB_INCLUDE_DIR=#{Formula["tbb"].opt_include}
       -DTBB_INSTALL_DIR=#{Formula["tbb"].opt_prefix}
       -DTBB_LIBRARY=#{Formula["tbb"].opt_lib}/libtbb.dylib
@@ -209,11 +207,18 @@ class Hhvm < Formula
       -DRESOLV_LIB=/usr/lib/libresolv.dylib
       -DZLIB_INCLUDE_DIR=/usr/include
       -DZLIB_LIBRARY=/usr/lib/libz.dylib
+      -DEDITLINE_INCLUDE_DIRS=/usr/include
+      -DEDITLINE_LIBRARY=/usr/lib/libedit.dylib
+      -DREADLINE_INCLUDE_DIR=#{Formula["readline"].opt_include}
+      -DREADLINE_LIBRARY=#{Formula["readline"].opt_lib}/libreadline.dylib
     ]
 
     system "cmake", *cmake_args
     system "make"
     system "make", "install"
+
+    tp_notices = (share/"doc/third_party_notices.txt")
+    tp_notices.write "See https://raw.githubusercontent.com/hhvm/hhvm-third-party/bcbfabdcbaa49333fa7b593ec5a156455336b74c/third_party_notices.txt" unless File.exists? tp_notices
 
     ini = etc/"hhvm"
     (ini/"php.ini").write php_ini unless File.exist? (ini/"php.ini")
