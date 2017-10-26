@@ -63,6 +63,7 @@ class Hhvm < Formula
     ENV["HOMEBREW_LIBRARY_PATHS"] = ""
 
     cmake_args = %W[
+      -DHHVM_VERSION_OVERRIDE=#{version}-#{revision}brew
       -DCMAKE_INSTALL_PREFIX=#{prefix}
       -DDEFAULT_CONFIG_DIR=#{etc}/hhvm
     ]
