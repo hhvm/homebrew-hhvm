@@ -8,6 +8,7 @@ class Hhvm < Formula
   bottle do
     root_url "https://d1teh552r2q4oq.cloudfront.net/homebrew-bottles"
     sha256 "5c832e2a86dd41b5147ea02ba83e7cad0d0ccbead83b7b3cbf39041577e16752" => :high_sierra
+    sha256 "db1ddced3cf0093eb1968c92fd973c2ccd44248de5e043e85bbc0e122665e8f9" => :sierra
   end
 
   head "https://github.com/facebook/hhvm.git"
