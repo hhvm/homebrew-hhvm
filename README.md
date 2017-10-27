@@ -14,10 +14,11 @@ brew tap hhvm/hhvm
 brew install hhvm
 ```
 
-We only provide bottles for macOS High Sierra yet. If you have another
-version of macOS then wait a long time for it to compile. (This will be
-anywhere from twenty minutes on a beefy Mac Pro to a couple of hours on a
-MacBook Air.)
+We currently provide bottles (binary packages) for Sierra and High Sierra. Earlier
+versions of MacOS are not supported as HHVM requires recent XCode.
+
+If you build from source, this will take anywhere from twenty minutes on a
+beefy Mac Pro to a couple of hours on a MacBook Air.
 
 ## Reporting Issues
 
