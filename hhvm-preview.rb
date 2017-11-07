@@ -2,14 +2,14 @@ class HhvmPreview < Formula
   conflicts_with "hhvm", :because => "hhvm and hhvm@preview contain the same executables"
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "https://d1teh552r2q4oq.cloudfront.net/source/nightlies/hhvm-nightly-2017.10.26.tar.gz"
-  sha256 "f7656fa597c4c4400aaa7eb068e6b1db35b93a1db9582cce5f23e757c57402d3"
+  url "http://dl2.hhvm.com/source/nightlies/hhvm-nightly-2017.11.06.tar.gz"
+  sha256 "68af7743ffcb375348e9cf268d6986bc45e382436eab77259a23962d8975fae0"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
-    root_url "https://d1teh552r2q4oq.cloudfront.net/homebrew-bottles"
-    sha256 "7b2e3d32ee1a976b51c1fa9bc5b0f6a12d5eda3fd750fe4709b1025a136e349d" => :high_sierra
-    sha256 "cc6c8aa5d204d9ae4739eed2a57b3a2773cc0652c91cbea07e81e384ae1bdba7" => :sierra
+    root_url "http://dl2.hhvm.com/homebrew-bottles"
+    sha256 "a20b261094d807f039c25e3207a2ea77a9c14638bc37035f17d56a5eaa70952f" => :high_sierra
+    sha256 "5045088eb33e8fcda74ed35a23783a8ce3a926c235d418c12d70ea0a1e270d94" => :sierra
   end
 
   head "https://github.com/facebook/hhvm.git"
