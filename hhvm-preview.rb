@@ -2,12 +2,12 @@ class HhvmPreview < Formula
   conflicts_with "hhvm", :because => "hhvm and hhvm@preview contain the same executables"
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl2.hhvm.com/source/nightlies/hhvm-nightly-2017.11.06.tar.gz"
+  url "https://dl2.hhvm.com/source/nightlies/hhvm-nightly-2017.11.06.tar.gz"
   sha256 "68af7743ffcb375348e9cf268d6986bc45e382436eab77259a23962d8975fae0"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
-    root_url "http://dl2.hhvm.com/homebrew-bottles"
+    root_url "https://dl2.hhvm.com/homebrew-bottles"
     sha256 "a20b261094d807f039c25e3207a2ea77a9c14638bc37035f17d56a5eaa70952f" => :high_sierra
     sha256 "5045088eb33e8fcda74ed35a23783a8ce3a926c235d418c12d70ea0a1e270d94" => :sierra
   end
