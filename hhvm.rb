@@ -1,14 +1,14 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the PHP and Hack languages"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.22.0.tar.bz2" # search for tp_notices below when updating
-  sha256 "a5febae81b1f2d643924e8b31d66aa7538272dfef1bf87967813362b45f19621"
+  url "http://dl.hhvm.com/source/hhvm-3.21.3.tar.bz2" # search for tp_notices below when updating
+  sha256 "39727359619042062dfd7536bb9e15d634769c20f700ca48453c8b3c68a06419"
   revision 1 # package version - reset to 0 when HHVM version changes
 
   bottle do
-    root_url "https://d1teh552r2q4oq.cloudfront.net/homebrew-bottles"
-    sha256 "5c832e2a86dd41b5147ea02ba83e7cad0d0ccbead83b7b3cbf39041577e16752" => :high_sierra
-    sha256 "db1ddced3cf0093eb1968c92fd973c2ccd44248de5e043e85bbc0e122665e8f9" => :sierra
+    root_url "https://dl2.hhvm.com/homebrew-bottles"
+    sha256 "0d91f41a2d8dc5d00ea5b77115a655d85e8fb68a0d6fbbbe1d5d5e74e2953ae4" => :high_sierra
+    sha256 "e628d196bbcc482e5cb13a536db2779ba7516895b62c723eb9718cc4e1c91763" => :sierra
   end
 
   head "https://github.com/facebook/hhvm.git"
@@ -30,8 +30,6 @@ class Hhvm < Formula
   depends_on "libelf" => :build
   depends_on "libtool" => :build
   depends_on "md5sha1sum" => :build
-  depends_on "ocaml" => :build
-  depends_on "ocamlbuild" => :build
   depends_on "pkg-config" => :build
 
   # Folly is currently incompatible with boost >1.6.0 due to changes in the
@@ -134,10 +132,6 @@ class Hhvm < Formula
       -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
       -DLZ4_INCLUDE_DIR=#{Formula["lz4@1.7.5"].opt_include}
       -DLZ4_LIBRARY=#{Formula["lz4@1.7.5"].opt_lib}/liblz4.dylib
-      -DOCAML=#{Formula["ocaml"].opt_bin}/ocaml
-      -DOCAMLC=#{Formula["ocaml"].opt_bin}/ocamlc.opt
-      -DOCAMLOPT=#{Formula["ocaml"].opt_bin}/ocamlopt.opt
-      -DOCAMLBUILD=#{Formula["ocamlbuild"].opt_bin}/ocamlbuild
       -DONIGURUMA_INCLUDE_DIR=#{Formula["oniguruma"].opt_include}
       -DONIGURUMA_LIBRARY=#{Formula["oniguruma"].opt_lib}/libonig.dylib
       -DOPENSSL_INCLUDE_DIR=#{Formula["openssl"].opt_include}
@@ -212,8 +206,6 @@ class Hhvm < Formula
       -DEDITLINE_INCLUDE_DIRS=/usr/include
       -DEDITLINE_LIBRARIES=/usr/lib/libedit.dylib
     ]
-    # https://github.com/hhvm/homebrew-hhvm/issues/93
-    inreplace "hphp/util/alloc.cpp", /",metadata_thp:[^"]+"/, ''
     # Don't want to have to install readline just to keep CMake happy;
     # we can't distribute bottles if using readline
     inreplace "third-party/webscalesqlclient/src/CMakeLists.txt", /^.*readline.*/i, ''
