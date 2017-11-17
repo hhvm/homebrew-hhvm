@@ -1,17 +1,16 @@
 class Hhvm < Formula
-  desc "JIT compiler and runtime for the PHP and Hack languages"
+  desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "http://dl.hhvm.com/source/hhvm-3.22.0.tar.bz2" # search for tp_notices below when updating
-  sha256 "a5febae81b1f2d643924e8b31d66aa7538272dfef1bf87967813362b45f19621"
-  revision 1 # package version - reset to 0 when HHVM version changes
+  url "https://dl.hhvm.com/source/hhvm-3.23.0.tar.gz"
+  sha256 "78c743d28ff79c426c3372f646d8a62e31c1555bc275efffb520409d7c7f8222"
+  revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
-    root_url "https://dl2.hhvm.com/homebrew-bottles"
-    sha256 "5c832e2a86dd41b5147ea02ba83e7cad0d0ccbead83b7b3cbf39041577e16752" => :high_sierra
-    sha256 "db1ddced3cf0093eb1968c92fd973c2ccd44248de5e043e85bbc0e122665e8f9" => :sierra
+    root_url "https://dl.hhvm.com/homebrew-bottles"
+    sha256 "9d9d586bd6db22d29f4676850279c1ba61f7dc5f878afa0b118cf190cb6f6519" => :sierra
+    sha256 "47b16d9a12ffbb156053eb9f16a1b121d3197de3fb4c9d18026f6e79408183a1" => :high_sierra
   end
 
-  head "https://github.com/facebook/hhvm.git"
 
   option "with-debug", <<-EOS.undent
     Make an unoptimized build with assertions enabled. This will run PHP and
@@ -30,8 +29,6 @@ class Hhvm < Formula
   depends_on "libelf" => :build
   depends_on "libtool" => :build
   depends_on "md5sha1sum" => :build
-  depends_on "ocaml" => :build
-  depends_on "ocamlbuild" => :build
   depends_on "pkg-config" => :build
 
   # Folly is currently incompatible with boost >1.6.0 due to changes in the
@@ -134,10 +131,6 @@ class Hhvm < Formula
       -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
       -DLZ4_INCLUDE_DIR=#{Formula["lz4@1.7.5"].opt_include}
       -DLZ4_LIBRARY=#{Formula["lz4@1.7.5"].opt_lib}/liblz4.dylib
-      -DOCAML=#{Formula["ocaml"].opt_bin}/ocaml
-      -DOCAMLC=#{Formula["ocaml"].opt_bin}/ocamlc.opt
-      -DOCAMLOPT=#{Formula["ocaml"].opt_bin}/ocamlopt.opt
-      -DOCAMLBUILD=#{Formula["ocamlbuild"].opt_bin}/ocamlbuild
       -DONIGURUMA_INCLUDE_DIR=#{Formula["oniguruma"].opt_include}
       -DONIGURUMA_LIBRARY=#{Formula["oniguruma"].opt_lib}/libonig.dylib
       -DOPENSSL_INCLUDE_DIR=#{Formula["openssl"].opt_include}
@@ -212,8 +205,6 @@ class Hhvm < Formula
       -DEDITLINE_INCLUDE_DIRS=/usr/include
       -DEDITLINE_LIBRARIES=/usr/lib/libedit.dylib
     ]
-    # https://github.com/hhvm/homebrew-hhvm/issues/93
-    inreplace "hphp/util/alloc.cpp", /",metadata_thp:[^"]+"/, ''
     # Don't want to have to install readline just to keep CMake happy;
     # we can't distribute bottles if using readline
     inreplace "third-party/webscalesqlclient/src/CMakeLists.txt", /^.*readline.*/i, ''
@@ -223,7 +214,7 @@ class Hhvm < Formula
     system "make", "install"
 
     tp_notices = (share/"doc/third_party_notices.txt")
-    tp_notices.write "See https://raw.githubusercontent.com/hhvm/hhvm-third-party/bcbfabdcbaa49333fa7b593ec5a156455336b74c/third_party_notices.txt" unless File.exists? tp_notices
+    (share/"doc").install "third-party/third_party_notices.txt"
 
     ini = etc/"hhvm"
     (ini/"php.ini").write php_ini unless File.exist? (ini/"php.ini")
