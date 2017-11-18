@@ -1,16 +1,15 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.23.0.tar.gz"
-  sha256 "78c743d28ff79c426c3372f646d8a62e31c1555bc275efffb520409d7c7f8222"
+  url "https://dl.hhvm.com/source/hhvm-3.23.1.tar.gz"
+  sha256 "cdb64af201d51a664c37f8e02016211bd865bde62863fbb4067adc3cf1839643"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "9d9d586bd6db22d29f4676850279c1ba61f7dc5f878afa0b118cf190cb6f6519" => :sierra
-    sha256 "47b16d9a12ffbb156053eb9f16a1b121d3197de3fb4c9d18026f6e79408183a1" => :high_sierra
+    sha256 "f3692264680eaac911270b5b5c7c40da6592655a2f79282ab1e6066d6221909d" => :high_sierra
+    sha256 "bd79a62f14b6a9687f6a56c53652e2e35bb876da25e89a8f90cd32be3e2d0e77" => :sierra
   end
-
 
   option "with-debug", <<-EOS.undent
     Make an unoptimized build with assertions enabled. This will run PHP and
