@@ -7,8 +7,8 @@ class Hhvm < Formula
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "8500cb89b9405488d6e1873e2c360321b4c1825580fa8170663ab8fb6fc7d558" => :sierra
-    sha256 "034ad5c0f092642a110d1de499563f6fbbaece6b3a321a39791200f1eeb5b122" => :high_sierra
+    rebuild 1
+    sha256 "faafbf49291e277149bc20470e99a717b7d7a134cf042f17a2b1706a91bf543f" => :high_sierra
   end
 
   option "with-debug", <<-EOS.undent
