@@ -3,12 +3,12 @@ class Hhvm < Formula
   homepage "http://hhvm.com/"
   url "https://dl.hhvm.com/source/hhvm-3.23.2.tar.gz"
   sha256 "5f037e43017071faf5554c10fbfb06be967b7af79c93274de25a7f7fee845d54"
-  revision 0 # package version - reset to 0 when HHVM version changes
+  revision 1 # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    rebuild 1
-    sha256 "faafbf49291e277149bc20470e99a717b7d7a134cf042f17a2b1706a91bf543f" => :high_sierra
+    sha256 "013cc799398406b18a00190432483b668d56dc4fcb0c6febf44791db4ebc18f9" => :sierra
+    sha256 "d438886d193726137fe40582eca59da945e4cd2046ed54548045573607d40d29" => :high_sierra
   end
 
   option "with-debug", <<-EOS.undent
