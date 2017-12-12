@@ -3,12 +3,12 @@ class Hhvm < Formula
   homepage "http://hhvm.com/"
   url "https://dl.hhvm.com/source/hhvm-3.23.2.tar.gz"
   sha256 "5f037e43017071faf5554c10fbfb06be967b7af79c93274de25a7f7fee845d54"
-  revision 1 # package version - reset to 0 when HHVM version changes
+  revision 2 # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "013cc799398406b18a00190432483b668d56dc4fcb0c6febf44791db4ebc18f9" => :sierra
-    sha256 "d438886d193726137fe40582eca59da945e4cd2046ed54548045573607d40d29" => :high_sierra
+    sha256 "f2f13aa184e5169ab2d078d124361e8b20027153ea47812aa8ef935e4a3af527" => :sierra
+    sha256 "1fd6fae0d8501d651dd1ab702147a2a0c58ef4304c032e014dde4ff60264d8e0" => :high_sierra
   end
 
   option "with-debug", <<-EOS.undent
@@ -85,6 +85,9 @@ class Hhvm < Formula
     cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib}"
 
     # Dependency information.
+    #
+    # We statically link against icu4c as every non-bugfix release is not backwards compatible; needing to rebuild for every release is too
+    # brittle
     cmake_args += %W[
       -DAWK_EXECUTABLE=#{Formula["gawk"].opt_bin}/gawk
       -DBoost_INCLUDE_DIR=#{Formula["boost"].opt_include}
@@ -97,9 +100,9 @@ class Hhvm < Formula
       -DGMP_INCLUDE_DIR=#{Formula["gmp"].opt_include}
       -DGMP_LIBRARY=#{Formula["gmp"].opt_lib}/libgmp.dylib
       -DICU_INCLUDE_DIR=#{Formula["icu4c"].opt_include}
-      -DICU_I18N_LIBRARY=#{Formula["icu4c"].opt_lib}/libicui18n.dylib
-      -DICU_LIBRARY=#{Formula["icu4c"].opt_lib}/libicuuc.dylib
-      -DICU_DATA_LIBRARY=#{Formula["icu4c"].opt_lib}/libicudata.dylib
+      -DICU_I18N_LIBRARY=#{Formula["icu4c"].opt_lib}/libicui18n.a
+      -DICU_LIBRARY=#{Formula["icu4c"].opt_lib}/libicuuc.a
+      -DICU_DATA_LIBRARY=#{Formula["icu4c"].opt_lib}/libicudata.a
       -DJEMALLOC_INCLUDE_DIR=#{Formula["jemalloc"].opt_include}
       -DJEMALLOC_LIB=#{Formula["jemalloc"].opt_lib}/libjemalloc.dylib
       -DLIBDWARF_INCLUDE_DIRS=#{Formula["dwarfutils"].opt_include}
@@ -214,6 +217,68 @@ class Hhvm < Formula
 
     tp_notices = (share/"doc/third_party_notices.txt")
     (share/"doc").install "third-party/third_party_notices.txt"
+    (share/"doc/third_party_notices.txt").append_lines <<EOF
+
+-----
+
+The following software may be included in this product: icu4c. This Software contains the following license and notice below:
+
+Unicode Data Files include all data files under the directories
+http://www.unicode.org/Public/, http://www.unicode.org/reports/,
+http://www.unicode.org/cldr/data/, http://source.icu-project.org/repos/icu/, and
+http://www.unicode.org/utility/trac/browser/.
+
+Unicode Data Files do not include PDF online code charts under the
+directory http://www.unicode.org/Public/.
+
+Software includes any source code published in the Unicode Standard
+or under the directories
+http://www.unicode.org/Public/, http://www.unicode.org/reports/,
+http://www.unicode.org/cldr/data/, http://source.icu-project.org/repos/icu/, and
+http://www.unicode.org/utility/trac/browser/.
+
+NOTICE TO USER: Carefully read the following legal agreement.
+BY DOWNLOADING, INSTALLING, COPYING OR OTHERWISE USING UNICODE INC.'S
+DATA FILES ("DATA FILES"), AND/OR SOFTWARE ("SOFTWARE"),
+YOU UNEQUIVOCALLY ACCEPT, AND AGREE TO BE BOUND BY, ALL OF THE
+TERMS AND CONDITIONS OF THIS AGREEMENT.
+IF YOU DO NOT AGREE, DO NOT DOWNLOAD, INSTALL, COPY, DISTRIBUTE OR USE
+THE DATA FILES OR SOFTWARE.
+
+COPYRIGHT AND PERMISSION NOTICE
+
+Copyright © 1991-2017 Unicode, Inc. All rights reserved.
+Distributed under the Terms of Use in http://www.unicode.org/copyright.html.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Unicode data files and any associated documentation
+(the "Data Files") or Unicode software and any associated documentation
+(the "Software") to deal in the Data Files or Software
+without restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, and/or sell copies of
+the Data Files or Software, and to permit persons to whom the Data Files
+or Software are furnished to do so, provided that either
+(a) this copyright and permission notice appear with all copies
+of the Data Files or Software, or
+(b) this copyright and permission notice appear in associated
+Documentation.
+
+THE DATA FILES AND SOFTWARE ARE PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT OF THIRD PARTY RIGHTS.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS
+NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL
+DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
+DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THE DATA FILES OR SOFTWARE.
+
+Except as contained in this notice, the name of a copyright holder
+shall not be used in advertising or otherwise to promote the sale,
+use or other dealings in these Data Files or Software without prior
+written authorization of the copyright holder.
+EOF
 
     ini = etc/"hhvm"
     (ini/"php.ini").write php_ini unless File.exist? (ini/"php.ini")
