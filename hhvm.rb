@@ -2,6 +2,7 @@ class Hhvm < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
   url "https://dl.hhvm.com/source/hhvm-3.23.2.tar.gz"
+  head "https://github.com/facebook/hhvm.git"
   sha256 "5f037e43017071faf5554c10fbfb06be967b7af79c93274de25a7f7fee845d54"
   revision 2 # package version - reset to 0 when HHVM version changes
 
