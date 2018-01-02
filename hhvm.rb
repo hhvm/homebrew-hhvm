@@ -31,6 +31,11 @@ class Hhvm < Formula
   depends_on "md5sha1sum" => :build
   depends_on "pkg-config" => :build
 
+  # We statically link against icu4c as every non-bugfix release is not
+  # backwards compatible; needing to rebuild for every release is too
+  # brittle
+  depends_on "icu4c" => :build
+
   # Folly is currently incompatible with boost >1.6.0 due to changes in the
   # fibers api
   depends_on "boost"
@@ -39,7 +44,6 @@ class Hhvm < Formula
   depends_on "gettext"
   depends_on "glog"
   depends_on "gmp"
-  depends_on "icu4c"
   depends_on "imagemagick@6"
   depends_on "jemalloc"
   depends_on "jpeg"
