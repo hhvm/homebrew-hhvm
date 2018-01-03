@@ -7,34 +7,24 @@ development, but Linux is still the recommended OS for production usage.
 
 ## Installation
 
-To install the latest version:
-
 ```
 brew tap hhvm/hhvm
+# install the latest version of HHVM:
 brew install hhvm
+# ... or install the latest 3.21.z release:
+brew install hhvm@3.21-lts
+# ... or install a preview of 3.24:
+brew install hhvm-preview
 ```
+
+If you need to install multiple versions, look at the documentation for
+`brew switch`, `brew link`, and `brew unlink`.
 
 We currently provide bottles (binary packages) for Sierra and High Sierra. Earlier
 versions of MacOS are not supported as HHVM requires recent XCode.
 
 If you build from source, this will take anywhere from twenty minutes on a
 beefy Mac Pro to a couple of hours on a MacBook Air.
-
-## Other versions
-
-The latest 3.21 release is also available (with bottles):
-
-```
-brew tap hhvm/hhvm
-brew install hhvm@3.21-lts
-```
-
-A 'preview' release is also available (with bottles), and sporadically updated; we hope to replace this with nightlies in the future.
-
-```
-brew tap hhvm/hhvm
-brew install hhvm-preview
-```
 
 ## Reporting Issues
 

@@ -1,18 +1,16 @@
-class HhvmPreview < Formula
-  conflicts_with "hhvm", :because => "hhvm and hhvm@preview contain the same executables"
-  desc "JIT compiler and runtime for the PHP and Hack languages"
+class HhvmPreview< Formula
+  desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl2.hhvm.com/source/nightlies/hhvm-nightly-2017.11.06.tar.gz"
-  sha256 "68af7743ffcb375348e9cf268d6986bc45e382436eab77259a23962d8975fae0"
+  url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2018.01.03.tar.gz"
+  head "https://github.com/facebook/hhvm.git"
+  sha256 "c37b5255b36e640484db3bd30b5529df98f26c61bed68bc5784ab30218777229"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
-    root_url "https://dl2.hhvm.com/homebrew-bottles"
-    sha256 "a20b261094d807f039c25e3207a2ea77a9c14638bc37035f17d56a5eaa70952f" => :high_sierra
-    sha256 "5045088eb33e8fcda74ed35a23783a8ce3a926c235d418c12d70ea0a1e270d94" => :sierra
+    root_url "https://dl.hhvm.com/homebrew-bottles"
+    sha256 "3e93a2c1d69c83f4d7d7c871173a157410a6fc38c3e1dc37f58fbb98e89e6fa6" => :sierra
+    sha256 "b6a3b8d8e4feb98133ffaa12f87a42968fee824e186dc1ae206a67d92d8249d7" => :high_sierra
   end
-
-  head "https://github.com/facebook/hhvm.git"
 
   option "with-debug", <<-EOS.undent
     Make an unoptimized build with assertions enabled. This will run PHP and
@@ -31,9 +29,12 @@ class HhvmPreview < Formula
   depends_on "libelf" => :build
   depends_on "libtool" => :build
   depends_on "md5sha1sum" => :build
-  depends_on "ocaml" => :build
-  depends_on "ocamlbuild" => :build
   depends_on "pkg-config" => :build
+
+  # We statically link against icu4c as every non-bugfix release is not
+  # backwards compatible; needing to rebuild for every release is too
+  # brittle
+  depends_on "icu4c" => :build
 
   # Folly is currently incompatible with boost >1.6.0 due to changes in the
   # fibers api
@@ -43,7 +44,6 @@ class HhvmPreview < Formula
   depends_on "gettext"
   depends_on "glog"
   depends_on "gmp"
-  depends_on "icu4c"
   depends_on "imagemagick@6"
   depends_on "jemalloc"
   depends_on "jpeg"
@@ -53,8 +53,7 @@ class HhvmPreview < Formula
   depends_on "libpng"
   depends_on "libxml2"
   depends_on "libzip"
-  # 1.8.0 is broken for clang + C++, needs https://github.com/lz4/lz4/commit/252ce14fd2ce8e4ff6038e79fe48a6b38643f8c9
-  depends_on "lz4@1.7.5"
+  depends_on "lz4"
   depends_on "mcrypt"
   depends_on "oniguruma"
   depends_on "openssl"
@@ -85,10 +84,13 @@ class HhvmPreview < Formula
     # client (which is very strongly recommended).
     cmake_args << "-DMYSQL_UNIX_SOCK_ADDR=/tmp/mysql.sock"
 
-    cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib}"
-    cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib}"
+    cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib} -DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
+    cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib} -DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
 
     # Dependency information.
+    #
+    # We statically link against icu4c as every non-bugfix release is not backwards compatible; needing to rebuild for every release is too
+    # brittle
     cmake_args += %W[
       -DAWK_EXECUTABLE=#{Formula["gawk"].opt_bin}/gawk
       -DBoost_INCLUDE_DIR=#{Formula["boost"].opt_include}
@@ -101,9 +103,9 @@ class HhvmPreview < Formula
       -DGMP_INCLUDE_DIR=#{Formula["gmp"].opt_include}
       -DGMP_LIBRARY=#{Formula["gmp"].opt_lib}/libgmp.dylib
       -DICU_INCLUDE_DIR=#{Formula["icu4c"].opt_include}
-      -DICU_I18N_LIBRARY=#{Formula["icu4c"].opt_lib}/libicui18n.dylib
-      -DICU_LIBRARY=#{Formula["icu4c"].opt_lib}/libicuuc.dylib
-      -DICU_DATA_LIBRARY=#{Formula["icu4c"].opt_lib}/libicudata.dylib
+      -DICU_I18N_LIBRARY=#{Formula["icu4c"].opt_lib}/libicui18n.a
+      -DICU_LIBRARY=#{Formula["icu4c"].opt_lib}/libicuuc.a
+      -DICU_DATA_LIBRARY=#{Formula["icu4c"].opt_lib}/libicudata.a
       -DJEMALLOC_INCLUDE_DIR=#{Formula["jemalloc"].opt_include}
       -DJEMALLOC_LIB=#{Formula["jemalloc"].opt_lib}/libjemalloc.dylib
       -DLIBDWARF_INCLUDE_DIRS=#{Formula["dwarfutils"].opt_include}
@@ -132,12 +134,8 @@ class HhvmPreview < Formula
       -DLIBZIP_INCLUDE_DIR_ZIP=#{Formula["libzip"].opt_include}
       -DLIBZIP_INCLUDE_DIR_ZIPCONF=#{Formula["libzip"].opt_lib}/libzip/include
       -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
-      -DLZ4_INCLUDE_DIR=#{Formula["lz4@1.7.5"].opt_include}
-      -DLZ4_LIBRARY=#{Formula["lz4@1.7.5"].opt_lib}/liblz4.dylib
-      -DOCAML=#{Formula["ocaml"].opt_bin}/ocaml
-      -DOCAMLC=#{Formula["ocaml"].opt_bin}/ocamlc.opt
-      -DOCAMLOPT=#{Formula["ocaml"].opt_bin}/ocamlopt.opt
-      -DOCAMLBUILD=#{Formula["ocamlbuild"].opt_bin}/ocamlbuild
+      -DLZ4_INCLUDE_DIR=#{Formula["lz4"].opt_include}
+      -DLZ4_LIBRARY=#{Formula["lz4"].opt_lib}/liblz4.dylib
       -DONIGURUMA_INCLUDE_DIR=#{Formula["oniguruma"].opt_include}
       -DONIGURUMA_LIBRARY=#{Formula["oniguruma"].opt_lib}/libonig.dylib
       -DOPENSSL_INCLUDE_DIR=#{Formula["openssl"].opt_include}
@@ -212,8 +210,6 @@ class HhvmPreview < Formula
       -DEDITLINE_INCLUDE_DIRS=/usr/include
       -DEDITLINE_LIBRARIES=/usr/lib/libedit.dylib
     ]
-    # https://github.com/hhvm/homebrew-hhvm/issues/93
-    inreplace "hphp/util/alloc.cpp", /",metadata_thp:[^"]+"/, ''
     # Don't want to have to install readline just to keep CMake happy;
     # we can't distribute bottles if using readline
     inreplace "third-party/webscalesqlclient/src/CMakeLists.txt", /^.*readline.*/i, ''
@@ -224,6 +220,68 @@ class HhvmPreview < Formula
 
     tp_notices = (share/"doc/third_party_notices.txt")
     (share/"doc").install "third-party/third_party_notices.txt"
+    tp_notices.append_lines <<EOF
+
+-----
+
+The following software may be included in this product: icu4c. This Software contains the following license and notice below:
+
+Unicode Data Files include all data files under the directories
+http://www.unicode.org/Public/, http://www.unicode.org/reports/,
+http://www.unicode.org/cldr/data/, http://source.icu-project.org/repos/icu/, and
+http://www.unicode.org/utility/trac/browser/.
+
+Unicode Data Files do not include PDF online code charts under the
+directory http://www.unicode.org/Public/.
+
+Software includes any source code published in the Unicode Standard
+or under the directories
+http://www.unicode.org/Public/, http://www.unicode.org/reports/,
+http://www.unicode.org/cldr/data/, http://source.icu-project.org/repos/icu/, and
+http://www.unicode.org/utility/trac/browser/.
+
+NOTICE TO USER: Carefully read the following legal agreement.
+BY DOWNLOADING, INSTALLING, COPYING OR OTHERWISE USING UNICODE INC.'S
+DATA FILES ("DATA FILES"), AND/OR SOFTWARE ("SOFTWARE"),
+YOU UNEQUIVOCALLY ACCEPT, AND AGREE TO BE BOUND BY, ALL OF THE
+TERMS AND CONDITIONS OF THIS AGREEMENT.
+IF YOU DO NOT AGREE, DO NOT DOWNLOAD, INSTALL, COPY, DISTRIBUTE OR USE
+THE DATA FILES OR SOFTWARE.
+
+COPYRIGHT AND PERMISSION NOTICE
+
+Copyright © 1991-2017 Unicode, Inc. All rights reserved.
+Distributed under the Terms of Use in http://www.unicode.org/copyright.html.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Unicode data files and any associated documentation
+(the "Data Files") or Unicode software and any associated documentation
+(the "Software") to deal in the Data Files or Software
+without restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, and/or sell copies of
+the Data Files or Software, and to permit persons to whom the Data Files
+or Software are furnished to do so, provided that either
+(a) this copyright and permission notice appear with all copies
+of the Data Files or Software, or
+(b) this copyright and permission notice appear in associated
+Documentation.
+
+THE DATA FILES AND SOFTWARE ARE PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT OF THIRD PARTY RIGHTS.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS
+NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL
+DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
+DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THE DATA FILES OR SOFTWARE.
+
+Except as contained in this notice, the name of a copyright holder
+shall not be used in advertising or otherwise to promote the sale,
+use or other dealings in these Data Files or Software without prior
+written authorization of the copyright holder.
+EOF
 
     ini = etc/"hhvm"
     (ini/"php.ini").write php_ini unless File.exist? (ini/"php.ini")
