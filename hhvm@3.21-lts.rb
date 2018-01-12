@@ -1,15 +1,15 @@
 class HhvmAT321Lts < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.21.4.tar.gz"
+  url "https://dl.hhvm.com/source/hhvm-3.21.5.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "e2fb87793ca69bf82ff7641b3db45ab4d976a76817143404bc7c5012ea9ced9b"
+  sha256 "a1f7b36075c8fcc1d63653758d90e21450c1cfeee588093f4248876dd20d9c17"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "eb9b2a75875a4d0964837bc871877ce5e1af4bc8d83dc3921d46c7fab57ebd2b" => :sierra
-    sha256 "c6c83bcb6bbb2f3cd37d6f36392a1d9a7ff0f6045bc3a5f9ce3f177ede1a0fd7" => :high_sierra
+    sha256 "64fa5d9f7644e899f218ca8df10e15652f16f1dfec7d2a1e627562177dcc7f05" => :sierra
+    sha256 "e3bb0e14e04b7b301d4c4b7c24cb588038c4fb1b2a7709a0db4e816d5ec86607" => :high_sierra
   end
 
   option "with-debug", <<-EOS.undent
@@ -211,9 +211,6 @@ class HhvmAT321Lts < Formula
       -DEDITLINE_INCLUDE_DIRS=/usr/include
       -DEDITLINE_LIBRARIES=/usr/lib/libedit.dylib
     ]
-    # Don't want to have to install readline just to keep CMake happy;
-    # we can't distribute bottles if using readline
-    inreplace "third-party/webscalesqlclient/src/CMakeLists.txt", /^.*readline.*/i, ''
 
     system "cmake", *cmake_args
     system "make"
