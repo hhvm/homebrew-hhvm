@@ -12,7 +12,7 @@ class HhvmPreview< Formula
     sha256 "b6a3b8d8e4feb98133ffaa12f87a42968fee824e186dc1ae206a67d92d8249d7" => :high_sierra
   end
 
-  option "with-debug", <<-EOS.undent
+  option "with-debug", <<~EOS
     Make an unoptimized build with assertions enabled. This will run PHP and
     Hack code dramatically slower than a release build, and is suitable mostly
     for debugging HHVM itself.
@@ -289,7 +289,7 @@ EOF
   end
 
   test do
-    (testpath/"test.php").write <<-EOS.undent
+    (testpath/"test.php").write <<~EOS
       <?php
       exit(is_integer(HHVM_VERSION_ID) ? 0 : 1);
     EOS
@@ -299,7 +299,7 @@ EOF
   plist_options :manual => "hhvm -m daemon -c #{HOMEBREW_PREFIX}/etc/hhvm/php.ini -c #{HOMEBREW_PREFIX}/etc/hhvm/server.ini"
 
   def plist
-    <<-EOS.undent
+    <<~EOS
       <?xml version="1.0" encoding="UTF-8"?>
       <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
       <plist version="1.0">
@@ -329,7 +329,7 @@ EOF
 
   # https://github.com/hhvm/packaging/blob/master/hhvm/deb/skeleton/etc/hhvm/php.ini
   def php_ini
-    <<-EOS.undent
+    <<~EOS
       ; php options
       session.save_handler = files
       session.save_path = #{var}/lib/hhvm/sessions
@@ -345,7 +345,7 @@ EOF
 
   # https://github.com/hhvm/packaging/blob/master/hhvm/deb/skeleton/etc/hhvm/server.ini
   def server_ini
-    <<-EOS.undent
+    <<~EOS
       ; php options
 
       pid = #{var}/run/hhvm/pid
