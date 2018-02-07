@@ -1,15 +1,15 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.24.1.tar.gz"
+  url "https://dl.hhvm.com/source/hhvm-3.24.2.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "8891a20d4368e604946ff9ab51ad46ca59df786468815ccc2490d820e3fcaf8e"
+  sha256 "bc05ef419ffce1815befbcc54dff6754b0ad09efc5cf7cb3b5dc375cf30fb9af"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "f59cd3fddc3e2ed161c8ca9d59df812e9be2cebc0e09098d098547e47bae5df4" => :sierra
-    sha256 "5beb51c61878bc0f8351a501b8f6986aa261f590ca081b3ce78865c01556d870" => :high_sierra
+    sha256 "b9e13ba8a550e8fecb94c641cd67ce6458a9c69f7ad2a97aaa9242014e2aef37" => :sierra
+    sha256 "27fe2b1f767864ccd23e1612634c1a0ff075a38bfde0755219d4d4fecf56fb29" => :high_sierra
   end
 
   option "with-debug", <<~EOS
@@ -133,7 +133,7 @@ class Hhvm < Formula
       -DLIBXML2_INCLUDE_DIR=#{Formula["libxml2"].opt_include}/libxml2
       -DLIBXML2_LIBRARIES=#{Formula["libxml2"].opt_lib}/libxml2.dylib
       -DLIBZIP_INCLUDE_DIR_ZIP=#{Formula["libzip"].opt_include}
-      -DLIBZIP_INCLUDE_DIR_ZIPCONF=#{Formula["libzip"].opt_lib}/libzip/include
+      -DLIBZIP_INCLUDE_DIR_ZIPCONF=#{Formula["libzip"].opt_include}
       -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
       -DLZ4_INCLUDE_DIR=#{Formula["lz4"].opt_include}
       -DLZ4_LIBRARY=#{Formula["lz4"].opt_lib}/liblz4.dylib
