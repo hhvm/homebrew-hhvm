@@ -3,12 +3,12 @@ class HhvmAT321Lts < Formula
   homepage "http://hhvm.com/"
   url "https://dl.hhvm.com/source/hhvm-3.21.6.tar.gz"
   sha256 "ea95d80e31225e092deba1ddbf34791c7caac4df6c50815ef5a5bd3d42306d10"
-  revision 0 # package version - reset to 0 when HHVM version changes
+  revision 1 # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "97ed77ed01ec80c6c28bfb74d31a0a38df0658c52b3073c225c26aef77b15cc6" => :sierra
-    sha256 "324fac3930f3034682363208c3f2871819b144d9186a0659974dd43256d28123" => :high_sierra
+    sha256 "dfd58cd521bf7f1957cbcaa4ce7eaa11b0f2d494ce7ad0c5bfdde285eb9a50c4" => :sierra
+    sha256 "b0b15c70bd1489c0c7620b736efe6862efc31d74bd880660596627d00dd1b2a4" => :high_sierra
   end
 
   option "with-debug", <<~EOS
@@ -132,7 +132,7 @@ class HhvmAT321Lts < Formula
       -DLIBXML2_INCLUDE_DIR=#{Formula["libxml2"].opt_include}/libxml2
       -DLIBXML2_LIBRARIES=#{Formula["libxml2"].opt_lib}/libxml2.dylib
       -DLIBZIP_INCLUDE_DIR_ZIP=#{Formula["libzip"].opt_include}
-      -DLIBZIP_INCLUDE_DIR_ZIPCONF=#{Formula["libzip"].opt_lib}/libzip/include
+      -DLIBZIP_INCLUDE_DIR_ZIPCONF=#{Formula["libzip"].opt_include}
       -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
       -DLZ4_INCLUDE_DIR=#{Formula["lz4"].opt_include}
       -DLZ4_LIBRARY=#{Formula["lz4"].opt_lib}/liblz4.dylib
