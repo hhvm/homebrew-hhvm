@@ -62,12 +62,6 @@ class Hhvm < Formula
   depends_on "tbb"
 
   def install
-    # Work around https://github.com/Homebrew/homebrew/issues/42957 by making
-    # brew's superenv forget which libraries it wants to inject into ld
-    # invocations. (We tell cmake below where they all are, so we don't need
-    # them to be injected like that.)
-    ENV["HOMEBREW_LIBRARY_PATHS"] = ""
-
     cmake_args = %W[
       -DHHVM_VERSION_OVERRIDE=#{version}-#{revision}brew
       -DCMAKE_INSTALL_PREFIX=#{prefix}
@@ -85,77 +79,9 @@ class Hhvm < Formula
     # client (which is very strongly recommended).
     cmake_args << "-DMYSQL_UNIX_SOCK_ADDR=/tmp/mysql.sock"
 
-    cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib} -DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
-    cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib} -DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
-
-    # Dependency information.
-    #
-    # We statically link against icu4c as every non-bugfix release is not backwards compatible; needing to rebuild for every release is too
-    # brittle
-    cmake_args += %W[
-      -DAWK_EXECUTABLE=#{Formula["gawk"].opt_bin}/gawk
-      -DBoost_INCLUDE_DIR=#{Formula["boost"].opt_include}
-      -DBoost_LIBRARY_DIR=#{Formula["boost"].opt_lib}
-      -DLIBMAGICKWAND_INCLUDE_DIRS=#{Formula["imagemagick@6"].opt_include}/ImageMagick-6
-      -DLIBMAGICKWAND_LIBRARIES=#{Formula["imagemagick@6"].opt_lib}/libMagickWand-6.Q16.dylib
-      -DLIBMAGICKCORE_LIBRARIES=#{Formula["imagemagick@6"].opt_lib}/libMagickCore-6.Q16.dylib
-      -DFREETYPE_INCLUDE_DIRS=#{Formula["freetype"].opt_include}/freetype2
-      -DFREETYPE_LIBRARIES=#{Formula["freetype"].opt_lib}/libfreetype.dylib
-      -DGMP_INCLUDE_DIR=#{Formula["gmp"].opt_include}
-      -DGMP_LIBRARY=#{Formula["gmp"].opt_lib}/libgmp.dylib
-      -DICU_INCLUDE_DIR=#{Formula["icu4c"].opt_include}
-      -DICU_I18N_LIBRARY=#{Formula["icu4c"].opt_lib}/libicui18n.a
-      -DICU_LIBRARY=#{Formula["icu4c"].opt_lib}/libicuuc.a
-      -DICU_DATA_LIBRARY=#{Formula["icu4c"].opt_lib}/libicudata.a
-      -DJEMALLOC_INCLUDE_DIR=#{Formula["jemalloc"].opt_include}
-      -DJEMALLOC_LIB=#{Formula["jemalloc"].opt_lib}/libjemalloc.dylib
-      -DLIBDWARF_INCLUDE_DIRS=#{Formula["dwarfutils"].opt_include}
-      -DLIBDWARF_LIBRARIES=#{Formula["dwarfutils"].opt_lib}/libdwarf.a
-      -DLIBELF_INCLUDE_DIRS=#{Formula["libelf"].opt_include}/libelf
-      -DLIBELF_LIBRARIES=#{Formula["libelf"].opt_lib}/libelf.a
-      -DLIBEVENT_INCLUDE_DIR=#{Formula["libevent"].opt_include}
-      -DLIBEVENT_LIB=#{Formula["libevent"].opt_lib}/libevent.dylib
-      -DLIBGLOG_INCLUDE_DIR=#{Formula["glog"].opt_include}
-      -DLIBGLOG_LIBRARY=#{Formula["glog"].opt_lib}/libglog.dylib
-      -DLIBINTL_INCLUDE_DIR=#{Formula["gettext"].opt_include}
-      -DLIBINTL_LIBRARIES=#{Formula["gettext"].opt_lib}/libintl.dylib
-      -DLIBJPEG_INCLUDE_DIRS=#{Formula["jpeg"].opt_include}
-      -DLIBJPEG_LIBRARIES=#{Formula["jpeg"].opt_lib}/libjpeg.dylib
-      -DLIBMEMCACHED_INCLUDE_DIR=#{Formula["libmemcached"].opt_include}
-      -DLIBMEMCACHED_LIBRARY=#{Formula["libmemcached"].opt_lib}/libmemcached.dylib
-      -DLIBPNG_INCLUDE_DIRS=#{Formula["libpng"].opt_include}
-      -DLIBPNG_LIBRARIES=#{Formula["libpng"].opt_lib}/libpng.dylib
-      -DLIBSQLITE3_INCLUDE_DIR=#{Formula["sqlite"].opt_include}
-      -DLIBSQLITE3_LIBRARY=#{Formula["sqlite"].opt_lib}/libsqlite3.dylib
-      -DMcrypt_INCLUDE_DIR=#{Formula["mcrypt"].opt_include}
-      -DMcrypt_LIB=#{Formula["mcrypt"].opt_lib}/libmcrypt.dylib
-      -DPC_SQLITE3_FOUND=1
-      -DLIBXML2_INCLUDE_DIR=#{Formula["libxml2"].opt_include}/libxml2
-      -DLIBXML2_LIBRARIES=#{Formula["libxml2"].opt_lib}/libxml2.dylib
-      -DLIBZIP_INCLUDE_DIR_ZIP=#{Formula["libzip"].opt_include}
-      -DLIBZIP_INCLUDE_DIR_ZIPCONF=#{Formula["libzip"].opt_include}
-      -DLIBZIP_LIBRARY=#{Formula["libzip"].opt_lib}/libzip.dylib
-      -DLZ4_INCLUDE_DIR=#{Formula["lz4"].opt_include}
-      -DLZ4_LIBRARY=#{Formula["lz4"].opt_lib}/liblz4.dylib
-      -DONIGURUMA_INCLUDE_DIR=#{Formula["oniguruma"].opt_include}
-      -DONIGURUMA_LIBRARY=#{Formula["oniguruma"].opt_lib}/libonig.dylib
-      -DOPENSSL_INCLUDE_DIR=#{Formula["openssl"].opt_include}
-      -DOPENSSL_CRYPTO_LIBRARY=#{Formula["openssl"].opt_lib}/libcrypto.dylib
-      -DCRYPT_LIB=#{Formula["openssl"].opt_lib}/libcrypto.dylib
-      -DOPENSSL_SSL_LIBRARY=#{Formula["openssl"].opt_lib}/libssl.dylib
-      -DPCRE_INCLUDE_DIR=#{Formula["pcre"].opt_include}
-      -DPCRE_LIBRARY=#{Formula["pcre"].opt_lib}/libpcre.dylib
-      -DPKG_CONFIG_EXECUTABLE=#{Formula["pkg-config"].opt_bin}/pkg-config
-      -DTBB_INCLUDE_DIR=#{Formula["tbb"].opt_include}
-      -DTBB_INSTALL_DIR=#{Formula["tbb"].opt_prefix}
-      -DTBB_LIBRARY=#{Formula["tbb"].opt_lib}/libtbb.dylib
-      -DTBB_LIBRARY_DEBUG=#{Formula["tbb"].opt_lib}/libtbb.dylib
-      -DTBB_LIBRARY_DIR=#{Formula["tbb"].opt_lib}
-      -DTBB_MALLOC_LIBRARY=#{Formula["tbb"].opt_lib}/libtbbmalloc.dylib
-      -DTBB_MALLOC_LIBRARY_DEBUG=#{Formula["tbb"].opt_lib}/libtbbmalloc.dylib
-      -DLIBSODIUM_INCLUDE_DIRS=#{Formula["libsodium"].opt_include}
-      -DLIBSODIUM_LIBRARIES=#{Formula["libsodium"].opt_lib}/libsodium.dylib
-    ]
+    # LZ4 warning macros are currently incompatible with clang
+    cmake_args << "-DCMAKE_C_FLAGS=-DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
+    cmake_args << "-DCMAKE_CXX_FLAGS=-DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
 
     # brew's PCRE always has the JIT enabled; work around issue where the CMake
     # scripts will pick up the wrong PCRE and think it is disabled.
@@ -167,50 +93,6 @@ class Hhvm < Formula
 
     # TBB looks for itself in a different place than brew installs to.
     ENV["TBB_ARCH_PLATFORM"] = "."
-
-    # CMake loves to pick up things automagically out of directories it
-    # shouldn't, e.g., from a MacPorts installation in /opt/local. Force it to
-    # read only from the explicit dependency information we give it.
-    # Unfortunately this means we have to also explicitly specify stuff in /usr
-    # that's a core part of OS X that would normally also be picked up
-    # automatically.
-    cmake_args += %W[
-      -DCMAKE_FIND_ROOT_PATH=/tmp
-      -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY
-      -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY
-      -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY
-      -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=ONLY
-      -DCMAKE_SYSTEM_NAME=Darwin
-      -DCMAKE_CROSSCOMPILING=0
-      -DCMAKE_AR=/usr/bin/ar
-      -DCMAKE_RANLIB=/usr/bin/ranlib
-      -DBZIP2_INCLUDE_DIR=/usr/include
-      -DBZIP2_LIBRARIES=/usr/lib/libbz2.dylib
-      -DCURL_INCLUDE_DIR=/usr/include
-      -DCURL_LIBRARY=/usr/lib/libcurl.dylib
-      -DDL_LIB=/usr/lib/libdl.dylib
-      -DEXPAT_INCLUDE_DIR=/usr/include
-      -DEXPAT_LIBRARY=/usr/lib/libexpat.dylib
-      -DGPERF_EXECUTABLE=/usr/bin/gperf
-      -DKERBEROS_LIB=/usr/lib/libgssapi_krb5.dylib
-      -DLBER_LIBRARIES=/usr/lib/liblber.dylib
-      -DLDAP_INCLUDE_DIR=/usr/include
-      -DLDAP_LIBRARIES=/usr/lib/libldap.dylib
-      -DLIBDL_INCLUDE_DIRS=/usr/include
-      -DLIBDL_LIBRARIES=/usr/lib/libdl.dylib
-      -DLIBICONV_INCLUDE_DIR=/usr/include
-      -DLIBICONV_LIBRARY=/usr/lib/libiconv.dylib
-      -DLIBPTHREAD_INCLUDE_DIRS=/usr/include
-      -DLIBPTHREAD_LIBRARIES=/usr/lib/libpthread.dylib
-      -DLIBXSLT_EXSLT_LIBRARY=/usr/lib/libexslt.dylib
-      -DLIBXSLT_INCLUDE_DIR=/usr/include
-      -DLIBXSLT_LIBRARIES=/usr/lib/libxslt.dylib
-      -DRESOLV_LIB=/usr/lib/libresolv.dylib
-      -DZLIB_INCLUDE_DIR=/usr/include
-      -DZLIB_LIBRARY=/usr/lib/libz.dylib
-      -DEDITLINE_INCLUDE_DIRS=/usr/include
-      -DEDITLINE_LIBRARIES=/usr/lib/libedit.dylib
-    ]
 
     system "cmake", *cmake_args
     system "make"
