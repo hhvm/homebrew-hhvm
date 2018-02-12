@@ -59,6 +59,7 @@ class Hhvm < Formula
   depends_on "oniguruma"
   depends_on "openssl"
   depends_on "pcre"
+  depends_on "postgresql"
   depends_on "sqlite"
   depends_on "tbb"
 
