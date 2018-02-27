@@ -13,8 +13,6 @@ brew tap hhvm/hhvm
 brew install hhvm
 # ... or install the latest 3.21.z release:
 brew install hhvm@3.21-lts
-# ... or install a preview of 3.24:
-brew install hhvm-preview
 ```
 
 If you need to install multiple versions, look at the documentation for
