@@ -4,12 +4,17 @@ class HhvmAT20180227 < Formula
   url "http://dl.hhvm.com/source/nightlies/hhvm-nightly-2018.02.27.tar.gz"
   head "https://github.com/facebook/hhvm.git"
   sha256 "c9782a35993fa2d7d2003f517860f4a75e4a382088d14570cc8c0fecd9bcfe2c"
-  revision 0 # package version - reset to 0 when HHVM version changes
+  revision 1 # package version - reset to 0 when HHVM version changes
+
+  patch do
+    url "https://github.com/facebook/hhvm/commit/71549b0186caad052b623b1b0fe2edc0d66cbaf7.patch"
+    sha256 "cc3c900812d8a814a62fc5c6298a7f03aba5b44bd17e49ba7214610b38131be2"
+  end
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "109d8d78b419da683cf88ae333e13868bbd908500a0a8b67037ba24fa642b499" => :sierra
-    sha256 "9ee20e84eec9c903458f239d7ac552c837adb9a024d49411c79b8f834ff03ad2" => :high_sierra
+    sha256 "f0af6b9c096e1c31f491171f4546dd80929234a649f9c5ec16e02fd5fd96d142" => :sierra
+    sha256 "732240181cd57254926aa77e881d448c40ea904a7e3f7eb6f267e30ba413ecd6" => :high_sierra
   end
 
   option "with-debug", <<~EOS
@@ -62,7 +67,7 @@ class HhvmAT20180227 < Formula
 
   def install
     cmake_args = %W[
-      -DHHVM_VERSION_OVERRIDE=#{version}-#{revision}brew
+      -DHHVM_VERSION_OVERRIDE=3.25.0-#{revision}preview
       -DCMAKE_INSTALL_PREFIX=#{prefix}
       -DCMAKE_INSTALL_SYSCONFDIR=#{etc}
       -DDEFAULT_CONFIG_DIR=#{etc}/hhvm
