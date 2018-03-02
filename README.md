@@ -11,6 +11,8 @@ development, but Linux is still the recommended OS for production usage.
 brew tap hhvm/hhvm
 # install the latest version of HHVM:
 brew install hhvm
+# ... or install the latest 3.24.z release:
+brew install hhvm@3.24-lts
 # ... or install the latest 3.21.z release:
 brew install hhvm@3.21-lts
 ```
