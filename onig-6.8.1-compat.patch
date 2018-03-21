@@ -1,0 +1,55 @@
+diff --git a/hphp/runtime/base/program-functions.cpp b/hphp/runtime/base/program-functions.cpp
+index 70d8d054dd..4299e0ed38 100644
+--- a/hphp/runtime/base/program-functions.cpp
++++ b/hphp/runtime/base/program-functions.cpp
+@@ -13,6 +13,7 @@
+    | license@php.net so we can mail you a copy immediately.               |
+    +----------------------------------------------------------------------+
+ */
++
+ #include "hphp/runtime/base/program-functions.h"
+ 
+ #include "hphp/runtime/base/array-init.h"
+@@ -116,6 +117,13 @@
+ #include <boost/filesystem.hpp>
+ 
+ #include <oniguruma.h>
++// Onigurama defines UChar to unsigned char, but ICU4C defines it to signed 16-bit int.
++// This is supposed to be resolved by ONIG_ESCAPE_UCHAR_COLLISION, however this isn't
++// fully supported in 6.8.0 or 6.8.1.
++//
++// Resolved here - as of 2018-03-21, not in any release; hopefully will be in 6.8.2
++// https://github.com/kkos/oniguruma/commit/e79406479b6be4a56e40ede6c1a87b51fba073a2
++#undef UChar
+ #include <signal.h>
+ #include <libxml/parser.h>
+ 
+diff --git a/hphp/runtime/base/program-functions.h b/hphp/runtime/base/program-functions.h
+index 67bd2e4a8f..a925544335 100644
+--- a/hphp/runtime/base/program-functions.h
++++ b/hphp/runtime/base/program-functions.h
+@@ -20,9 +20,6 @@
+ #include "hphp/runtime/base/types.h"
+ #include <boost/program_options/parsers.hpp>
+ 
+-// Needed for compatibility with oniguruma-5.9.4+
+-#define ONIG_ESCAPE_UCHAR_COLLISION
+-
+ namespace HPHP {
+ ///////////////////////////////////////////////////////////////////////////////
+ 
+diff --git a/hphp/runtime/ext/mbstring/ext_mbstring.cpp b/hphp/runtime/ext/mbstring/ext_mbstring.cpp
+index 5b7ceda0ca..caa160cb86 100644
+--- a/hphp/runtime/ext/mbstring/ext_mbstring.cpp
++++ b/hphp/runtime/ext/mbstring/ext_mbstring.cpp
+@@ -3331,8 +3331,8 @@ static php_mb_regex_t *php_mbregex_compile_pattern(const String& pattern,
+     rc = it->second;
+   }
+ 
+-  if (!rc || rc->options != options || rc->enc != enc ||
+-      rc->syntax != syntax) {
++  if (!rc || onig_get_options(rc) != options || onig_get_encoding(rc) != enc ||
++      onig_get_syntax(rc) != syntax) {
+     if (rc) {
+       onig_free(rc);
+       rc = nullptr;
