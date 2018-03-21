@@ -4,12 +4,17 @@ class Hhvm < Formula
   url "https://dl.hhvm.com/source/hhvm-3.25.0.tar.gz"
   head "https://github.com/facebook/hhvm.git"
   sha256 "9bc0e147efc9329798790dd67269778f1bd972d2c5c118747aed691cac4ca953"
-  revision 0 # package version - reset to 0 when HHVM version changes
+  revision 1 # package version - reset to 0 when HHVM version changes
+
+  patch do
+    url "https://raw.githubusercontent.com/hhvm/homebrew-hhvm/ab2dedff1e35d555b7946b43db6d0d7bc40c720a/onig-6.8.1-compat.patch"
+    sha256 "dbec7dad6b01c9f31cb8a267c26b1a20d339a5378b3861170245cdf9e9ca5fbd"
+  end
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "21aa2bc92c4cdc4a3cd1e4fa0d5d05f291c34c3da208a3032950cc1cc4b6282e" => :sierra
-    sha256 "7ffb2a359a221e54073192b192b42e2ccb2b6fb9aa2cc8ace1e69f199dfc7164" => :high_sierra
+    sha256 "0f824db2a9b34f2eab3c3ac514053c0a529e36ad61f71c995c4bf5def3ed9bba" => :sierra
+    sha256 "f1b652833ad562dda39bfb6ac2339bcc512f60bfc61b90a530ec1ff4a4d2b4e2" => :high_sierra
   end
 
   option "with-debug", <<~EOS
@@ -62,7 +67,7 @@ class Hhvm < Formula
 
   def install
     cmake_args = %W[
-      -DHHVM_VERSION_OVERRIDE=#{version}-#{revision}preview
+      -DHHVM_VERSION_OVERRIDE=#{version}-#{revision}brew
       -DCMAKE_INSTALL_PREFIX=#{prefix}
       -DCMAKE_INSTALL_SYSCONFDIR=#{etc}
       -DDEFAULT_CONFIG_DIR=#{etc}/hhvm
