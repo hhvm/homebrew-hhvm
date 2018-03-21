@@ -3,12 +3,17 @@ class HhvmAT321Lts < Formula
   homepage "http://hhvm.com/"
   url "https://dl.hhvm.com/source/hhvm-3.21.8.tar.gz"
   sha256 "e692780e56f33f913df6a5804bba57e47091843ea04f99714fe76045c96d5520"
-  revision 0 # package version - reset to 0 when HHVM version changes
+  revision 1 # package version - reset to 0 when HHVM version changes
+
+  patch do
+    url "https://raw.githubusercontent.com/hhvm/homebrew-hhvm/ab2dedff1e35d555b7946b43db6d0d7bc40c720a/onig-6.8.1-compat.patch"
+    sha256 "dbec7dad6b01c9f31cb8a267c26b1a20d339a5378b3861170245cdf9e9ca5fbd"
+  end
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "c51ce3327151592b977f43d0cd37d0647dedf58131e888ab28c8f6f17d174f54" => :sierra
-    sha256 "ea59e3f000f0779a537b19b1d39a3cc76041d0d04c2ce73010899856ac9d1855" => :high_sierra
+    sha256 "6263a3f12743444106d54e20057cacef2f3791fb7426bdf86e41a5fe0101a657" => :sierra
+    sha256 "58f4a2a1aa6f20e9d686199717346a4d1f4d65009ead71ff05a1e01884977bdf" => :high_sierra
   end
 
   option "with-debug", <<~EOS
