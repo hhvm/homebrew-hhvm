@@ -1,20 +1,25 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.25.1.tar.gz"
+  url "https://dl.hhvm.com/source/hhvm-3.25.2.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "9275ba28dbb464c2544d16cea55bec430b4afbc2f1bd3b18cc7af422674fbd51"
+  sha256 "940cb369d8cf52e30ae07279097c4c89bf8987435e0f975f746b3a438b1bce9c"
   revision 0 # package version - reset to 0 when HHVM version changes
+
+  bottle do
+    root_url "https://dl.hhvm.com/homebrew-bottles"
+    sha256 "6f3390f3f2752c8cf864a81bebc66f4332782ec529cef62312cf914e2214063b" => :sierra
+    sha256 "05e93902d85d5d8afd2904df94ce41439e994f081416954b7f7288a2f9a8fa14" => :high_sierra
+  end
 
   patch do
     url "https://raw.githubusercontent.com/hhvm/homebrew-hhvm/ab2dedff1e35d555b7946b43db6d0d7bc40c720a/onig-6.8.1-compat.patch"
     sha256 "dbec7dad6b01c9f31cb8a267c26b1a20d339a5378b3861170245cdf9e9ca5fbd"
   end
 
-  bottle do
-    root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "e89861e9f72731bee351480b1b2fae4f2184b7c8616ca059bb20f58b5873a444" => :sierra
-    sha256 "e0cc2f06c9cde43d4cded274b96a874055062b61d2c05c9182b9879ff82e2d28" => :high_sierra
+  patch do
+    url "https://raw.githubusercontent.com/hhvm/homebrew-hhvm/f8de23d4348284ab076d8e0879f1e843d5695c64/use-system-tzdata.patch"
+    sha256 "44950ee55851664d0dda41f8b28e399d1213fa128f7cdf68380b2eea195aa9b7"
   end
 
   option "with-debug", <<~EOS
@@ -86,7 +91,7 @@ class Hhvm < Formula
 
     # LZ4 warning macros are currently incompatible with clang
     cmake_args << "-DCMAKE_C_FLAGS=-DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
-    cmake_args << "-DCMAKE_CXX_FLAGS=-DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
+    cmake_args << "-DCMAKE_CXX_FLAGS=-DLZ4_DISABLE_DEPRECATE_WARNINGS=1 -DU_USING_ICU_NAMESPACE=1"
 
     # brew's PCRE always has the JIT enabled; work around issue where the CMake
     # scripts will pick up the wrong PCRE and think it is disabled.
