@@ -1,21 +1,27 @@
 class HhvmAT324Lts < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.24.5.tar.gz"
+  url "https://dl.hhvm.com/source/hhvm-3.24.6.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "ebb3032a3879017434d427431b61f67b6dd58066f5797963d0cd1eace155e2d6"
+  sha256 "150b562a3303aa3a16286a889fed0cbc5a3e344137a1c8e99dfceab9210496c7"
   revision 0 # package version - reset to 0 when HHVM version changes
+
+  bottle do
+    root_url "https://dl.hhvm.com/homebrew-bottles"
+    sha256 "94c7e288c74a44ea0695f824f4d3ba40674491f693121e1e937c44c9f00a4762" => :sierra
+    sha256 "b90426c0551fc65015bf0f1fcbc3f1e06ec96cdc930b5618912574745a50049b" => :high_sierra
+  end
 
   patch do
     url "https://raw.githubusercontent.com/hhvm/homebrew-hhvm/ab2dedff1e35d555b7946b43db6d0d7bc40c720a/onig-6.8.1-compat.patch"
     sha256 "dbec7dad6b01c9f31cb8a267c26b1a20d339a5378b3861170245cdf9e9ca5fbd"
   end
 
-  bottle do
-    root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "afe415e1146a27ba3a6867b288636fd3f6b1da6ef124611f4d8af6f4c90a4daf" => :sierra
-    sha256 "1f703d27ca3e00b803c00498dbb2d71a29e81bb88c03615a6542699ec9e97142" => :high_sierra
+  patch do
+    url "https://raw.githubusercontent.com/hhvm/homebrew-hhvm/f8de23d4348284ab076d8e0879f1e843d5695c64/use-system-tzdata.patch"
+    sha256 "44950ee55851664d0dda41f8b28e399d1213fa128f7cdf68380b2eea195aa9b7"
   end
+
 
   option "with-debug", <<~EOS
     Make an unoptimized build with assertions enabled. This will run PHP and
@@ -90,8 +96,8 @@ class HhvmAT324Lts < Formula
     # client (which is very strongly recommended).
     cmake_args << "-DMYSQL_UNIX_SOCK_ADDR=/tmp/mysql.sock"
 
-    cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib} -DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
-    cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib} -DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
+    cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib} -DLZ4_DISABLE_DEPRECATE_WARNINGS=1 -DU_USING_ICU_NAMESPACE=1"
+    cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib} -DLZ4_DISABLE_DEPRECATE_WARNINGS=1 -DU_USING_ICU_NAMESPACE=1"
 
     # Dependency information.
     #
