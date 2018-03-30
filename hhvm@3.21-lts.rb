@@ -1,19 +1,24 @@
 class HhvmAT321Lts < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.21.9.tar.gz"
-  sha256 "b5b535d5fd2123779fb2b5482fe5f8f2b479fc1bdb9493376c47beff1a8e0bfe"
+  url "https://dl.hhvm.com/source/hhvm-3.21.10.tar.gz"
+  sha256 "93b936050c1c17c900ae7fbc6df3907046bd691988b23009d40af8455f1a2c4e"
   revision 0 # package version - reset to 0 when HHVM version changes
+
+  bottle do
+    root_url "https://dl.hhvm.com/homebrew-bottles"
+    sha256 "1a14c3e7df72f5ad8acbe7bc544cea4cca89ea8b6b76d9c88051a07d04c40487" => :sierra
+    sha256 "1c41554632f4cb24e5fa93c807511b69c062d5566efe075d7d4f41ef3a2a45e4" => :high_sierra
+  end
 
   patch do
     url "https://raw.githubusercontent.com/hhvm/homebrew-hhvm/ab2dedff1e35d555b7946b43db6d0d7bc40c720a/onig-6.8.1-compat.patch"
     sha256 "dbec7dad6b01c9f31cb8a267c26b1a20d339a5378b3861170245cdf9e9ca5fbd"
   end
 
-  bottle do
-    root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "bcdbd38ac5ea1c58b804755c8b84d021225717211c98e53d5ee2c14f75fd2ac6" => :sierra
-    sha256 "914f3b19a8d168997283928b1d088a38c7e08264022ad963ec9542976ff0a77c" => :high_sierra
+  patch do
+    url "https://raw.githubusercontent.com/hhvm/homebrew-hhvm/f8de23d4348284ab076d8e0879f1e843d5695c64/use-system-tzdata.patch"
+    sha256 "44950ee55851664d0dda41f8b28e399d1213fa128f7cdf68380b2eea195aa9b7"
   end
 
   option "with-debug", <<~EOS
@@ -89,8 +94,8 @@ class HhvmAT321Lts < Formula
     # client (which is very strongly recommended).
     cmake_args << "-DMYSQL_UNIX_SOCK_ADDR=/tmp/mysql.sock"
 
-    cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib} -DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
-    cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib} -DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
+    cmake_args << "-DCMAKE_C_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib} -DLZ4_DISABLE_DEPRECATE_WARNINGS=1 -DU_USING_ICU_NAMESPACE=1"
+    cmake_args << "-DCMAKE_CXX_FLAGS=-I#{Formula["libsodium"].opt_include} -L#{Formula["libsodium"].opt_lib} -DLZ4_DISABLE_DEPRECATE_WARNINGS=1 -DU_USING_ICU_NAMESPACE=1"
 
     # Dependency information.
     #
