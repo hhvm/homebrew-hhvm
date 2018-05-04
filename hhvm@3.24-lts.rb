@@ -1,27 +1,16 @@
 class HhvmAT324Lts < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.24.6.tar.gz"
+  url "https://dl.hhvm.com/source/hhvm-3.24.7.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "150b562a3303aa3a16286a889fed0cbc5a3e344137a1c8e99dfceab9210496c7"
+  sha256 "16b12a03097dddef887c8d4c3cd20ad5a3d29aca33f0054098acdbfb3cd0d06b"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "94c7e288c74a44ea0695f824f4d3ba40674491f693121e1e937c44c9f00a4762" => :sierra
-    sha256 "b90426c0551fc65015bf0f1fcbc3f1e06ec96cdc930b5618912574745a50049b" => :high_sierra
+    sha256 "0170bb805357adce868d668dba47cda97905643012f41f61827a0bb56cff2344" => :sierra
+    sha256 "d9adc7a4924dbc09af3d2bd0c681d62abf84b3a95878a72e91bc28da8feaf229" => :high_sierra
   end
-
-  patch do
-    url "https://raw.githubusercontent.com/hhvm/homebrew-hhvm/ab2dedff1e35d555b7946b43db6d0d7bc40c720a/onig-6.8.1-compat.patch"
-    sha256 "dbec7dad6b01c9f31cb8a267c26b1a20d339a5378b3861170245cdf9e9ca5fbd"
-  end
-
-  patch do
-    url "https://raw.githubusercontent.com/hhvm/homebrew-hhvm/f8de23d4348284ab076d8e0879f1e843d5695c64/use-system-tzdata.patch"
-    sha256 "44950ee55851664d0dda41f8b28e399d1213fa128f7cdf68380b2eea195aa9b7"
-  end
-
 
   option "with-debug", <<~EOS
     Make an unoptimized build with assertions enabled. This will run PHP and
