@@ -1,25 +1,15 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.25.2.tar.gz"
+  url "https://dl.hhvm.com/source/hhvm-3.25.3.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "940cb369d8cf52e30ae07279097c4c89bf8987435e0f975f746b3a438b1bce9c"
+  sha256 "bedabf9f0057fc99155ff8f6dcea7811ad25e2b2918f326e2162da1072dee895"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "6f3390f3f2752c8cf864a81bebc66f4332782ec529cef62312cf914e2214063b" => :sierra
-    sha256 "05e93902d85d5d8afd2904df94ce41439e994f081416954b7f7288a2f9a8fa14" => :high_sierra
-  end
-
-  patch do
-    url "https://raw.githubusercontent.com/hhvm/homebrew-hhvm/ab2dedff1e35d555b7946b43db6d0d7bc40c720a/onig-6.8.1-compat.patch"
-    sha256 "dbec7dad6b01c9f31cb8a267c26b1a20d339a5378b3861170245cdf9e9ca5fbd"
-  end
-
-  patch do
-    url "https://raw.githubusercontent.com/hhvm/homebrew-hhvm/f8de23d4348284ab076d8e0879f1e843d5695c64/use-system-tzdata.patch"
-    sha256 "44950ee55851664d0dda41f8b28e399d1213fa128f7cdf68380b2eea195aa9b7"
+    sha256 "0f9ebf01af1079279cd7bf3e7a8330f9c8aa538abda6d916af047589ce4a49b0" => :sierra
+    sha256 "2d8b07b9e8321c0f8c205bd4ffadf4c177d4267726f8d0a29cea15cfdda502ab" => :high_sierra
   end
 
   option "with-debug", <<~EOS
