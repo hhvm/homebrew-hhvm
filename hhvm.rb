@@ -1,15 +1,15 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.26.3.tar.gz"
+  url "https://dl.hhvm.com/source/hhvm-3.27.0.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "01c3340fc7b16f48ce25a858981b0b0ffec1b8509c02dfd467c4f1a8ea54d9c7"
+  sha256 "c06ee654f518897599a22a98e7300433c3d58938fb03bf8c757d68d474ddd81d"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "9f22d0906ac2e7c702106d62ac3a221ee88f335a5e775b9b81d8bc728f49853b" => :sierra
-    sha256 "950af1e8feedfbef6c1088aa5f413d6ba1973e39be47adcea2655b6fdd237a0d" => :high_sierra
+    sha256 "745fd48968c4d524fd3cbd4bb36f6091074589d58fc41ab928597e393d308701" => :sierra
+    sha256 "bd5daac5ce4ca86eb6e9363ff54cc8562b6ffbb468967c6c5382b484923def12" => :high_sierra
   end
 
   option "with-debug", <<~EOS
