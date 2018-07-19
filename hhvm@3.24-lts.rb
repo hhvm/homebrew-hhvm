@@ -1,15 +1,15 @@
 class HhvmAT324Lts < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.24.7.tar.gz"
+  url "https://dl.hhvm.com/source/hhvm-3.24.8.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "16b12a03097dddef887c8d4c3cd20ad5a3d29aca33f0054098acdbfb3cd0d06b"
+  sha256 "0c2ac085169f2cc4294a7d4c7eabfe4d78ab5e737c7cff5c92527d7eebc78d31"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "0170bb805357adce868d668dba47cda97905643012f41f61827a0bb56cff2344" => :sierra
-    sha256 "d9adc7a4924dbc09af3d2bd0c681d62abf84b3a95878a72e91bc28da8feaf229" => :high_sierra
+    sha256 "1b11771f44caf3ee19b86cfe8ba0a6d1d0e2cc88458e3aceb7524efac20106f2" => :sierra
+    sha256 "5db55c2ec090ec9f5f96e0bad8759952c92316e1943e7c06c1d63f8804098c94" => :high_sierra
   end
 
   option "with-debug", <<~EOS
@@ -115,6 +115,7 @@ class HhvmAT324Lts < Formula
       -DLIBELF_LIBRARIES=#{Formula["libelf"].opt_lib}/libelf.a
       -DLIBEVENT_INCLUDE_DIR=#{Formula["libevent"].opt_include}
       -DLIBEVENT_LIB=#{Formula["libevent"].opt_lib}/libevent.dylib
+      -DLIBEVENT_PTHREAD_LIB=#{Formula["libevent"].opt_lib}/libevent_pthreads.dylib
       -DLIBGLOG_INCLUDE_DIR=#{Formula["glog"].opt_include}
       -DLIBGLOG_LIBRARY=#{Formula["glog"].opt_lib}/libglog.dylib
       -DLIBINTL_INCLUDE_DIR=#{Formula["gettext"].opt_include}
