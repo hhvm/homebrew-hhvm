@@ -1,4 +1,4 @@
-class Hhvm < Formula
+class HhvmAT327Lts < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
   url "https://dl.hhvm.com/source/hhvm-3.27.1.tar.gz"
@@ -8,8 +8,8 @@ class Hhvm < Formula
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "39666635870f6b6eb4a28ada7d3ef9c4016aadbc4ed93dc63f6b569de5ecc8d5" => :sierra
-    sha256 "6d1705ab29a6e8dc2ba849d676dd9baf12209a17553e27b4fbf674e2e88c22c7" => :high_sierra
+    sha256 "b7f257d0d4cd265babea85937b5c1625ff6e269be5e1ec8e85b351b951e2fcf2" => :sierra
+    sha256 "9a98418bf7a565bef61a581ac325bb1a97bf370c27f77f34021fcb1584be5b0f" => :high_sierra
   end
 
   option "with-debug", <<~EOS
