@@ -61,7 +61,6 @@ class HhvmNightly < Formula
 
   def install
     cmake_args = %W[
-      -DHHVM_VERSION_OVERRIDE=#{version}-#{revision}brew
       -DCMAKE_INSTALL_PREFIX=#{prefix}
       -DCMAKE_INSTALL_SYSCONFDIR=#{etc}
       -DDEFAULT_CONFIG_DIR=#{etc}/hhvm
