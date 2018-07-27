@@ -21,7 +21,7 @@ brew bump-formula-pr \
 	--url="${URL}" \
 	--sha256="${SHA}" \
 	./hhvm-nightly.rb
-gsed -i '/sha256.\+ => :/' hhvm-nightly.rb
+gsed -i '/sha256.\+ => :/d' hhvm-nightly.rb
 git add hhvm-nightly.rb
 git commit -m 'Update nightly version'
 git push
