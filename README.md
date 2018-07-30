@@ -2,8 +2,8 @@
 
 ## Warning
 
-HHVM's OS X support is still fairly experimental. It should be fine for
-development, but Linux is still the recommended OS for production usage.
+HHVM's OS X support is intended for development environments; we do not
+recommend HHVM on OSX in production.
 
 ## Installation
 
@@ -11,10 +11,12 @@ development, but Linux is still the recommended OS for production usage.
 brew tap hhvm/hhvm
 # install the latest version of HHVM:
 brew install hhvm
+# ... or install the latest 3.27.z release:
+brew install hhvm@3.27-lts
 # ... or install the latest 3.24.z release:
 brew install hhvm@3.24-lts
-# ... or install the latest 3.21.z release:
-brew install hhvm@3.21-lts
+# ... or install the latest nightly build:
+brew install hhvm-nightly
 ```
 
 If you need to install multiple versions, look at the documentation for
