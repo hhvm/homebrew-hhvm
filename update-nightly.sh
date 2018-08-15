@@ -8,7 +8,7 @@ pushd $MYTEMP
 wget "$URL"
 wget "$URL.sig"
 gpg --verify *.sig
-SHA="$(openssl sha -sha256 -r *.tar.gz | awk '{print $1}')"
+SHA="$(openssl sha -sha256 *.tar.gz | awk '{print $NF}')"
 popd
 rm -rf "$MYTEMP"
 
