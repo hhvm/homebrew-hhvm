@@ -9,6 +9,7 @@ class HhvmNightly < Formula
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
     sha256 "66cfa40e89abe0154d075c11c587c28328d636ca9adebe28d261e7f72aa91c2a" => :high_sierra
+    sha256 "4d957e7588288f69eefa3878a67c31a2011099d6b0be52d0eeafc34f1e8ddb10" => :sierra
   end
 
   option "with-debug", <<~EOS
