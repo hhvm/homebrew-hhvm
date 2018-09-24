@@ -8,8 +8,9 @@ class Hhvm < Formula
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "f5abe7065fc3e7ce045ca008f103e425a6d397535ae90ec37b719be8be9e532a" => :sierra
+    sha256 "05ea72376aa1cbb7dd316ca24c3efa3b8ec72529c7875b994036baff0a7da62f" => :mojave
     sha256 "add25db001061a118a124ff443132bf3835130cc89d2bce3f3c77f535616fae2" => :high_sierra
+    sha256 "f5abe7065fc3e7ce045ca008f103e425a6d397535ae90ec37b719be8be9e532a" => :sierra
   end
 
   option "with-debug", <<~EOS
