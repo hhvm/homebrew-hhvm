@@ -8,8 +8,9 @@ class HhvmAT324Lts < Formula
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "1b11771f44caf3ee19b86cfe8ba0a6d1d0e2cc88458e3aceb7524efac20106f2" => :sierra
+    sha256 "4abc30fcb4e38a9700032eff02037c377ef69f71c769f95b7c42a56994ff67ce" => :mojave
     sha256 "5db55c2ec090ec9f5f96e0bad8759952c92316e1943e7c06c1d63f8804098c94" => :high_sierra
+    sha256 "1b11771f44caf3ee19b86cfe8ba0a6d1d0e2cc88458e3aceb7524efac20106f2" => :sierra
   end
 
   option "with-debug", <<~EOS
