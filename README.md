@@ -22,8 +22,11 @@ brew install hhvm-nightly
 If you need to install multiple versions, look at the documentation for
 `brew switch`, `brew link`, and `brew unlink`.
 
-We currently provide bottles (binary packages) for Sierra and High Sierra. Earlier
-versions of MacOS are not supported as HHVM requires recent XCode.
+We aim to provide bottles (binary packages) for the two most recent versions of
+MacOS; as of September 2018, this is Mojave and High Sierra.
+
+Building from source may also work on Sierra; earlier versions of MacOS are not
+supported as HHVM requires a recent XCode.
 
 If you build from source, this will take anywhere from twenty minutes on a
 beefy Mac Pro to a couple of hours on a MacBook Air.
