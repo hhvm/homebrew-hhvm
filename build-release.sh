@@ -29,7 +29,7 @@ DLDIR=$(mktemp -d)
 aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz" "$DLDIR/"
 aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
 gpg --verify "$DLDIR"/*.sig
-SHA="$(openssl sha -sha256 "$DLDIR"/*.tar.gz | awk '{print $NF}')"
+SHA="$(openssl sha256 "$DLDIR"/*.tar.gz | awk '{print $NF}')"
 
 # --dry-run: no git actions...
 # --write: ... but write to the local repo anyway
