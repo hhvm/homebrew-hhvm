@@ -1,15 +1,13 @@
 class HhvmNightly < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2018.10.15.tar.gz"
+  url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2018.10.16.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "a9685be18559b28d25daa96f2b54afd6d425486ed288616a5b191553f47eb167"
+  sha256 "43b79edcd5d292317553a0c1e83aeba4f646577ce6f0dd45b8e8ec79434ff0d5"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "150adfb91f9cb97d60097f1318b9b1c95e97d753ee9da0c3780fafc999cb10c8" => :mojave
-    sha256 "6b33d3ecc07a3852a4b6058dd94a5124c8bf689bd7a8ad63d6e0f37fd1e68a40" => :high_sierra
   end
 
   option "with-debug", <<~EOS
