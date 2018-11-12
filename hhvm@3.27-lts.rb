@@ -4,12 +4,14 @@ class HhvmAT327Lts < Formula
   url "https://dl.hhvm.com/source/hhvm-3.27.4.tar.gz"
   head "https://github.com/facebook/hhvm.git"
   sha256 "90c20f6b9471fc69356881c4fad1a7031253533e96af05d2ff371de75a208dcb"
-  revision 0 # package version - reset to 0 when HHVM version changes
+  revision 1 # package version - reset to 0 when HHVM version changes
+
+  patch :DATA
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "3abd0adc5a2bcb45d4ed6b32debfc09b7e096200bc395732658249c1b6c06509" => :high_sierra
-    sha256 "20d7fa84516e37c70c6eb95836f8edaebcad4536bf9ab94ad3a859a2b763af20" => :mojave
+    sha256 "356082cbc82d1f3234ea73026faf592218b77f284f162afb6ff2e94e7afcd988" => :high_sierra
+    sha256 "6a3ea27c8d26ff0d1b54d3cd36a5baa1ff85d7fa9c6f57b9fdbf720979951bd3" => :mojave
   end
 
   option "with-debug", <<~EOS
@@ -258,3 +260,46 @@ EOF
     EOS
   end
 end
+
+__END__
+From f9c48d249f67524e12c42f1734acef265f5d46d5 Mon Sep 17 00:00:00 2001
+From: Fred Emmott <fe@fb.com>
+Date: Fri, 9 Nov 2018 12:45:07 -0800
+Subject: [PATCH] Support libxml 2.9.8 (#8382)
+
+Summary:
+BC break in definition of xmlHashScanner from 2.9.7
+
+fixes #8200
+Pull Request resolved: https://github.com/facebook/hhvm/pull/8382
+
+Reviewed By: paulbiss
+
+Differential Revision: D13001394
+
+Pulled By: fredemmott
+
+fbshipit-source-id: 0482c0f6dd7eead59321e0bd970c9a45f62f0d0a
+---
+ hphp/runtime/ext/domdocument/ext_domdocument.cpp | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/hphp/runtime/ext/domdocument/ext_domdocument.cpp b/hphp/runtime/ext/domdocument/ext_domdocument.cpp
+index b663824dc8c..084a737f8d3 100644
+--- a/hphp/runtime/ext/domdocument/ext_domdocument.cpp
++++ b/hphp/runtime/ext/domdocument/ext_domdocument.cpp
+@@ -1460,7 +1460,13 @@ struct notationIterator {
+   xmlNotation *notation;
+ };
+
+-static void itemHashScanner(void* payload, void* data, xmlChar* /*name*/) {
++#if LIBXML_VERSION >= 20908
++#define XMLCHAR_CONST const
++#else
++#define XMLCHAR_CONST
++#endif
++static void itemHashScanner(void* payload, void* data, XMLCHAR_CONST xmlChar* /*name*/) {
++#undef XMLCHAR_CONST
+   nodeIterator *priv = (nodeIterator *)data;
+   if (priv->cur < priv->index) {
+     priv->cur++;
