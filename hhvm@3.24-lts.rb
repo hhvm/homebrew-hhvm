@@ -4,13 +4,14 @@ class HhvmAT324Lts < Formula
   url "https://dl.hhvm.com/source/hhvm-3.24.8.tar.gz"
   head "https://github.com/facebook/hhvm.git"
   sha256 "0c2ac085169f2cc4294a7d4c7eabfe4d78ab5e737c7cff5c92527d7eebc78d31"
-  revision 0 # package version - reset to 0 when HHVM version changes
+  revision 1 # package version - reset to 0 when HHVM version changes
+
+  patch :DATA
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "4abc30fcb4e38a9700032eff02037c377ef69f71c769f95b7c42a56994ff67ce" => :mojave
-    sha256 "5db55c2ec090ec9f5f96e0bad8759952c92316e1943e7c06c1d63f8804098c94" => :high_sierra
-    sha256 "1b11771f44caf3ee19b86cfe8ba0a6d1d0e2cc88458e3aceb7524efac20106f2" => :sierra
+    sha256 "f0b7be0f467279d2442d162b7c17d0bd78166f738453f58725521b96e3d8b355" => :high_sierra
+    sha256 "ea77a4385269089a06bcb21b8f0e4a9e74ae08ae1077728b62271222adcc5928" => :mojave
   end
 
   option "with-debug", <<~EOS
@@ -361,3 +362,46 @@ EOF
     EOS
   end
 end
+
+__END__
+From f9c48d249f67524e12c42f1734acef265f5d46d5 Mon Sep 17 00:00:00 2001
+From: Fred Emmott <fe@fb.com>
+Date: Fri, 9 Nov 2018 12:45:07 -0800
+Subject: [PATCH] Support libxml 2.9.8 (#8382)
+
+Summary:
+BC break in definition of xmlHashScanner from 2.9.7
+
+fixes #8200
+Pull Request resolved: https://github.com/facebook/hhvm/pull/8382
+
+Reviewed By: paulbiss
+
+Differential Revision: D13001394
+
+Pulled By: fredemmott
+
+fbshipit-source-id: 0482c0f6dd7eead59321e0bd970c9a45f62f0d0a
+---
+ hphp/runtime/ext/domdocument/ext_domdocument.cpp | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/hphp/runtime/ext/domdocument/ext_domdocument.cpp b/hphp/runtime/ext/domdocument/ext_domdocument.cpp
+index b663824dc8c..084a737f8d3 100644
+--- a/hphp/runtime/ext/domdocument/ext_domdocument.cpp
++++ b/hphp/runtime/ext/domdocument/ext_domdocument.cpp
+@@ -1460,7 +1460,13 @@ struct notationIterator {
+   xmlNotation *notation;
+ };
+
+-static void itemHashScanner(void* payload, void* data, xmlChar* /*name*/) {
++#if LIBXML_VERSION >= 20908
++#define XMLCHAR_CONST const
++#else
++#define XMLCHAR_CONST
++#endif
++static void itemHashScanner(void* payload, void* data, XMLCHAR_CONST xmlChar* /*name*/) {
++#undef XMLCHAR_CONST
+   nodeIterator *priv = (nodeIterator *)data;
+   if (priv->cur < priv->index) {
+     priv->cur++;
