@@ -1,17 +1,15 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.29.1.tar.gz"
+  url "https://dl.hhvm.com/source/hhvm-3.30.0.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "515b72ba44f683e2bede393d57f28feddd7f15b355585f69d5ef97ae56294eba"
-  revision 1 # package version - reset to 0 when HHVM version changes
-
-  patch :DATA
+  sha256 "94e5263d15539536a3c473026baf1f66b3bdb15429d5189ef9891783f63c747a"
+  revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "199d497cacd5aac341780dd7ff2547f6f67b95274da2445d59b687b05f60576f" => :high_sierra
-    sha256 "5cc1974d9f9a3fd0eaebe41ca53dc37d21f82b3953022606aebbea155f0db26d" => :mojave
+    sha256 "27af59deb7177c63b3c8f5639407744e70261022bd158f50b4569368595c7869" => :mojave
+    sha256 "451a2ef92307f8594e4c4ffcfb285c4265085ded53ba75a8d3cb6aa83e0c0595" => :high_sierra
   end
 
   option "with-debug", <<~EOS
@@ -260,46 +258,3 @@ EOF
     EOS
   end
 end
-
-__END__
-From f9c48d249f67524e12c42f1734acef265f5d46d5 Mon Sep 17 00:00:00 2001
-From: Fred Emmott <fe@fb.com>
-Date: Fri, 9 Nov 2018 12:45:07 -0800
-Subject: [PATCH] Support libxml 2.9.8 (#8382)
-
-Summary:
-BC break in definition of xmlHashScanner from 2.9.7
-
-fixes #8200
-Pull Request resolved: https://github.com/facebook/hhvm/pull/8382
-
-Reviewed By: paulbiss
-
-Differential Revision: D13001394
-
-Pulled By: fredemmott
-
-fbshipit-source-id: 0482c0f6dd7eead59321e0bd970c9a45f62f0d0a
----
- hphp/runtime/ext/domdocument/ext_domdocument.cpp | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/hphp/runtime/ext/domdocument/ext_domdocument.cpp b/hphp/runtime/ext/domdocument/ext_domdocument.cpp
-index b663824dc8c..084a737f8d3 100644
---- a/hphp/runtime/ext/domdocument/ext_domdocument.cpp
-+++ b/hphp/runtime/ext/domdocument/ext_domdocument.cpp
-@@ -1460,7 +1460,13 @@ struct notationIterator {
-   xmlNotation *notation;
- };
-
--static void itemHashScanner(void* payload, void* data, xmlChar* /*name*/) {
-+#if LIBXML_VERSION >= 20908
-+#define XMLCHAR_CONST const
-+#else
-+#define XMLCHAR_CONST
-+#endif
-+static void itemHashScanner(void* payload, void* data, XMLCHAR_CONST xmlChar* /*name*/) {
-+#undef XMLCHAR_CONST
-   nodeIterator *priv = (nodeIterator *)data;
-   if (priv->cur < priv->index) {
-     priv->cur++;
