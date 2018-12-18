@@ -31,14 +31,9 @@ aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
 gpg --verify "$DLDIR"/*.sig
 SHA="$(openssl sha256 "$DLDIR"/*.tar.gz | awk '{print $NF}')"
 
-# --dry-run: no git actions...
-# --write: ... but write to the local repo anyway
-brew bump-formula-pr \
-	--dry-run \
-	--write \
-	--url="file://${DLDIR}/hhvm-${VERSION}.tar.gz" \
-	--sha256="${SHA}" \
-	"$RECIPE"
+gsed -i "s,^  url .\+\$,  url \"file://${DLDIR}/hhvm-${VERSION}.tar.gz\"," "$RECIPE"
+gsed -i "s,^  sha256 .\+\$,  sha256 \"${SHA}\"," "$RECIPE"
+gsed -i "s,^  revision [0-9]\+,  revision 0," "$RECIPE"
 # delete existing bottle references
 gsed -i '/sha256.\+ => :/d' "${RECIPE}"
 
