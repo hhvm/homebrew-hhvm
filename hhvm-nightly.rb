@@ -6,6 +6,18 @@ class HhvmNightly < Formula
   sha256 "3321a78a6c542407516a1bbdf7290f4a7f94f9803378f6e15088e733c650b310"
   revision 0 # package version - reset to 0 when HHVM version changes
 
+  # 1. it looks like Apple have ended software support for everything older
+  #    than sandybridge
+  # 2. -march=sandybridge is a 10x speedup over -march=core2 (penryn)
+  class << Hardware::CPU
+    def optimization_flags
+      OPTIMIZATION_FLAGS.merge({sandybridge: "-march=sandybridge"})
+    end
+  end
+  def ARGV.bottle_arch
+    :sandybridge
+  end
+
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
     sha256 "d49f07eb9c1363e17021cd86f427d21f5196357778e5907c6f3ee6b355bfd834" => :mojave

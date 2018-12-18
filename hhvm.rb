@@ -1,15 +1,27 @@
 class Hhvm < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.30.0.tar.gz"
+  url "https://dl.hhvm.com/source/hhvm-3.30.1.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "94e5263d15539536a3c473026baf1f66b3bdb15429d5189ef9891783f63c747a"
+  sha256 "b78f68da2f70c85e86a773d87a387b484dd46f1b4c48250d4872f3d18fc62210"
   revision 0 # package version - reset to 0 when HHVM version changes
+
+  # 1. it looks like Apple have ended software support for everything older
+  #    than sandybridge
+  # 2. -march=sandybridge is a 10x speedup over -march=core2 (penryn)
+  class << Hardware::CPU
+    def optimization_flags
+      OPTIMIZATION_FLAGS.merge({sandybridge: "-march=sandybridge"})
+    end
+  end
+  def ARGV.bottle_arch
+    :sandybridge
+  end
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "27af59deb7177c63b3c8f5639407744e70261022bd158f50b4569368595c7869" => :mojave
-    sha256 "451a2ef92307f8594e4c4ffcfb285c4265085ded53ba75a8d3cb6aa83e0c0595" => :high_sierra
+    sha256 "3244fa81f556d0a36e4adf41d262ef9b09a124ed11a87a4346a9edd2190609b3" => :high_sierra
+    sha256 "2a935bc0af21c9942e5a7dc426e962bfe0e998a40cf37c825c6540f337ff531e" => :mojave
   end
 
   option "with-debug", <<~EOS
@@ -19,7 +31,7 @@ class Hhvm < Formula
   EOS
 
   # Needs very recent xcode
-  depends_on :macos => :sierra
+  depends_on :macos => :high_sierra
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
