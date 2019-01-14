@@ -13,6 +13,7 @@ popd
 rm -rf "$MYTEMP"
 
 git pull --rebase
+cd Formula
 # --dry-run: no git actions...
 # --write: ... but write to the local repo anyway
 brew bump-formula-pr \

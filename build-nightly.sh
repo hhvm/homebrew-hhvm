@@ -4,6 +4,7 @@ set -ex
 git pull --rebase
 brew list | grep hhvm | xargs brew uninstall --force || true
 brew upgrade
+cd Formula
 brew install --build-bottle ./hhvm-nightly.rb
 rm *.json || true
 brew bottle --force-core-tap --root-url=https://dl.hhvm.com/homebrew-bottles --json ./hhvm-nightly.rb
