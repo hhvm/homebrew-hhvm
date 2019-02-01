@@ -123,7 +123,7 @@ class HhvmAT330Lts < Formula
       -DTBB_MALLOC_LIBRARY_DEBUG=#{Formula["tbb"].opt_lib}/libtbbmalloc.dylib
     ]
 
-    system "cmake", *cmake_args
+    system "cmake", *cmake_args, '.'
     system "make"
     system "make", "install"
 
