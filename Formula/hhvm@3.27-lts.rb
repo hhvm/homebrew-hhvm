@@ -1,9 +1,9 @@
 class HhvmAT327Lts < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.27.6.tar.gz"
+  url "https://dl.hhvm.com/source/hhvm-3.27.7.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "2313411cf29fe44a910e7c68b17608e5e7f8b0f56cb8d786b2ba20bf89321cd5"
+  sha256 "9c263df2ec2cd5df9602a52507d1e96ecfccea2bedad600640dfc36b5f891cd4"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   # 1. it looks like Apple have ended software support for everything older
@@ -20,8 +20,8 @@ class HhvmAT327Lts < Formula
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "45c9a8fba745d2f99ab81ab0321f168fff63aba7104317b3266de504b504e6fc" => :high_sierra
-    sha256 "04d808a91b0929aff489099e68edfbc62194c4d53515a615c7d9eb1caa2cf148" => :mojave
+    sha256 "202881c151a3bf72c802d2dba47c0a2461439912ed4fa6a8e1abd7895d189076" => :high_sierra
+    sha256 "f1011108e08f989603043571784e66ecabf7b039b9cfcd289ff545d8a30d10a4" => :mojave
   end
 
   option "with-debug", <<~EOS
