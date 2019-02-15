@@ -1,9 +1,9 @@
 class HhvmNightly < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2019.02.14.tar.gz"
+  url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2019.02.15.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "40adc64c5983d93126377f8345deebb4a37a6b83cac974686f15ce2983708264"
+  sha256 "b3d52c264b7863cab355d6788dd7d2966334629afbe7631766813a34f4759928"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   # 1. it looks like Apple have ended software support for everything older
@@ -20,8 +20,6 @@ class HhvmNightly < Formula
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "d76f860279469bf6ee09f3e1492254aadc137df27b7cce5a2915c86c748a3a33" => :mojave
-    sha256 "d75d4b95437d01a7661a1256082cbf52c6041f5d4938ca52ea95f6e735d9c1f7" => :high_sierra
   end
 
   option "with-debug", <<~EOS
