@@ -6,18 +6,6 @@ class HhvmAT327Lts < Formula
   sha256 "9c263df2ec2cd5df9602a52507d1e96ecfccea2bedad600640dfc36b5f891cd4"
   revision 0 # package version - reset to 0 when HHVM version changes
 
-  # 1. it looks like Apple have ended software support for everything older
-  #    than sandybridge
-  # 2. -march=sandybridge is a 10x speedup over -march=core2 (penryn)
-  class << Hardware::CPU
-    def optimization_flags
-      OPTIMIZATION_FLAGS.merge({sandybridge: "-march=sandybridge"})
-    end
-  end
-  def ARGV.bottle_arch
-    :sandybridge
-  end
-
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
     sha256 "202881c151a3bf72c802d2dba47c0a2461439912ed4fa6a8e1abd7895d189076" => :high_sierra

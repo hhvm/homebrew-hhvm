@@ -6,18 +6,6 @@ class Hhvm < Formula
   head "https://github.com/facebook/hhvm.git"
   revision 0 # package version - reset to 0 when HHVM version changes
 
-  # 1. it looks like Apple have ended software support for everything older
-  #    than sandybridge
-  # 2. -march=sandybridge is a 10x speedup over -march=core2 (penryn)
-  class << Hardware::CPU
-    def optimization_flags
-      OPTIMIZATION_FLAGS.merge({sandybridge: "-march=sandybridge"})
-    end
-  end
-  def ARGV.bottle_arch
-    :sandybridge
-  end
-
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
     sha256 "463b9bb15139b2f921f6492c1a3f08138a792ab94c142e8a5689601116a511d0" => :high_sierra
