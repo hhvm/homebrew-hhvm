@@ -43,7 +43,7 @@ rm -f *.bottle *.json
 
 # build
 brew upgrade
-brew install --build-bottle "$RECIPE"
+brew install --bottle-arch=nehalem --build-bottle "$RECIPE"
 brew bottle --force-core-tap --root-url=https://dl.hhvm.com/homebrew-bottles --json "$RECIPE"
 # local naming != download naming
 for file in *--*.bottle.tar.gz; do
