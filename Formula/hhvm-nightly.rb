@@ -12,6 +12,16 @@ class HhvmNightly < Formula
     sha256 "ffe670b9b0ad0b70334b296bbf392f40f14a53ec93979f96c40d3eeee2e1ce94" => :high_sierra
   end
 
+  class << Hardware::CPU
+    def optimization_flags
+      # Homebrew doesn't support specifying anything more recent than 'nehalem',
+      # but nehalem is 19x slower than sandybrdige at some real-world workloads,
+      # and sandybridge is an old enough architecture that we're going to assume
+      # that HHVM users have it.
+      OPTIMIZATION_FLAGS.merge({nehalem: "-march=sandybridge"})
+    end
+  end
+
   option "with-debug", <<~EOS
     Make an unoptimized build with assertions enabled. This will run PHP and
     Hack code dramatically slower than a release build, and is suitable mostly
