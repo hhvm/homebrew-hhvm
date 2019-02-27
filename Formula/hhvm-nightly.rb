@@ -5,7 +5,6 @@ class HhvmNightly < Formula
   head "https://github.com/facebook/hhvm.git"
   sha256 "122cc2fb2a38b7238f22fbec92abefc5d6307a3920598aeb32986a2aa7587ecd"
   revision 0 # package version - reset to 0 when HHVM version changes
-  patch :DATA # Testing fix for https://github.com/hhvm/homebrew-hhvm/issues/115
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
@@ -269,16 +268,3 @@ EOF
     EOS
   end
 end
-__END__
-diff --git a/hphp/ppc64-asm/CMakeLists.txt b/hphp/ppc64-asm/CMakeLists.txt
-index 5d4c7c4539..013733becc 100644
---- a/hphp/ppc64-asm/CMakeLists.txt
-+++ b/hphp/ppc64-asm/CMakeLists.txt
-@@ -7,5 +7,6 @@ auto_sources(files "*.h" "${CMAKE_CURRENT_SOURCE_DIR}")
- list(APPEND HEADER_SOURCES ${files})
- 
- add_library(ppc64-asm STATIC ${HEADERS_SOURCES} ${CXX_SOURCES})
-+add_dependencies(ppc64-asm hphp_util)
- 
- HHVM_PUBLIC_HEADERS(ppc64-asm ${HEADERS_SOURCES})
-
