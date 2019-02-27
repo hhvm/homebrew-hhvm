@@ -98,10 +98,6 @@ class HhvmNightly < Formula
     cmake_args << "-DCMAKE_C_FLAGS=-DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
     cmake_args << "-DCMAKE_CXX_FLAGS=-DLZ4_DISABLE_DEPRECATE_WARNINGS=1 -DU_USING_ICU_NAMESPACE=1"
 
-    # brew's PCRE always has the JIT enabled; work around issue where the CMake
-    # scripts will pick up the wrong PCRE and think it is disabled.
-    cmake_args << "-DSYSTEM_PCRE_HAS_JIT=1"
-
     # Debug builds. This switch is all that's needed, it sets all the right
     # cflags and other config changes.
     cmake_args << "-DCMAKE_BUILD_TYPE=Debug" if build.with? "debug"
