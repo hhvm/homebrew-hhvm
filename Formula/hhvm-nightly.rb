@@ -64,7 +64,7 @@ class HhvmNightly < Formula
   depends_on "mcrypt"
   depends_on "oniguruma"
   depends_on "openssl"
-  depends_on "pcre"
+  # depends_on "pcre" # Need to investigate segfaults. Issue #116
   depends_on "postgresql"
   depends_on "sqlite"
   depends_on "tbb"
@@ -74,6 +74,11 @@ class HhvmNightly < Formula
       -DCMAKE_INSTALL_PREFIX=#{prefix}
       -DCMAKE_INSTALL_SYSCONFDIR=#{etc}
       -DDEFAULT_CONFIG_DIR=#{etc}/hhvm
+    ]
+
+    # Force use of bundled PCRE to workaround #116
+    cmake_args += %W[
+      -DSYSTEM_PCRE_HAS_JIT=0
     ]
 
     # Features which don't work on OS X yet since they haven't been ported yet.
