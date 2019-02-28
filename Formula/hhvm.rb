@@ -12,6 +12,16 @@ class Hhvm < Formula
     sha256 "a060255422066b22df51735b3335fee475aea78786948c0792e37c1d4be7b3e0" => :mojave
   end
 
+  class << Hardware::CPU
+    def optimization_flags
+      # Homebrew doesn't support specifying anything more recent than 'nehalem',
+      # but nehalem is 19x slower than sandybrdige at some real-world workloads,
+      # and sandybridge is an old enough architecture that we're going to assume
+      # that HHVM users have it.
+      OPTIMIZATION_FLAGS.merge({nehalem: "-march=sandybridge"})
+    end
+  end
+
   option "with-debug", <<~EOS
     Make an unoptimized build with assertions enabled. This will run PHP and
     Hack code dramatically slower than a release build, and is suitable mostly
@@ -55,7 +65,7 @@ class Hhvm < Formula
   depends_on "mcrypt"
   depends_on "oniguruma"
   depends_on "openssl"
-  depends_on "pcre"
+  # depends_on "pcre" # Need to investigate segfaults. Issue #116
   depends_on "postgresql"
   depends_on "sqlite"
   depends_on "tbb"
@@ -65,6 +75,11 @@ class Hhvm < Formula
       -DCMAKE_INSTALL_PREFIX=#{prefix}
       -DCMAKE_INSTALL_SYSCONFDIR=#{etc}
       -DDEFAULT_CONFIG_DIR=#{etc}/hhvm
+    ]
+
+    # Force use of bundled PCRE to workaround #116
+    cmake_args += %W[
+      -DSYSTEM_PCRE_HAS_JIT=0
     ]
 
     # Features which don't work on OS X yet since they haven't been ported yet.
@@ -81,10 +96,6 @@ class Hhvm < Formula
     # LZ4 warning macros are currently incompatible with clang
     cmake_args << "-DCMAKE_C_FLAGS=-DLZ4_DISABLE_DEPRECATE_WARNINGS=1"
     cmake_args << "-DCMAKE_CXX_FLAGS=-DLZ4_DISABLE_DEPRECATE_WARNINGS=1 -DU_USING_ICU_NAMESPACE=1"
-
-    # brew's PCRE always has the JIT enabled; work around issue where the CMake
-    # scripts will pick up the wrong PCRE and think it is disabled.
-    cmake_args << "-DSYSTEM_PCRE_HAS_JIT=1"
 
     # Debug builds. This switch is all that's needed, it sets all the right
     # cflags and other config changes.
