@@ -26,16 +26,29 @@ set -x
 
 DLDIR=$(mktemp -d)
 
+PREV_VERSION=$(awk -F / '/^  url/{print $NF}' "$RECIPE" | gsed 's/^.\+-\([0-9].\+\)\.tar.\+/\1/')
+
 aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz" "$DLDIR/"
 aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
 gpg --verify "$DLDIR"/*.sig
 SHA="$(openssl sha256 "$DLDIR"/*.tar.gz | awk '{print $NF}')"
 
+# Update source, which also updates the version number
 gsed -i "s,^  url .\+\$,  url \"file://${DLDIR}/hhvm-${VERSION}.tar.gz\"," "$RECIPE"
+# And source hash...
 gsed -i "s,^  sha256 .\+\$,  sha256 \"${SHA}\"," "$RECIPE"
-gsed -i "s,^  revision [0-9]\+,  revision 0," "$RECIPE"
 # delete existing bottle references
 gsed -i '/sha256.\+ => :/d' "${RECIPE}"
+
+if [ "$PREV_VERSION" = "$VERSION" ]; then
+  # no changes, this is a rebuild, or recipe-only changes
+  PREVIOUS_REVISION=$(awk '/^  revision /{print $2}' "$RECIPE")
+  REVISION=$(($PREVIOUS_REVISION + 1))
+  gsed -i "s,^  revision [0-9]\+,  revision $REVISION," "$RECIPE"
+else
+  # version number changed!
+  gsed -i "s,^  revision [0-9]\+,  revision 0," "$RECIPE"
+fi
 
 # clean up
 brew list | grep hhvm | xargs brew uninstall --force || true
