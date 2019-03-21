@@ -4,12 +4,12 @@ class Hhvm < Formula
   url "https://dl.hhvm.com/source/hhvm-4.0.3.tar.gz"
   sha256 "aeeadc8bead423461f4e626b15413410a8b954161211e32ae7f8f451a33915f9"
   head "https://github.com/facebook/hhvm.git"
-  revision 0 # package version - reset to 0 when HHVM version changes
+  revision 1 # package version - reset to 0 when HHVM version changes
+  patch :DATA
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "4cb139f0219ebfab1f7b5e0e06da58b9a0f47f1d320d1215e79f23baf0d10903" => :mojave
-    sha256 "9d2604bcbbf2e17c5c4e5bf9dc26a09751aa2457dfafaba83f96303014e26e69" => :high_sierra
+    sha256 "b175c2b4ec66645f8d2ac379c51d5495fea5fe7284055f4a8fed1a18198e247d" => :high_sierra
   end
 
   class << Hardware::CPU
@@ -266,3 +266,13 @@ EOF
     EOS
   end
 end
+
+__END__
+diff --git a/third-party/folly/CMakeLists.txt b/third-party/folly/CMakeLists.txt
+index 9004d93..a90d989 100644
+--- a/third-party/folly/CMakeLists.txt
++++ b/third-party/folly/CMakeLists.txt
+@@ -1,3 +1,4 @@
++string(REPLACE "-fno-operator-names" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+ set(FOLLY_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/src")
+ set(FOLLY_DIR "${FOLLY_ROOT}/folly")
