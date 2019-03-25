@@ -4,13 +4,12 @@ class HhvmAT327Lts < Formula
   url "https://dl.hhvm.com/source/hhvm-3.27.7.tar.gz"
   head "https://github.com/facebook/hhvm.git"
   sha256 "9c263df2ec2cd5df9602a52507d1e96ecfccea2bedad600640dfc36b5f891cd4"
-  revision 2 # package version - reset to 0 when HHVM version changes
+  revision 3 # package version - reset to 0 when HHVM version changes
   patch :DATA
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "81a37eb12f0b39e588911fadfc51055321e2bb9fa1bd53dd4b8ce5cc00952c7d" => :high_sierra
-    sha256 "8ec4cd2c442b8b2a89cfc8a5c511c934a04165e31a46f7d3b6b2597ded8c43e4" => :mojave
+    sha256 "18d6977b640042008b8dbb6172662c5c54b832fe242e2b8ae1364bedc9bf421a" => :high_sierra
   end
 
   class << Hardware::CPU
