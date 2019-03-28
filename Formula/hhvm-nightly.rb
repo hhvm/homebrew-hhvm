@@ -1,9 +1,9 @@
 class HhvmNightly < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2019.03.27.tar.gz"
+  url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2019.03.28.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "493a38ecd55c09244fc7fe6313c820b2c567dd50e4b2999a9efd293b1e64eee5"
+  sha256 "57b281040712e7c1c31684f1f17ac7aa2222bee1f7c6c9b1ffd4f6eb4d534f16"
   revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
