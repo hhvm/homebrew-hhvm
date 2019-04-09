@@ -1,16 +1,15 @@
-class Hhvm < Formula
+class Hhvm41 < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-4.0.4.tar.gz"
-  sha256 "9029b88bf132228da39c0b698339b988dcb7ac26b339c30052154df8e77f1133"
+  url "https://dl.hhvm.com/source/hhvm-4.1.0.tar.gz"
   head "https://github.com/facebook/hhvm.git"
+  sha256 "a464255302a90b70ec4bba5eb4c73447f8f5ddeace482c6d64af342a4629f36e"
   revision 0 # package version - reset to 0 when HHVM version changes
-  patch :DATA
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "9a27476673713f23b0d641f1b8bc7a867dcb53a748a4a47d1ff45b69d30c8317" => :mojave
-    sha256 "9d0e225b89f883b72a771fec3dc72fe3a21ff695b0a4fcc7d5f6eba7fb20c637" => :high_sierra
+    sha256 "6d6af0097410d583107e438707b7ee8176981785399f37d23ed69f58f2395388" => :mojave
+    sha256 "0b6e85c7be63ba77ea504ac34f58e1a36c830dc207aabbf612fdff82f9b70f00" => :high_sierra
   end
 
   class << Hardware::CPU
@@ -42,6 +41,7 @@ class Hhvm < Formula
   depends_on "libtool" => :build
   depends_on "md5sha1sum" => :build
   depends_on "pkg-config" => :build
+  depends_on "wget" => :build
 
   # We statically link against icu4c as every non-bugfix release is not
   # backwards compatible; needing to rebuild for every release is too
@@ -267,13 +267,3 @@ EOF
     EOS
   end
 end
-
-__END__
-diff --git a/third-party/folly/CMakeLists.txt b/third-party/folly/CMakeLists.txt
-index 9004d93..a90d989 100644
---- a/third-party/folly/CMakeLists.txt
-+++ b/third-party/folly/CMakeLists.txt
-@@ -1,3 +1,4 @@
-+string(REPLACE "-fno-operator-names" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
- set(FOLLY_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/src")
- set(FOLLY_DIR "${FOLLY_ROOT}/folly")
