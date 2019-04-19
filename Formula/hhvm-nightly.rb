@@ -66,7 +66,7 @@ class HhvmNightly < Formula
   depends_on "mcrypt"
   depends_on "oniguruma"
   depends_on "openssl"
-  # depends_on "pcre" # Need to investigate segfaults. Issue #116
+  depends_on "pcre" # Used for Hack but not HHVM build - see #116
   depends_on "postgresql"
   depends_on "sqlite"
   depends_on "tbb"
