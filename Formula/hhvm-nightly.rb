@@ -99,7 +99,11 @@ class HhvmNightly < Formula
 
     # Debug builds. This switch is all that's needed, it sets all the right
     # cflags and other config changes.
-    cmake_args << "-DCMAKE_BUILD_TYPE=Debug" if build.with? "debug"
+    if build.with? "debug"
+      cmake_args << "-DCMAKE_BUILD_TYPE=Debug"
+    else
+      cmake_args << "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
+    end
 
     # Statically link libICU
     cmake_args += %W[
