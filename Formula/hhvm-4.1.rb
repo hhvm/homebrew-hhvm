@@ -66,7 +66,7 @@ class Hhvm41 < Formula
   depends_on "mcrypt"
   depends_on "oniguruma"
   depends_on "openssl"
-  # depends_on "pcre" # Need to investigate segfaults. Issue #116
+  depends_on "pcre" # Need to investigate segfaults. Issue #116
   depends_on "postgresql"
   depends_on "sqlite"
   depends_on "tbb"
