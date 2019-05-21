@@ -4,12 +4,13 @@ class HhvmNightly < Formula
   head "https://github.com/facebook/hhvm.git"
   url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2019.05.21.tar.gz"
   sha256 "5bb2a63805adb70f1aef746ed4414d8dfee01dcf580546165a8931c1550d5174"
-  revision 0 # package version - reset to 0 when HHVM version changes
+  revision 1 # package version - reset to 0 when HHVM version changes
+  patch :DATA
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "05fea7ffac09e400b2ca839635a645e6eb7580a4a15d88de29f91606e18df46c" => :mojave
-    sha256 "f499e51903f356b9e9c0252b2bf70a7d1aba8917bbc1b8a3f53c1c45fc347b5f" => :high_sierra
+    sha256 "e7682518d5977450c5864129f16cc6f8f1a11a05bc3439b663d65618a2be50e7" => :high_sierra
+    sha256 "b8f76fc9a2f236887c8c29e39504a56c3f79f9ed176d33e465f26f3c558f458d" => :mojave
   end
 
   class << Hardware::CPU
@@ -271,3 +272,42 @@ EOF
     EOS
   end
 end
+
+__END__
+diff --git a/hphp/hhvm/generate-buildinfo.sh b/hphp/hhvm/generate-buildinfo.sh
+index 0e4b6cddd4..d8886229ea 100755
+--- a/hphp/hhvm/generate-buildinfo.sh
++++ b/hphp/hhvm/generate-buildinfo.sh
+@@ -36,6 +36,9 @@ if [ -z "${COMPILER_ID}" ]; then
+   COMPILER_ID=$(sh -c "$compiler")
+ fi
+ 
++# MacOS portability
++SHA1SUM="openssl dgst -sha1 -r"
++
+ ################################################################################
+ 
+ # Compute a hash that can be used as a unique repo schema identifier.  The
+@@ -45,9 +48,10 @@ fi
+ # schema), because for some work flows the added instability of schema IDs is a
+ # cure worse than the disease.
+ if [ -z "${HHVM_REPO_SCHEMA}" ] ; then
++  # Use Perl as BSD grep (MacOS) does not support negated groups
+   HHVM_REPO_SCHEMA=$(sh -c "$find_files" | \
+-      grep -Ev '^hphp/(bin|facebook(?!/extensions)|neo|public_tld|test|tools|util|vixl|zend)' | \
+-      tr '\n' '\0' | xargs -0 cat | sha1sum | cut -b-40)
++      perl -ne 'print unless m#^hphp/(bin|facebook(?!/extensions)|neo|public_tld|test|tools|util|vixl|zend)#' | \
++      tr '\n' '\0' | xargs -0 cat | $SHA1SUM | cut -b-40)
+ fi
+ 
+ ################################################################################
+@@ -60,7 +64,7 @@ if [[ $# -eq 0 ]] ; then
+     BUILD_ID="UNKNOWN"
+ else
+     args=$*
+-    BUILD_ID=$(sh -c "sha1sum ${args} | cut -d ' ' -f 1 | sha1sum | cut -b-40")
++    BUILD_ID=$(sh -c "$SHA1SUM ${args} | cut -d ' ' -f 1 | $SHA1SUM | cut -b-40")
+ fi
+ 
+ ################################################################################
+
