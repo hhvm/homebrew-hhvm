@@ -4,7 +4,8 @@ class HhvmNightly < Formula
   head "https://github.com/facebook/hhvm.git"
   url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2019.05.21.tar.gz"
   sha256 "5bb2a63805adb70f1aef746ed4414d8dfee01dcf580546165a8931c1550d5174"
-  revision 1 # package version - reset to 0 when HHVM version changes
+  # package version - reset to 0 when HHVM version changes
+  revision 1
   patch :DATA
 
   bottle do
