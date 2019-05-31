@@ -5,6 +5,7 @@ class Hhvm47 < Formula
   url "https://dl.hhvm.com/source/hhvm-4.7.0.tar.gz"
   sha256 "3da0c70759245304958119cb9f89bf2b636cc89126adee41d36fd7f0a3f2a8e7"
   # package version - reset to 0 when HHVM version changes
+  revision 0
   patch :DATA
 
   bottle do
