@@ -6,7 +6,6 @@ class HhvmNightly < Formula
   sha256 "bbcd28e4b7bd956ccd35772386849c25614f6e7880efa743ff3e0256c6aa5043"
   # package version - reset to 0 when HHVM version changes
   revision 0
-  patch :DATA
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
@@ -273,62 +272,3 @@ EOF
     EOS
   end
 end
-
-__END__
-From 8b2553caa5999aa1574a3f666b39cbf62211f8c3 Mon Sep 17 00:00:00 2001
-From: Fred Emmott <fe@fb.com>
-Date: Fri, 31 May 2019 09:17:25 -0700
-Subject: [PATCH] make generate-build-info.sh portable
-
-Summary:
-with BSD grep, `grep -Ev '(?!foo/bar)'` gets you
-`grep: repetition-operator operand invalid`. The end result is
-that `HHVM_REPO_SCHEMA` is basically a constant on MacOS.
-
-Additionally, `sha1sum` is not universally available - openssl is.
-
-Reviewed By: alexeyt
-
-Differential Revision: D15433896
-
-fbshipit-source-id: 51e9183a054098f155f672c77229eebaea689478
----
- hphp/hhvm/generate-buildinfo.sh | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/hphp/hhvm/generate-buildinfo.sh b/hphp/hhvm/generate-buildinfo.sh
-index 98c56b8a9fc..7a9a9245c0f 100755
---- a/hphp/hhvm/generate-buildinfo.sh
-+++ b/hphp/hhvm/generate-buildinfo.sh
-@@ -36,6 +36,9 @@ if [ -z "${COMPILER_ID}" ]; then
-   COMPILER_ID=$(sh -c "$compiler")
- fi
- 
-+# MacOS portability
-+SHA1SUM="openssl dgst -sha1 -r"
-+
- ################################################################################
- 
- # Compute a hash that can be used as a unique repo schema identifier.  The
-@@ -45,9 +48,10 @@ fi
- # schema), because for some work flows the added instability of schema IDs is a
- # cure worse than the disease.
- if [ -z "${HHVM_REPO_SCHEMA}" ] ; then
-+  # Use Perl as BSD grep (MacOS) does not support negated groups
-   HHVM_REPO_SCHEMA=$(sh -c "$find_files" | \
--      grep -Ev '^hphp/(bin|facebook(?!/extensions)|hack/facebook/flow|neo|public_tld|test|tools|util|vixl|zend)' | \
--      tr '\n' '\0' | xargs -0 cat | sha1sum | cut -b-40)
-+      perl -ne 'print unless m#^hphp/(bin|facebook(?!/extensions)|hack/facebook/flow|neo|public_tld|test|tools|util|vixl|zend)#' | \
-+      tr '\n' '\0' | xargs -0 cat | $SHA1SUM | cut -b-40)
- fi
- 
- ################################################################################
-@@ -60,7 +64,7 @@ if [[ $# -eq 0 ]] ; then
-     BUILD_ID="UNKNOWN"
- else
-     args=$*
--    BUILD_ID=$(sh -c "sha1sum ${args} | cut -d ' ' -f 1 | sha1sum | cut -b-40")
-+    BUILD_ID=$(sh -c "$SHA1SUM ${args} | cut -d ' ' -f 1 | $SHA1SUM | cut -b-40")
- fi
- 
- ################################################################################
