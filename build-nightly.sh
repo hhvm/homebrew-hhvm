@@ -19,6 +19,7 @@ function commit_and_push_bottle() {
   brew bottle --merge --keep-old --write --no-commit *.json
   git add hhvm-nightly.rb
   git commit -m "update bottle for nightly on $(sw_vers -productVersion)"
+  git push
 }
 
 if !(git pull --rebase && commit_and_push_bottle); then
