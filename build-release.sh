@@ -1,27 +1,29 @@
 #!/bin/bash
 set -e
 
+if [ ! -e Aliases/hhvm ]; then
+  echo "Run from root of homebrew-hhvm checkout."
+  exit 1
+fi
+
 VERSION="$1"
-RECIPE="$2"
-if [ -z "$VERSION" -o -z "$RECIPE" ]; then
-	echo "Usage: $0 VERSION RECIPE"
-	echo "Example: $0 3.27.2 hhvm.rb"
+MAJ_MIN=$(echo "${VERSION}" | cut -f1,2 -d.)
+if [ -z "$VERSION" ]; then
+	echo "Usage: $0 VERSION"
+	echo "Example: $0 3.27.2"
 	exit 1
 fi
-if [ ! -f "$RECIPE" ]; then
-	echo "Usage: $0 VERSION RECIPE"
-	echo "Provided recipe is not a .rb file."
-	exit 1
+RECIPE="$(realpath "Formula/hhvm-${MAJ_MIN}.rb")"
+if [ ! -e "$RECIPE" ]; then
+  if [ "${VERSION}" != "${MAJ_MIN}.0" ]; then
+    echo "${RECIPE} does not exist, and ${VERSION} is not a .0 release"
+    exit 1
+  fi
+  sed "s/class HhvmNightly /class Hhvm${MAJ_MIN//.} /" \
+    "$(dirname "$RECIPE")/hhvm-nightly.rb" \
+    > "$RECIPE" 
+  ln -sf "../Formula/hhvm-${MAJ_MIN}.rb" Aliases/hhvm
 fi
-RECIPE="$(realpath "$RECIPE")"
-
-# Make sure people don't fire-and-forget this
-echo "This script create and uploads the binaries, but you will need to create a commit "
-echo "updating the metadata. A diff will be output at the end."
-echo
-echo "Press enter to continue."
-read
-
 set -x
 
 DLDIR=$(mktemp -d)
@@ -33,12 +35,6 @@ aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
 gpg --verify "$DLDIR"/*.sig
 SHA="$(openssl sha256 "$DLDIR"/*.tar.gz | awk '{print $NF}')"
 
-# Update source, which also updates the version number
-gsed -i "s,^  url .\+\$,  url \"file://${DLDIR}/hhvm-${VERSION}.tar.gz\"," "$RECIPE"
-# And source hash...
-gsed -i "s,^  sha256 .\+\$,  sha256 \"${SHA}\"," "$RECIPE"
-# delete existing bottle references
-gsed -i '/sha256.\+ => :/d' "${RECIPE}"
 
 if [ "$PREV_VERSION" = "$VERSION" ]; then
   # no changes, this is a rebuild, or recipe-only changes
@@ -47,6 +43,12 @@ if [ "$PREV_VERSION" = "$VERSION" ]; then
   gsed -i "s,^  revision [0-9]\+,  revision $REVISION," "$RECIPE"
 else
   # version number changed!
+  # Update source, which also updates the version number
+  gsed -i "s,^  url .\+\$,  url \"file://${DLDIR}/hhvm-${VERSION}.tar.gz\"," "$RECIPE"
+  # And source hash...
+  gsed -i "s,^  sha256 .\+\$,  sha256 \"${SHA}\"," "$RECIPE"
+  # delete existing bottle references
+  gsed -i '/sha256.\+ => :/d' "${RECIPE}"
   gsed -i "s,^  revision [0-9]\+,  revision 0," "$RECIPE"
 fi
 
