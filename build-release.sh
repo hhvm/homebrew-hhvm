@@ -40,10 +40,8 @@ aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
 gpg --verify "$DLDIR"/*.sig
 SHA="$(openssl sha256 "$DLDIR"/*.tar.gz | awk '{print $NF}')"
 
-
 # Delete existing bottle references
 gsed -i '/sha256.\+ => :/d' "${RECIPE}"
-gsed -i "s,^  revision [0-9]\+,  revision 0," "$RECIPE"
 if [ "$PREV_VERSION" = "$VERSION" ]; then
   # no changes, this is a rebuild, or recipe-only changes
   PREVIOUS_REVISION=$(awk '/^  revision /{print $2}' "$RECIPE")
@@ -52,10 +50,14 @@ if [ "$PREV_VERSION" = "$VERSION" ]; then
   git commit -m "Update build revision for ${VERSION}"
 else
   # version number changed!
-  # Update source, which also updates the version number
-  gsed -i "s,^  url .\+\$,  url \"file://${DLDIR}/hhvm-${VERSION}.tar.gz\"," "$RECIPE"
-  # And source hash...
-  gsed -i "s,^  sha256 .\+\$,  sha256 \"${SHA}\"," "$RECIPE"
+  # --dry-run: no git actions...
+  # --write: ... but write to the local repo anyway
+  brew bump-formula-pr \
+    --dry-run \
+    --write \
+    --sha256="${SHA}" \
+    --url="file://${DLDIR}/hhvm-${VERSION}.tar.gz" \
+    "$RECIPE"
   git commit -m "${RECIPE_COMMIT_MESSAGE}"
 fi
 
