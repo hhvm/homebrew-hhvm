@@ -11,12 +11,10 @@ recommend HHVM on OSX in production.
 brew tap hhvm/hhvm
 # install the latest version of HHVM:
 brew install hhvm
-# ... or install the latest 3.27.z release:
-brew install hhvm@3.27-lts
-# ... or install the latest 3.24.z release:
-brew install hhvm@3.24-lts
 # ... or install the latest nightly build:
 brew install hhvm-nightly
+# ... or install the latest 4.8.z release:
+brew install hhvm-4.8
 ```
 
 If you need to install multiple versions, look at the documentation for
