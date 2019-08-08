@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 if [ ! -e Aliases/hhvm ]; then
   echo "Run from root of homebrew-hhvm checkout."
@@ -7,13 +7,18 @@ if [ ! -e Aliases/hhvm ]; then
 fi
 
 VERSION="$1"
-MAJ_MIN=$(echo "${VERSION}" | cut -f1,2 -d.)
+NIGHTLY=${NIGHTLY:-false}
 if [ -z "$VERSION" ]; then
 	echo "Usage: $0 VERSION"
 	echo "Example: $0 3.27.2"
 	exit 1
 fi
-RECIPE="$(realpath "Formula/hhvm-${MAJ_MIN}.rb")"
+if $NIGHTLY; then
+  RECIPE=$(realpath "Formula/hhvm-nightly.rb")
+else
+  MAJ_MIN=$(echo "${VERSION}" | cut -f1,2 -d.)
+  RECIPE="$(realpath "Formula/hhvm-${MAJ_MIN}.rb")"
+fi
 if [ ! -e "$RECIPE" ]; then
   if [ "${VERSION}" != "${MAJ_MIN}.0" ]; then
     echo "${RECIPE} does not exist, and ${VERSION} is not a .0 release"
@@ -27,7 +32,7 @@ if [ ! -e "$RECIPE" ]; then
   git add Aliases/hhvm
   RECIPE_COMMIT_MESSAGE="Added recipe for ${VERSION}"
 else
-  RECIPE_COMMIT_MESSAGE="Updated hhvm-${MAJ_MIN} recipe to ${VERSION}"
+  RECIPE_COMMIT_MESSAGE="Updated $(basename "$RECIPE") recipe to ${VERSION}"
 fi
 set -x
 
@@ -35,8 +40,19 @@ DLDIR=$(mktemp -d)
 
 PREV_VERSION=$(awk -F / '/^  url/{print $NF}' "$RECIPE" | gsed 's/^.\+-\([0-9].\+\)\.tar.\+/\1/')
 
-aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz" "$DLDIR/"
-aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
+if $NIGHTLY; then
+  URL="https://dl.hhvm.com/source/nightlies/hhvm-nightly-${VERSION}.tar.gz"
+  (
+    cd $DLDIR
+    wget "$URL"
+    wget "$URL.sig"
+  )
+  URL="file://${DLDIR}/hhvm-nightly-${VERSION}.tar.gz"
+else
+  aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz" "$DLDIR/"
+  aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
+  URL="file://${DLDIR}/hhvm-${VERSION}.tar.gz"
+fi
 gpg --verify "$DLDIR"/*.sig
 SHA="$(openssl sha256 "$DLDIR"/*.tar.gz | awk '{print $NF}')"
 
@@ -55,8 +71,8 @@ else
   brew bump-formula-pr \
     --dry-run \
     --write \
+    --url="${URL}" \
     --sha256="${SHA}" \
-    --url="file://${DLDIR}/hhvm-${VERSION}.tar.gz" \
     "$RECIPE"
   git commit -m "${RECIPE_COMMIT_MESSAGE}" "$RECIPE"
 fi
