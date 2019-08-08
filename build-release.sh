@@ -23,6 +23,11 @@ if [ ! -e "$RECIPE" ]; then
     "$(dirname "$RECIPE")/hhvm-nightly.rb" \
     > "$RECIPE" 
   ln -sf "../Formula/hhvm-${MAJ_MIN}.rb" Aliases/hhvm
+  git add "$RECIPE"
+  git add Aliases/hhvm
+  RECIPE_COMMIT_MESSAGE="Added recipe for ${VERSION}"
+else
+  RECIPE_COMMIT_MESSAGE="Updated hhvm-${MAJ_MIN} recipe to ${VERSION}"
 fi
 set -x
 
@@ -36,20 +41,22 @@ gpg --verify "$DLDIR"/*.sig
 SHA="$(openssl sha256 "$DLDIR"/*.tar.gz | awk '{print $NF}')"
 
 
+# Delete existing bottle references
+gsed -i '/sha256.\+ => :/d' "${RECIPE}"
+gsed -i "s,^  revision [0-9]\+,  revision 0," "$RECIPE"
 if [ "$PREV_VERSION" = "$VERSION" ]; then
   # no changes, this is a rebuild, or recipe-only changes
   PREVIOUS_REVISION=$(awk '/^  revision /{print $2}' "$RECIPE")
   REVISION=$(($PREVIOUS_REVISION + 1))
   gsed -i "s,^  revision [0-9]\+,  revision $REVISION," "$RECIPE"
+  git commit -m "Update build revision for ${VERSION}"
 else
   # version number changed!
   # Update source, which also updates the version number
   gsed -i "s,^  url .\+\$,  url \"file://${DLDIR}/hhvm-${VERSION}.tar.gz\"," "$RECIPE"
   # And source hash...
   gsed -i "s,^  sha256 .\+\$,  sha256 \"${SHA}\"," "$RECIPE"
-  # delete existing bottle references
-  gsed -i '/sha256.\+ => :/d' "${RECIPE}"
-  gsed -i "s,^  revision [0-9]\+,  revision 0," "$RECIPE"
+  git commit -m "${RECIPE_COMMIT_MESSAGE}"
 fi
 
 # clean up
@@ -58,15 +65,29 @@ rm -f *.bottle *.json
 
 # build
 brew upgrade
-brew install --bottle-arch=nehalem --build-bottle "$RECIPE"
+cd Formula
+brew install --bottle-arch=nehalem --build-bottle "$(basename "$RECIPE")"
+# Update the source-bump commit to reference dl.hhvm.com instead
+gsed -E -i 's,"file://.+/(hhvm-.+\.tar\.gz)"$,"https://dl.hhvm.com/source/\1",' "$RECIPE"
+git commit --amend "$RECIPE" --reuse-message HEAD
+
 brew bottle --force-core-tap --root-url=https://dl.hhvm.com/homebrew-bottles --json "$RECIPE"
 # local naming != download naming
 for file in *--*.bottle.tar.gz; do
   mv "$file" "$(echo "$file" | sed s/--/-/)"
 done
 aws s3 sync ./ s3://hhvm-downloads/homebrew-bottles/ --exclude '*' --include '*.bottle.tar.gz'
-brew bottle --merge --keep-old --write --no-commit *.json
-rm -rf $DLDIR
-gsed -E -i 's,"file://.+/(hhvm-.+\.tar\.gz)"$,"https://dl.hhvm.com/source/\1",' "$RECIPE"
-echo "Merge this change:"
-git diff "$RECIPE"
+
+function commit_and_push_bottle() {
+  brew bottle --merge --keep-old --write --no-commit *.json
+  git add "$RECIPE"
+  git commit -m "Added bottle for ${VERSION} on $(sw_vers -productVersion)"
+  git push
+}
+
+if !(git pull --rebase && commit_and_push_bottle); then
+  git rebase --abort || true
+  git reset --hard origin/master
+  commit_and_push_bottle
+fi
+rm -rf $DLDIR *.bottle.{tar.gz,json}
