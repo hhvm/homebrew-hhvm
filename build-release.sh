@@ -47,7 +47,7 @@ if [ "$PREV_VERSION" = "$VERSION" ]; then
   PREVIOUS_REVISION=$(awk '/^  revision /{print $2}' "$RECIPE")
   REVISION=$(($PREVIOUS_REVISION + 1))
   gsed -i "s,^  revision [0-9]\+,  revision $REVISION," "$RECIPE"
-  git commit -m "Update build revision for ${VERSION}"
+  git commit -m "Update build revision for ${VERSION}" "$RECIPE"
 else
   # version number changed!
   # --dry-run: no git actions...
@@ -58,7 +58,7 @@ else
     --sha256="${SHA}" \
     --url="file://${DLDIR}/hhvm-${VERSION}.tar.gz" \
     "$RECIPE"
-  git commit -m "${RECIPE_COMMIT_MESSAGE}"
+  git commit -m "${RECIPE_COMMIT_MESSAGE}" "$RECIPE"
 fi
 
 # clean up
