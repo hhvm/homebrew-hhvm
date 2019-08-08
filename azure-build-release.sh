@@ -2,7 +2,7 @@
 set -ex
 
 brew upgrade
-brew install gsed
+brew install gsed coreutils
 brew tap hhvm/hhvm
 brew install $(brew deps --include-build hhvm-nightly)
 
