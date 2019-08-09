@@ -4,7 +4,7 @@ set -ex
 echo "Attempting to build version: $1"
 
 brew upgrade
-brew install gnu-sed
+brew install gnu-sed awscli
 brew tap hhvm/hhvm
 brew install $(brew deps --include-build hhvm-nightly)
 
