@@ -57,7 +57,6 @@ gpg --verify "$DLDIR"/*.sig
 SHA="$(openssl sha256 "$DLDIR"/*.tar.gz | awk '{print $NF}')"
 
 if [ "$PREV_VERSION" = "$VERSION" ]; then
-if [ "$PREV_VERSION" = "$VERSION" ]; then
   # if 1, other version was built; no recipe changes needed.
   if [ "$(grep -c 'sha256.\+ => :' "$RECIPE")" != 1 ]; then
     # no changes, this is a rebuild, or recipe-only changes
