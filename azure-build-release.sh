@@ -46,4 +46,6 @@ MM3vIX/Fc/kuuaCWi2ysyKf7jyi/RiVIAKuLbxAB8eHsyo2G5lA=
 -----END PGP PUBLIC KEY BLOCK-----
 ENDKEY
 
+git config remote.origin.url git@github.com:hhvm/homebrew-hhvm.git
+
 exec ./build-release.sh "$1"
