@@ -51,7 +51,7 @@ DLDIR=$(mktemp -d)
 PREV_VERSION=$(awk -F / '/^  url/{print $NF}' "$RECIPE" | gsed 's/^.\+-\([0-9].\+\)\.tar.\+/\1/')
 
 if $NIGHTLY; then
-  URL="https://dl.hhvm.com/source/nightlies/hhvm-nightly-${VERSION}.tar.gz"
+  REAL_URL="https://dl.hhvm.com/source/nightlies/hhvm-nightly-${VERSION}.tar.gz"
   (
     cd $DLDIR
     wget "$URL"
@@ -59,6 +59,7 @@ if $NIGHTLY; then
   )
   URL="file://${DLDIR}/hhvm-nightly-${VERSION}.tar.gz"
 else
+  REAL_URL="https://dl.hhvm.com/source/hhvm-${VERSION}.tar.gz"
   aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz" "$DLDIR/"
   aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
   URL="file://${DLDIR}/hhvm-${VERSION}.tar.gz"
@@ -101,7 +102,7 @@ brew upgrade
 cd Formula
 brew install --bottle-arch=nehalem --build-bottle "$(basename "$RECIPE")"
 # Update the source-bump commit to reference dl.hhvm.com instead
-gsed -E -i 's,"file://.+/(hhvm-.+\.tar\.gz)"$,"https://dl.hhvm.com/source/\1",' "$RECIPE"
+gsed -E -i 's,"file://.+/(hhvm-.+\.tar\.gz)"$,"'"${REAL_URL}"'",' "$RECIPE"
 git commit --amend "$RECIPE" --reuse-message HEAD
 
 brew bottle --force-core-tap --root-url=https://dl.hhvm.com/homebrew-bottles --json "$RECIPE"
