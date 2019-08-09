@@ -56,14 +56,18 @@ fi
 gpg --verify "$DLDIR"/*.sig
 SHA="$(openssl sha256 "$DLDIR"/*.tar.gz | awk '{print $NF}')"
 
-# Delete existing bottle references
-gsed -i '/sha256.\+ => :/d' "${RECIPE}"
 if [ "$PREV_VERSION" = "$VERSION" ]; then
-  # no changes, this is a rebuild, or recipe-only changes
-  PREVIOUS_REVISION=$(awk '/^  revision /{print $2}' "$RECIPE")
-  REVISION=$(($PREVIOUS_REVISION + 1))
-  gsed -i "s,^  revision [0-9]\+,  revision $REVISION," "$RECIPE"
-  git commit -m "Update build revision for ${VERSION}" "$RECIPE"
+if [ "$PREV_VERSION" = "$VERSION" ]; then
+  # if 1, other version was built; no recipe changes needed.
+  if [ "$(grep -c 'sha256.\+ => :' "$RECIPE")" != 1 ]; then
+    # no changes, this is a rebuild, or recipe-only changes
+    PREVIOUS_REVISION=$(awk '/^  revision /{print $2}' "$RECIPE")
+    REVISION=$(($PREVIOUS_REVISION + 1))
+    gsed -i "s,^  revision [0-9]\+,  revision $REVISION," "$RECIPE"
+    # Delete existing bottle references
+    gsed -i '/sha256.\+ => :/d' "${RECIPE}"
+    git commit -m "Update build revision for ${VERSION}" "$RECIPE"
+  fi
 else
   # version number changed!
   # --dry-run: no git actions...
