@@ -54,14 +54,14 @@ if $NIGHTLY; then
   REAL_URL="https://dl.hhvm.com/source/nightlies/hhvm-nightly-${VERSION}.tar.gz"
   (
     cd $DLDIR
-    wget "$URL"
-    wget "$URL.sig"
+    wget "$REAL_URL"
+    wget "$REAL_URL.sig"
   )
   URL="file://${DLDIR}/hhvm-nightly-${VERSION}.tar.gz"
 else
-  REAL_URL="https://dl.hhvm.com/source/hhvm-${VERSION}.tar.gz"
   aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz" "$DLDIR/"
   aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
+  REAL_URL="https://dl.hhvm.com/source/hhvm-${VERSION}.tar.gz"
   URL="file://${DLDIR}/hhvm-${VERSION}.tar.gz"
 fi
 gpg --verify "$DLDIR"/*.sig
