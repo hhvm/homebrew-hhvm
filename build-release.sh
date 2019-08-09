@@ -121,10 +121,10 @@ function commit_and_push_bottle() {
   brew bottle --merge --keep-old --write --no-commit *.json
   git add "$RECIPE"
   git commit -m "Added bottle for ${VERSION} on $(sw_vers -productVersion)"
-  git push
+  git push origin HEAD:master
 }
 
-if !(git pull --rebase && commit_and_push_bottle); then
+if !(git pull origin master --rebase && commit_and_push_bottle); then
   git rebase --abort || true
   git reset --hard origin/master
   commit_and_push_bottle
