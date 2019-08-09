@@ -5,12 +5,10 @@ class Hhvm416 < Formula
   url "https://dl.hhvm.com/source/hhvm-4.16.2.tar.gz"
   sha256 "949cdf2f8546a0eeffeed5e90b28c984ac6279793923c8868abbb60378177351"
   # package version - reset to 0 when HHVM version changes
-  revision 1
+  revision 2
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "1fd0fbc1507ec64ba4e27504140ee5b3ef3903e19c429120a2d93a404b7f60ef" => :mojave
-    sha256 "8d5e2564d8bf1e3e8adfa8ae0b30e414cb64ce6fdcd1f6644f0503b24ca2ff7c" => :high_sierra
   end
 
   class << Hardware::CPU
