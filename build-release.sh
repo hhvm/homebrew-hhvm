@@ -118,15 +118,25 @@ done
 aws s3 sync ./ s3://hhvm-downloads/homebrew-bottles/ --exclude '*' --include '*.bottle.tar.gz'
 
 function commit_and_push_bottle() {
+  git pull origin master --rebase
   brew bottle --merge --keep-old --write --no-commit *.json
   git add "$RECIPE"
   git commit -m "Added bottle for ${VERSION} on $(sw_vers -productVersion)"
   git push origin HEAD:master
 }
 
-if !(git pull origin master --rebase && commit_and_push_bottle); then
+PUSHED=false
+for i in $(seq 1 5); do
+  if commit_and_push_bottle; then
+    PUSHED=true
+    break
+  fi
   git rebase --abort || true
-  git reset --hard origin/master
+  sleep $(($RANDOM % 10))
+done
+
+if !$PUSHED; then
+  sleep  $(($RANDOM % 60))
   commit_and_push_bottle
 fi
 rm -rf $DLDIR
