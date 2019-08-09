@@ -123,4 +123,5 @@ if !(git pull --rebase && commit_and_push_bottle); then
   git reset --hard origin/master
   commit_and_push_bottle
 fi
-rm -rf $DLDIR *.bottle.{tar.gz,json}
+rm -rf $DLDIR
+git clean -ffdx
