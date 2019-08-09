@@ -87,6 +87,8 @@ else
     --url="${URL}" \
     --sha256="${SHA}" \
     "$RECIPE"
+  # Delete existing bottle references
+  gsed -i '/sha256.\+ => :/d' "${RECIPE}"
   git commit -m "${RECIPE_COMMIT_MESSAGE}" "$RECIPE"
 fi
 
