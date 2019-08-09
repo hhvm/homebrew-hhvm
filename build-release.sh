@@ -27,7 +27,12 @@ if $NIGHTLY; then
   RECIPE=$(abspath "Formula/hhvm-nightly.rb")
 else
   MAJ_MIN=$(echo "${VERSION}" | cut -f1,2 -d.)
-  RECIPE="$(abspath "Formula/hhvm-${MAJ_MIN}.rb")"
+  if [ "${MAJ_MIN}" = "3.30" ]; then
+    # Obsolete format not used for new releases
+    RECIPE="$(abspath "Formula/hhvm@3.30-lts.rb")"
+  else
+    RECIPE="$(abspath "Formula/hhvm-${MAJ_MIN}.rb")"
+  fi
 fi
 if [ ! -e "$RECIPE" ]; then
   if [ "${VERSION}" != "${MAJ_MIN}.0" ]; then
