@@ -13,11 +13,21 @@ if [ -z "$VERSION" ]; then
 	echo "Example: $0 3.27.2"
 	exit 1
 fi
+
+# realpath is not available on MacOS
+abspath() {
+  if [[ "$1" = /* ]]; then
+    echo "$1"
+  else
+    echo "$(pwd)/$1"
+  fi
+}
+
 if $NIGHTLY; then
-  RECIPE=$(realpath "Formula/hhvm-nightly.rb")
+  RECIPE=$(abspath "Formula/hhvm-nightly.rb")
 else
   MAJ_MIN=$(echo "${VERSION}" | cut -f1,2 -d.)
-  RECIPE="$(realpath "Formula/hhvm-${MAJ_MIN}.rb")"
+  RECIPE="$(abspath "Formula/hhvm-${MAJ_MIN}.rb")"
 fi
 if [ ! -e "$RECIPE" ]; then
   if [ "${VERSION}" != "${MAJ_MIN}.0" ]; then
