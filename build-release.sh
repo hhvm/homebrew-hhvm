@@ -14,6 +14,25 @@ if [ -z "$VERSION" ]; then
 	exit 1
 fi
 
+DLDIR=$(mktemp -d)
+
+if $NIGHTLY; then
+  REAL_URL="https://dl.hhvm.com/source/nightlies/hhvm-nightly-${VERSION}.tar.gz"
+  (
+    cd $DLDIR
+    wget "$REAL_URL"
+    wget "$REAL_URL.sig"
+  )
+  URL="file://${DLDIR}/hhvm-nightly-${VERSION}.tar.gz"
+else
+  aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz" "$DLDIR/"
+  aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
+  REAL_URL="https://dl.hhvm.com/source/hhvm-${VERSION}.tar.gz"
+  URL="file://${DLDIR}/hhvm-${VERSION}.tar.gz"
+fi
+gpg --verify "$DLDIR"/*.sig
+SHA="$(openssl sha256 "$DLDIR"/*.tar.gz | awk '{print $NF}')"
+
 # realpath is not available on MacOS
 abspath() {
   if [[ "$1" = /* ]]; then
@@ -34,69 +53,60 @@ else
     RECIPE="$(abspath "Formula/hhvm-${MAJ_MIN}.rb")"
   fi
 fi
+
 if [ ! -e "$RECIPE" ]; then
   if [ "${VERSION}" != "${MAJ_MIN}.0" ]; then
     echo "${RECIPE} does not exist, and ${VERSION} is not a .0 release"
     exit 1
   fi
+  URL_LINE="  url \"${URL}\""
+  SHA_LINE="  sha256 \"${SHA}\""
   sed "s/class HhvmNightly /class Hhvm${MAJ_MIN//.} /" \
     "$(dirname "$RECIPE")/hhvm-nightly.rb" \
-    > "$RECIPE" 
+    | gsed '/sha256.\+ => :/d' \
+    | gsed "s#^\s*url \".\+\"\$#${URL_LINE}#" \
+    | gsed "s#^\s*sha256 \".\+\"\$#${SHA_LINE}#" \
+    > "$RECIPE"
+  # sanity check that the gsed replacements above were correctly applied
+  if [ "$(grep -c "^${URL_LINE}\$" "$RECIPE")" != 1 -o \
+       "$(grep -c "^${SHA_LINE}\$" "$RECIPE")" != 1 ]; then
+    echo "Failed to create new recipe for ${VERSION}"
+    exit 1
+  fi
   ln -sf "../Formula/hhvm-${MAJ_MIN}.rb" Aliases/hhvm
   git add "$RECIPE"
   git add Aliases/hhvm
-  RECIPE_COMMIT_MESSAGE="Added recipe for ${VERSION}"
+  git commit -m "Added recipe for ${VERSION}" "$RECIPE"
 else
-  RECIPE_COMMIT_MESSAGE="Updated $(basename "$RECIPE") recipe to ${VERSION}"
-fi
-set -x
-
-DLDIR=$(mktemp -d)
-
-PREV_VERSION=$(awk -F / '/^  url/{print $NF}' "$RECIPE" | gsed 's/^.\+-\([0-9].\+\)\.tar.\+/\1/')
-
-if $NIGHTLY; then
-  REAL_URL="https://dl.hhvm.com/source/nightlies/hhvm-nightly-${VERSION}.tar.gz"
-  (
-    cd $DLDIR
-    wget "$REAL_URL"
-    wget "$REAL_URL.sig"
-  )
-  URL="file://${DLDIR}/hhvm-nightly-${VERSION}.tar.gz"
-else
-  aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz" "$DLDIR/"
-  aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
-  REAL_URL="https://dl.hhvm.com/source/hhvm-${VERSION}.tar.gz"
-  URL="file://${DLDIR}/hhvm-${VERSION}.tar.gz"
-fi
-gpg --verify "$DLDIR"/*.sig
-SHA="$(openssl sha256 "$DLDIR"/*.tar.gz | awk '{print $NF}')"
-
-if [ "$PREV_VERSION" = "$VERSION" ]; then
-  # if 1, other version was built; no recipe changes needed.
-  if [ "$(grep -c 'sha256.\+ => :' "$RECIPE")" != 1 ]; then
-    # no changes, this is a rebuild, or recipe-only changes
-    PREVIOUS_REVISION=$(awk '/^  revision /{print $2}' "$RECIPE")
-    REVISION=$(($PREVIOUS_REVISION + 1))
-    gsed -i "s,^  revision [0-9]\+,  revision $REVISION," "$RECIPE"
+  PREV_VERSION=$(awk -F / '/^  url/{print $NF}' "$RECIPE" | gsed 's/^.\+-\([0-9].\+\)\.tar.\+/\1/')
+  if [ "$PREV_VERSION" = "$VERSION" ]; then
+    # if 1, other version was built; no recipe changes needed.
+    if [ "$(grep -c 'sha256.\+ => :' "$RECIPE")" != 1 ]; then
+      # no changes, this is a rebuild, or recipe-only changes
+      PREVIOUS_REVISION=$(awk '/^  revision /{print $2}' "$RECIPE")
+      REVISION=$(($PREVIOUS_REVISION + 1))
+      gsed -i "s,^  revision [0-9]\+,  revision $REVISION," "$RECIPE"
+      # Delete existing bottle references
+      gsed -i '/sha256.\+ => :/d' "${RECIPE}"
+      git commit -m "Update build revision for ${VERSION}" "$RECIPE"
+    fi
+  else
+    # version number changed!
+    # --dry-run: no git actions...
+    # --write: ... but write to the local repo anyway
+    brew bump-formula-pr \
+      --dry-run \
+      --write \
+      --url="${URL}" \
+      --sha256="${SHA}" \
+      "$RECIPE"
     # Delete existing bottle references
     gsed -i '/sha256.\+ => :/d' "${RECIPE}"
-    git commit -m "Update build revision for ${VERSION}" "$RECIPE"
+    git commit -m "Updated $(basename "$RECIPE") recipe to ${VERSION}" "$RECIPE"
   fi
-else
-  # version number changed!
-  # --dry-run: no git actions...
-  # --write: ... but write to the local repo anyway
-  brew bump-formula-pr \
-    --dry-run \
-    --write \
-    --url="${URL}" \
-    --sha256="${SHA}" \
-    "$RECIPE"
-  # Delete existing bottle references
-  gsed -i '/sha256.\+ => :/d' "${RECIPE}"
-  git commit -m "${RECIPE_COMMIT_MESSAGE}" "$RECIPE"
 fi
+
+set -x
 
 # clean up
 brew list | grep hhvm | xargs brew uninstall --force || true
