@@ -76,7 +76,7 @@ if [ ! -e "$RECIPE" ]; then
   ln -sf "../Formula/hhvm-${MAJ_MIN}.rb" Aliases/hhvm
   git add "$RECIPE"
   git add Aliases/hhvm
-  git commit -m "Added recipe for ${VERSION}" "$RECIPE"
+  git commit -m "Added recipe for ${VERSION}"
 else
   PREV_VERSION=$(awk -F / '/^  url/{print $NF}' "$RECIPE" | gsed 's/^.\+-\([0-9].\+\)\.tar.\+/\1/')
   if [ "$PREV_VERSION" = "$VERSION" ]; then
