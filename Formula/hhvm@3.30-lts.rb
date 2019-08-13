@@ -1,16 +1,14 @@
 class HhvmAT330Lts < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
-  url "https://dl.hhvm.com/source/hhvm-3.30.8.tar.gz"
+  url "https://dl.hhvm.com/source/hhvm-3.30.9.tar.gz"
   head "https://github.com/facebook/hhvm.git"
-  sha256 "6899c33e7c612c5896f2a78cfab93dbd053e8f6115bd1c77953a3181c865ca3f"
-  revision 1 # package version - reset to 0 when HHVM version changes
+  sha256 "b35433b6c68a9274e187daadd17d4d0be57ebbe35d1d1fb017991962c0c1ab65"
+  # package version - reset to 0 when HHVM version changes
   patch :DATA
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "ca10ddd50ce87d730c5ec573be92d88708ec0550abd99dfca143d761b98acd74" => :high_sierra
-    sha256 "5c352d93fc2fecdc81e655b9d8fae0dc79a08a2f26f54dbfb35e924d142f91e3" => :mojave
   end
 
   class << Hardware::CPU
