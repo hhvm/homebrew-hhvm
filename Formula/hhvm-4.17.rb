@@ -2,15 +2,12 @@ class Hhvm417 < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
   head "https://github.com/facebook/hhvm.git"
-  url "https://dl.hhvm.com/source/hhvm-4.17.1.tar.gz"
-  sha256 "2464b4dc19e77f1b6bb30b99e3e315f0c630ffa47703032294b78edbc4956e59"
+  url "https://dl.hhvm.com/source/hhvm-4.17.2.tar.gz"
+  sha256 "a409273e95544fe1292a297855a71369959939dd3931008af4b9395b67eba0d3"
   # package version - reset to 0 when HHVM version changes
-  revision 1
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "44379bf02019f18cb079f4f5de2ba3c6f616a7fe0ecd975187a2f3996ac0bbaa" => :mojave
-    sha256 "71e5e14e39a26323f2fbeb13e867128bd52fe81460c15ec82b96335ef1ebc188" => :high_sierra
   end
 
   class << Hardware::CPU
