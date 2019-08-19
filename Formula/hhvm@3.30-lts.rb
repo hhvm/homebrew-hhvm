@@ -7,7 +7,7 @@ class HhvmAT330Lts < Formula
   patch :DATA
 
   bottle do
-    rebuild 1
+    rebuild 2
     root_url "https://dl.hhvm.com/homebrew-bottles"
   end
 
