@@ -82,13 +82,10 @@ else
   if [ "$PREV_VERSION" = "$VERSION" ]; then
     # if 1, other version was built; no recipe changes needed.
     if [ "$(grep -c 'sha256.\+ => :' "$RECIPE")" != 1 ]; then
-      # no changes, this is a rebuild, or recipe-only changes
-      PREVIOUS_REBUILD=$(awk '/  rebuild /{print $2}' "$RECIPE")
-      REBUILD=$(($PREVIOUS_REBUILD + 1))
-      gsed -i "s,  rebuild [0-9]\+,  rebuild $REBUILD," "$RECIPE"
       # Delete existing bottle references
       gsed -i '/sha256.\+ => :/d' "${RECIPE}"
-      git commit -m "Update rebuild number for ${VERSION}" "$RECIPE"
+      # ...  in case there were no bottles
+      git commit -m "Deleting stale bottles for ${VERSION}" "$RECIPE" || true
     fi
   else
     # version number changed!
@@ -120,7 +117,7 @@ brew install --bottle-arch=nehalem --build-bottle "$(basename "$RECIPE")"
 gsed -E -i 's,"file://.+/(hhvm-.+\.tar\.gz)"$,"'"${REAL_URL}"'",' "$RECIPE"
 git commit --amend "$RECIPE" --reuse-message HEAD
 
-brew bottle --keep-old --force-core-tap --root-url=https://dl.hhvm.com/homebrew-bottles --json "$RECIPE"
+brew bottle --force-core-tap --root-url=https://dl.hhvm.com/homebrew-bottles --json "$RECIPE"
 # local naming != download naming
 for file in *--*.bottle.tar.gz; do
   mv "$file" "$(echo "$file" | sed s/--/-/)"
@@ -132,7 +129,7 @@ PRE_BOTTLE_REV="$(git rev-parse HEAD)"
 function commit_and_push_bottle() {
   git reset --hard "${PRE_BOTTLE_REV}"
   git pull origin master --rebase
-  brew bottle --merge --keep-old --write --no-commit *.json
+  brew bottle --merge --write --no-commit *.json
   git add "$RECIPE"
   git commit -m "Added bottle for ${VERSION} on $(sw_vers -productVersion)"
   git push origin HEAD:master
