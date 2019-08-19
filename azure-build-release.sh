@@ -47,5 +47,7 @@ MM3vIX/Fc/kuuaCWi2ysyKf7jyi/RiVIAKuLbxAB8eHsyo2G5lA=
 ENDKEY
 
 git config remote.origin.url git@github.com:hhvm/homebrew-hhvm.git
+git config user.name "HHVM Homebrew Bot (Azure)"
+git config user.email opensource+hhvm-homebrew-bot@fb.com
 
 exec ./build-release.sh "$1"
