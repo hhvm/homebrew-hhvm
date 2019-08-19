@@ -83,12 +83,12 @@ else
     # if 1, other version was built; no recipe changes needed.
     if [ "$(grep -c 'sha256.\+ => :' "$RECIPE")" != 1 ]; then
       # no changes, this is a rebuild, or recipe-only changes
-      PREVIOUS_REVISION=$(awk '/^  revision /{print $2}' "$RECIPE")
-      REVISION=$(($PREVIOUS_REVISION + 1))
-      gsed -i "s,^  revision [0-9]\+,  revision $REVISION," "$RECIPE"
+      PREVIOUS_REBUILD=$(awk '/  rebuild /{print $2}' "$RECIPE")
+      REBUILD=$(($PREVIOUS_REBUILD + 1))
+      gsed -i "s,  rebuild [0-9]\+,  rebuild $REBUILD," "$RECIPE"
       # Delete existing bottle references
       gsed -i '/sha256.\+ => :/d' "${RECIPE}"
-      git commit -m "Update build revision for ${VERSION}" "$RECIPE"
+      git commit -m "Update rebuild number for ${VERSION}" "$RECIPE"
     fi
   else
     # version number changed!
