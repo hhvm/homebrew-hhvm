@@ -120,7 +120,7 @@ brew install --bottle-arch=nehalem --build-bottle "$(basename "$RECIPE")"
 gsed -E -i 's,"file://.+/(hhvm-.+\.tar\.gz)"$,"'"${REAL_URL}"'",' "$RECIPE"
 git commit --amend "$RECIPE" --reuse-message HEAD
 
-brew bottle --force-core-tap --root-url=https://dl.hhvm.com/homebrew-bottles --json "$RECIPE"
+brew bottle --keep-old --force-core-tap --root-url=https://dl.hhvm.com/homebrew-bottles --json "$RECIPE"
 # local naming != download naming
 for file in *--*.bottle.tar.gz; do
   mv "$file" "$(echo "$file" | sed s/--/-/)"
