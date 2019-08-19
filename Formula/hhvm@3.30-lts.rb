@@ -7,10 +7,8 @@ class HhvmAT330Lts < Formula
   patch :DATA
 
   bottle do
-    rebuild 0
+    rebuild 1
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "2c1291ee4a51cc2b5dd1fee27104cd4e3ceeaf3af81cc263af06dbbf64f8217f" => :mojave
-    sha256 "b5bc9ff9eed95f757eb8de9cabdbb20fd71672e5853467f49909f048c33c34ff" => :high_sierra
   end
 
   class << Hardware::CPU
