@@ -7,6 +7,7 @@ class Hhvm46 < Formula
   patch :DATA
 
   bottle do
+    rebuild 0
     root_url "https://dl.hhvm.com/homebrew-bottles"
     sha256 "dda30810bd51784601c77be2b2fff17653f7db5fd4212a0c80460ab5e56ab3f7" => :high_sierra
     sha256 "e20a7cd615cf4677a1121adba267421848e41bea8148dc1e3b18d3a5c1577960" => :mojave

@@ -7,6 +7,7 @@ class HhvmAT327Lts < Formula
   patch :DATA
 
   bottle do
+    rebuild 0
     root_url "https://dl.hhvm.com/homebrew-bottles"
     sha256 "62cedbc9664b6e5153f78eba6f21997ac880c68ae35923afe274c30ac8f86472" => :mojave
     sha256 "c79aa4da909455cb4d40a78cd0d59087493b2b07b89cb608e9b654536ae27dc8" => :high_sierra
