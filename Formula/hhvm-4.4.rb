@@ -6,7 +6,6 @@ class Hhvm44 < Formula
   sha256 "c722abef64bba8511b5de8cefea52db01d9239b488200438153c24533d2b8d55"
 
   bottle do
-    rebuild 0
     root_url "https://dl.hhvm.com/homebrew-bottles"
     sha256 "0c8b23c17dbea54534051fcb9dc3673fe36eccee2b71a56590d0c7e6a53b75a5" => :high_sierra
     sha256 "3312e65acd4945576a309c99acf19a7c3896495e91493d2a033c2a156a03f44c" => :mojave
