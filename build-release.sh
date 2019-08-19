@@ -127,7 +127,10 @@ for file in *--*.bottle.tar.gz; do
 done
 aws s3 sync ./ s3://hhvm-downloads/homebrew-bottles/ --exclude '*' --include '*.bottle.tar.gz'
 
+PRE_BOTTLE_REV="$(git rev-parse HEAD)"
+
 function commit_and_push_bottle() {
+  git reset --hard "${PRE_BOTTLE_REV}"
   git pull origin master --rebase
   brew bottle --merge --keep-old --write --no-commit *.json
   git add "$RECIPE"
