@@ -6,10 +6,8 @@ class Hhvm415 < Formula
   sha256 "bfd6439cac0124a3d7d20a7cda9924204e402ec351b25619177385bac74defab"
 
   bottle do
-    rebuild 0
+    rebuild 1
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "32f41b0e0e61020854653b2569235f7def083f5188c5fff223a71642b131ecae" => :mojave
-    sha256 "a695cf9d6ec81e65a0547875c81bb206fe81593a7bc6b155fee69f83de12a95b" => :high_sierra
   end
 
   class << Hardware::CPU
