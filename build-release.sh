@@ -148,7 +148,7 @@ for i in $(seq 1 5); do
   sleep $(($RANDOM % 10))
 done
 
-if !$PUSHED; then
+if ! $PUSHED; then
   sleep  $(($RANDOM % 60))
   commit_and_push_bottle
 fi
