@@ -4,7 +4,6 @@ class Hhvm43 < Formula
   url "https://dl.hhvm.com/source/hhvm-4.3.1.tar.gz"
   head "https://github.com/facebook/hhvm.git"
   sha256 "ea2f6ffe6e4c3b35b23760231a7a5ad12b84717a65ea0b58c1dab1f01caab622"
-  revision 0 # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"

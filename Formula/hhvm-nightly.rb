@@ -4,8 +4,6 @@ class HhvmNightly < Formula
   head "https://github.com/facebook/hhvm.git"
   url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2019.08.19.tar.gz"
   sha256 "62d9b152f572d36248e403d3c3d00206ceab340ade82c3ed17fd9f2f00225b5d"
-  # package version - reset to 0 when HHVM version changes
-  revision 0
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"

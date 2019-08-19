@@ -4,7 +4,6 @@ class HhvmAT327Lts < Formula
   url "https://dl.hhvm.com/source/hhvm-3.27.8.tar.gz"
   head "https://github.com/facebook/hhvm.git"
   sha256 "ac63376f4e2500295aa914faecd768117711d9be385906eeec70977573a54de4"
-  revision 0 # package version - reset to 0 when HHVM version changes
   patch :DATA
 
   bottle do

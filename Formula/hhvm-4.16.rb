@@ -4,7 +4,6 @@ class Hhvm416 < Formula
   head "https://github.com/facebook/hhvm.git"
   url "https://dl.hhvm.com/source/hhvm-4.16.3.tar.gz"
   sha256 "46b3004b78eae4a84e2a17722c9728b80b339a2539b70265ece4a70d62d7d8bd"
-  # package version - reset to 0 when HHVM version changes
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"

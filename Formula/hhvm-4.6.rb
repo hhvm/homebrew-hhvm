@@ -4,7 +4,6 @@ class Hhvm46 < Formula
   head "https://github.com/facebook/hhvm.git"
   url "https://dl.hhvm.com/source/hhvm-4.6.1.tar.gz"
   sha256 "f6a90c317c14c09bf0d4486e6786720c910f6919c03bdcfa4cfb4ffe7442e636"
-  revision 0 # package version - reset to 0 when HHVM version changes
   patch :DATA
 
   bottle do
