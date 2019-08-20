@@ -8,6 +8,7 @@ class Hhvm418 < Formula
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
     sha256 "f1c69bab8594d698674a0e759ddec914023736508a2df501075f22568df4e257" => :mojave
+    sha256 "6c97b89a7192f7387e2691deb0e41058b1ac652bfdb565fbb05847e1c15f3f4d" => :high_sierra
   end
 
   class << Hardware::CPU
