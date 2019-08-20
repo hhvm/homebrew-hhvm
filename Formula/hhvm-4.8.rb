@@ -6,8 +6,8 @@ class Hhvm48 < Formula
   sha256 "8288b0de67e8807a9660ff7f16b00baf93186014ceccad3ded921df3d7c3719a"
 
   bottle do
-    rebuild 2
     root_url "https://dl.hhvm.com/homebrew-bottles"
+    sha256 "7945c93b1790a446d80c2bc9362d07764c419affcf0cf1bc23c00d4a7d79bfe0" => :mojave
   end
 
   class << Hardware::CPU
