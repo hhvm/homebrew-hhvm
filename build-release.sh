@@ -129,7 +129,7 @@ PRE_BOTTLE_REV="$(git rev-parse HEAD)"
 function commit_and_push_bottle() {
   git reset --hard "${PRE_BOTTLE_REV}"
   git pull origin master --rebase
-  brew bottle --merge --write --no-commit *.json
+  brew bottle --keep-old --merge --write --no-commit *.json
   git add "$RECIPE"
   git commit -m "Added bottle for ${VERSION} on $(sw_vers -productVersion)"
   git push origin HEAD:master
