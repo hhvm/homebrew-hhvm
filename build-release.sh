@@ -127,8 +127,9 @@ aws s3 sync ./ s3://hhvm-downloads/homebrew-bottles/ --exclude '*' --include '*.
 PRE_BOTTLE_REV="$(git rev-parse HEAD)"
 
 function commit_and_push_bottle() {
+  set -e
   git reset --hard "${PRE_BOTTLE_REV}"
-  git pull origin master --rebase
+  git pull origin master --rebase || (git rebase --abort; git reset --hard origin/master)
   brew bottle --keep-old --merge --write --no-commit *.json
   git add "$RECIPE"
   git commit -m "Added bottle for ${VERSION} on $(sw_vers -productVersion)"
@@ -141,7 +142,6 @@ for i in $(seq 1 5); do
     PUSHED=true
     break
   fi
-  git rebase --abort || true
   sleep $(($RANDOM % 10))
 done
 
