@@ -6,7 +6,6 @@ class Hhvm415 < Formula
   sha256 "bfd6439cac0124a3d7d20a7cda9924204e402ec351b25619177385bac74defab"
 
   bottle do
-    rebuild 1
     root_url "https://dl.hhvm.com/homebrew-bottles"
   end
 
