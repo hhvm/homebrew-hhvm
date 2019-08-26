@@ -1,18 +1,24 @@
 #!/bin/bash
-set -ex
-
 if [ ! -e Aliases/hhvm ]; then
   echo "Run from root of homebrew-hhvm checkout."
   exit 1
 fi
 
 VERSION="$1"
-NIGHTLY=${NIGHTLY:-false}
+if [[ "$VERSION" =~ ^20[0-9]{2}(\.[0-9]{2}){2}$ ]]; then
+  NIGHTLY=true
+else
+  NIGHTLY=false
+fi
+echo $NIGHTLY
+
 if [ -z "$VERSION" ]; then
 	echo "Usage: $0 VERSION"
 	echo "Example: $0 3.27.2"
 	exit 1
 fi
+
+set -ex
 
 DLDIR=$(mktemp -d)
 

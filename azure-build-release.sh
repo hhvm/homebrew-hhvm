@@ -1,7 +1,12 @@
 #!/bin/bash
-set -ex
 
-echo "Attempting to build version: $1"
+VERSION="$1"
+if [ -z "${VERSION}"]; then
+  VERSION="$(date +%Y.%m.%d)"
+fi
+echo "Attempting to build version: $VERSION"
+
+set -ex
 
 brew upgrade
 brew install gnu-sed awscli gnupg
@@ -50,4 +55,4 @@ git config remote.origin.url git@github.com:hhvm/homebrew-hhvm.git
 git config user.name "HHVM Homebrew Bot (Azure)"
 git config user.email opensource+hhvm-homebrew-bot@fb.com
 
-exec ./build-release.sh "$1"
+exec ./build-release.sh "$VERSION"
