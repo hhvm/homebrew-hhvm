@@ -2,13 +2,11 @@ class HhvmNightly < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
   head "https://github.com/facebook/hhvm.git"
-  url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2019.09.04.tar.gz"
-  sha256 "caa39581a2fa3015ada03a2dd15528c59737f56d2b4bf460bc94da06b0e957b8"
+  url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2019.09.05.tar.gz"
+  sha256 "d2e514c927e09aba140f8ac330755248adf40c9d05559ad1f2068e3ffc500dff"
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "4e70bed907afa8b1d4bb5ee4eeafc8c2f382d5c29321541f598211d26c4ad31f" => :mojave
-    sha256 "b0dc23644f73e9bb5242af75099e6085961ed5a38d72733193d1aa9863485870" => :high_sierra
   end
 
   class << Hardware::CPU
