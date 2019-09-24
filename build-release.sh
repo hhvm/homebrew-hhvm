@@ -31,8 +31,10 @@ if $NIGHTLY; then
   )
   URL="file://${DLDIR}/hhvm-nightly-${VERSION}.tar.gz"
 else
-  aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz" "$DLDIR/"
-  aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
+  aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz" "$DLDIR/" || \
+    aws s3 cp "s3://hhvm-downloads/source/hhvm-${VERSION}.tar.gz" "$DLDIR/"
+  aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/" || \
+    aws s3 cp "s3://hhvm-downloads/source/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
   REAL_URL="https://dl.hhvm.com/source/hhvm-${VERSION}.tar.gz"
   URL="file://${DLDIR}/hhvm-${VERSION}.tar.gz"
 fi
