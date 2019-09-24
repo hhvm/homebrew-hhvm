@@ -55,6 +55,9 @@ else
   if [ "${MAJ_MIN}" = "3.30" ]; then
     # Obsolete format not used for new releases
     RECIPE="$(abspath "Formula/hhvm@3.30-lts.rb")"
+  elif [ "${MAJ_MIN}" = "3.27" ]; then
+    # Obsolete format not used for new releases
+    RECIPE="$(abspath "Formula/hhvm@3.27-lts.rb")"
   else
     RECIPE="$(abspath "Formula/hhvm-${MAJ_MIN}.rb")"
   fi
