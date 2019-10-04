@@ -44,3 +44,7 @@ doesn't work on OS X" to "`--HEAD` doesn't build".
 - [HHVM homepage](http://hhvm.com)
 - [HHVM github project](https://github.com/facebook/hhvm)
 - [Homebrew homepage](http://brew.sh/)
+
+## License
+
+homebrew-hhvm is MIT-licensed.
