@@ -12,6 +12,14 @@ if [ -z "${VERSION}"]; then
 fi
 echo "Attempting to build version: $VERSION"
 
+REQUESTED="$2"
+CURRENT=$(sw_vers -productVersion | cut -d . -f 1,2)
+if [ -n "$REQUESTED" -a "$REQUESTED" != "$CURRENT"]; then
+  echo "Requested build for Mac OS X $REQUESTED but we are on $CURRENT."
+  echo "Nothing to do here, good bye."
+  exit 0
+fi
+
 set -ex
 
 brew upgrade
