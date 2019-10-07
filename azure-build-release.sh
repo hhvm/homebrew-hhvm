@@ -7,7 +7,7 @@
 #
 
 VERSION="$1"
-if [ -z "${VERSION}"]; then
+if [ -z "${VERSION}" ]; then
   VERSION="$(date +%Y.%m.%d)"
 fi
 echo "Attempting to build version: $VERSION"
