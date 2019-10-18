@@ -8,7 +8,7 @@
 
 set -ex
 
-NUM_FILES="$(git diff --name-only HEAD^ HEAD | grep ^builds/ | wc -l)"
+NUM_FILES="$(git diff --name-only HEAD^ HEAD | grep -c ^builds/)"
 if [ "$NUM_FILES" != "1" ]; then
   echo "Invalid commit. Expected 1 file, got $NUM_FILES files."
   exit 1
