@@ -6,6 +6,38 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-echo "Hello world!"
-echo "$GIT_COMMIT_MSG"
-echo "Good bye."
+set -ex
+
+NUM_FILES="$(git diff --name-only HEAD^ HEAD | grep ^builds/ | wc -l)"
+if [ "$NUM_FILES" != "1" ]; then
+  echo "Invalid commit. Expected 1 file, got $NUM_FILES files."
+  exit 1
+fi
+
+FILE="$(git diff --name-only HEAD^ HEAD | grep ^builds/)"
+source "$FILE"
+
+if [ -z "$VERSION" ]; then
+  echo "Committed file must set VERSION."
+  # TODO: exit 1
+fi
+
+CURRENT=$(sw_vers -productVersion | cut -d . -f 1,2)
+if [ -n "$PLATFORM" -a "$PLATFORM" != "$CURRENT" ]; then
+  echo "Requested build for Mac OS X $PLATFORM but we are on $CURRENT."
+  echo "Nothing to do here, good bye."
+  # TODO: exit 0
+fi
+
+git fetch
+git checkout master
+
+# TODO
+echo ./azure-build-release.sh "$VERSION"
+
+echo "DEBUG OUTPUT:"
+echo
+git show
+echo
+echo
+cat ./azure-build-release.sh
