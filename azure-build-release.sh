@@ -19,7 +19,7 @@ source "$FILE"
 
 if [ -z "$VERSION" ]; then
   echo "Committed file must set VERSION."
-  # TODO: exit 1
+  exit 1
 fi
 
 CURRENT=$(sw_vers -productVersion | cut -d . -f 1,2)
@@ -29,8 +29,8 @@ if [ -n "$PLATFORM" -a "$PLATFORM" != "$CURRENT" ]; then
   # TODO: exit 0
 fi
 
-git fetch
 git checkout master
+git pull --rebase
 
 # TODO
 echo ./azure-build-release.sh "$VERSION"
