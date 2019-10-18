@@ -1,0 +1,2 @@
+VERSION="4.42.0"
+PLATFORM="none"

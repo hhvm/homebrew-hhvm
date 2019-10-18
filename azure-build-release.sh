@@ -26,18 +26,10 @@ CURRENT=$(sw_vers -productVersion | cut -d . -f 1,2)
 if [ -n "$PLATFORM" -a "$PLATFORM" != "$CURRENT" ]; then
   echo "Requested build for Mac OS X $PLATFORM but we are on $CURRENT."
   echo "Nothing to do here, good bye."
-  # TODO: exit 0
+  exit 0
 fi
 
 git checkout master
 git pull --rebase
 
-# TODO
-echo ./azure-build-release.sh "$VERSION"
-
-echo "DEBUG OUTPUT:"
-echo
-git show
-echo
-echo
-cat ./azure-build-release.sh
+./azure-build-release.sh "$VERSION"
