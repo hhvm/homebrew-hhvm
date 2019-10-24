@@ -26,11 +26,6 @@ fi
 
 BOTTLE_FLAGS=""
 
-# Allow Mojave bottles to be used on Catalina
-if [[ "$(sw_vers -productVersion)" =~ ^10\.14\.[0-9]+$ ]]; then
-  BOTTLE_FLAGS="--or-later"
-fi
-
 set -ex
 
 DLDIR=$(mktemp -d)
