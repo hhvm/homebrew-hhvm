@@ -11,17 +11,24 @@ if [ ! -e Aliases/hhvm ]; then
 fi
 
 VERSION="$1"
-if [[ "$VERSION" =~ ^20[0-9]{2}(\.[0-9]{2}){2}$ ]]; then
-  NIGHTLY=true
-else
-  NIGHTLY=false
-fi
-echo $NIGHTLY
 
 if [ -z "$VERSION" ]; then
 	echo "Usage: $0 VERSION"
 	echo "Example: $0 3.27.2"
 	exit 1
+fi
+
+if [[ "$VERSION" =~ ^20[0-9]{2}(\.[0-9]{2}){2}$ ]]; then
+  NIGHTLY=true
+else
+  NIGHTLY=false
+fi
+
+BOTTLE_FLAGS=""
+
+# Allow Mojave bottles to be used on Catalina
+if [[ "$(sw_vers -productVersion)" =~ ^10\.14\.[0-9]+$ ]]; then
+  BOTTLE_FLAGS="--or-later"
 fi
 
 set -ex
@@ -134,7 +141,12 @@ brew install --bottle-arch=nehalem --build-bottle "$(basename "$RECIPE")"
 gsed -E -i 's,"file://.+/(hhvm-.+\.tar\.gz)"$,"'"${REAL_URL}"'",' "$RECIPE"
 git commit --amend "$RECIPE" --reuse-message HEAD
 
-brew bottle --force-core-tap --root-url=https://dl.hhvm.com/homebrew-bottles --json "$RECIPE"
+brew bottle \
+  $BOTTLE_FLAGS \
+  --force-core-tap \
+  --root-url=https://dl.hhvm.com/homebrew-bottles \
+  --json \
+  "$RECIPE"
 # local naming != download naming
 for file in *--*.bottle.tar.gz; do
   mv "$file" "$(echo "$file" | sed s/--/-/)"
