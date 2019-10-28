@@ -14,6 +14,7 @@ class HhvmAT330Lts < Formula
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
+    sha256 "8a415e089140591f6c47e4208115f776d21a793afff344fdd595e912346b7af1" => :mojave
   end
 
   class << Hardware::CPU
