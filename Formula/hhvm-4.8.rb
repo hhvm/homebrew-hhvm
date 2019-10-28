@@ -8,13 +8,11 @@ class Hhvm48 < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
   head "https://github.com/facebook/hhvm.git"
-  url "https://dl.hhvm.com/source/hhvm-4.8.5.tar.gz"
-  sha256 "db6b3c7f108196e2475b9d7dbb0327a230d194596629964d106e3669fe247ebc"
+  url "https://dl.hhvm.com/source/hhvm-4.8.6.tar.gz"
+  sha256 "5573a63486f0d61a5f4679bf0670cbcae1825e6d2544425921d7cc95fd7fdede"
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "499e00c087043c8d93a30651b34377182c8c2a319a4ab7da2fa7731424314305" => :mojave
-    sha256 "99d4db549a16d9aa843f1976fdd2307c9454dcea3592ac59e5adc2ffa888e926" => :high_sierra
   end
 
   class << Hardware::CPU
