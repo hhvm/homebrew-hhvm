@@ -8,20 +8,7 @@
 
 set -ex
 
-# Check that this commit is in the correct format to trigger a build.
-NUM_FILES="$(git diff --name-only HEAD^ HEAD | grep -c ^builds/)"
-if [ "$NUM_FILES" != "1" ]; then
-  echo "Invalid commit. Expected 1 file, got $NUM_FILES files."
-  exit 1
-fi
-
-FILE="$(git diff --name-only HEAD^ HEAD | grep ^builds/)"
-source "$FILE"
-
-if [ -z "$VERSION" ]; then
-  echo "Committed file must set VERSION."
-  exit 1
-fi
+source set-build-variables.sh
 
 # If a build for a specific MacOS version was requested, exit on all other
 # versions.
