@@ -26,7 +26,7 @@ try_really_hard() {
   exit 0
 }
 
-try_really_hard apt-get install awscli
+try_really_hard sudo apt-get install awscli
 
 case "$1" in
   success)
