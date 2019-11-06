@@ -28,17 +28,20 @@ try_really_hard() {
 
 try_really_hard sudo apt-get install awscli
 
+TIME_SEC=$(( $(date +%s) - $(git log -1 --pretty=format:%ct) ))
+METADATA="{\"azure_build_id\":\"$AZURE_BUILD_ID\",\"time_sec\":\"$TIME_SEC\"}"
+
 case "$1" in
   success)
     try_really_hard aws stepfunctions send-task-success \
       --task-token "$TASK_TOKEN" \
-      --task-output "{}"
+      --task-output "$METADATA"
     ;;
 
   failure)
     try_really_hard aws stepfunctions send-task-failure \
       --task-token "$TASK_TOKEN" \
-      --cause "{}"
+      --cause "$METADATA"
     ;;
 
   *)
