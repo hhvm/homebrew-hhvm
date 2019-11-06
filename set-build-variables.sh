@@ -8,14 +8,20 @@
 
 set -x
 
-NUM_FILES="$(git diff --name-only HEAD^ HEAD | grep -c ^builds/)"
-if [ "$NUM_FILES" != "1" ]; then
-  echo "Invalid commit. Expected 1 file, got $NUM_FILES files."
+count() {
+  echo $#
+}
+
+FILES=$(
+  git diff --name-only HEAD^ HEAD | grep ^builds/ | xargs ls 2>/dev/null || true
+)
+
+if [ $(count $FILES) != 1 ]; then
+  echo "Invalid commit. Expected 1 file, got $(count $FILES) files."
   exit 1
 fi
 
-FILE="$(git diff --name-only HEAD^ HEAD | grep ^builds/)"
-source "$FILE"
+source $FILES
 
 if [ -z "$VERSION" ]; then
   echo "Committed file must set VERSION."

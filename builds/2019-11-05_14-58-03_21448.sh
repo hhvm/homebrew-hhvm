@@ -1,2 +1,0 @@
-VERSION="2019.11.05"
-PLATFORM="none"
