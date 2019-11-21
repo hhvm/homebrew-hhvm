@@ -14,6 +14,7 @@ class HhvmNightly < Formula
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
     sha256 "feaf491e4c856302090a27e9b22ebcd7dd82e2e60283c0916cdaf20f14321cd3" => :mojave
+    sha256 "4ce4fb5fabc32f0fb746ee572826b03511872e5a3e248c283866c3aba520f98a" => :high_sierra
   end
 
   class << Hardware::CPU
