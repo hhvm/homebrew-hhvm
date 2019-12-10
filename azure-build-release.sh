@@ -14,6 +14,7 @@ echo "Attempting to build version: $VERSION"
 
 set -ex
 
+brew update
 brew upgrade
 brew install gnu-sed awscli gnupg
 brew tap hhvm/hhvm
