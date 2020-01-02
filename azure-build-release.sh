@@ -14,6 +14,9 @@ echo "Attempting to build version: $VERSION"
 
 set -ex
 
+# Azure High Sierra workers have python@2, which causes issues installing
+# python 3
+brew uninstall python@2 || true
 brew update
 brew upgrade
 brew install gnu-sed awscli gnupg
