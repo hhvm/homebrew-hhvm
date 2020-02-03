@@ -24,6 +24,7 @@ if [ -n "$SKIP_IF_DONE" ]; then
   case "$CURRENT" in
     10.13) CODENAME="macos-high_sierra";;
     10.14) CODENAME="macos-mojave";;
+    10.15) CODENAME="macos-catalina";;
     *)
       echo "Unable to determine codename for Mac OS X $CURRENT."
       exit 1
