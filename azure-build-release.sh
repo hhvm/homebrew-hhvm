@@ -14,6 +14,31 @@ echo "Attempting to build version: $VERSION"
 
 set -ex
 
+if [ -n "$PLATFORM" ]; then
+  source os-metadata.inc.sh
+  if [ "$PLATFORM" != "$OS_VERSION" ] && [ "$PLATFORM" != "$OS_CODENAME" ]; then
+    echo "Requested build for Mac OS X $PLATFORM" \
+      "but we are on $OS_VERSION ($OS_CODENAME)."
+    echo "Nothing to do here, good bye."
+    exit 0
+  fi
+fi
+
+if [ -n "$SKIP_IF_DONE" ]; then
+  source os-metadata.inc.sh
+  brew upgrade
+  brew install jq
+  if (
+    curl --retry 5 "https://hhvm.com/api/build-status/$VERSION" \
+      | jq .succeeded | grep "\"macos-$OS_CODENAME\""
+  ); then
+    echo "Package for Mac OS X $OS_VERSION ($OS_CODENAME)" \
+      "has already been successfully built."
+    echo "Nothing to do here, good bye."
+    exit 0
+  fi
+fi
+
 # Azure High Sierra workers have python@2, which causes issues installing
 # python 3
 brew uninstall python@2 || true
