@@ -99,15 +99,15 @@ if [ ! -e "$RECIPE" ]; then
 else
   PREV_VERSION=$(awk -F / '/^  url/{print $NF}' "$RECIPE" | gsed 's/^.\+-\([0-9].\+\)\.tar.\+/\1/')
   if [ "$PREV_VERSION" = "$VERSION" ]; then
-    # if 1, other version was built; no recipe changes needed.
-    if [ "$(grep -c 'sha256.\+ => :' "$RECIPE")" != 1 ]; then
-      # TODO: fix this and uncomment
-      # Delete existing bottle references
-      #gsed -i '/sha256.\+ => :/d' "${RECIPE}"
-      # ...  in case there were no bottles
-      #git commit -m "Deleting stale bottles for ${VERSION}" "$RECIPE" || true
-      echo "Would have deleted stale bottles but this is temporarily disabled."
-    fi
+    # recipe already exists and has the correct HHVM version (presumably because
+    # a package for at least one other OS version was already built); no need to
+    # bump-formula, but we still need to delete any existing bottle references
+    # for the current OS version (from any potential previous bad/outdated
+    # builds)
+    source os-metadata.inc.sh
+    gsed -i "/sha256.\+ => :$OS_CODENAME/d" "${RECIPE}"
+    # || true in case there were no bottles (the common case)
+    git commit -m "Deleting stale bottles for ${VERSION}" "$RECIPE" || true
   else
     # version number changed!
     # --dry-run: no git actions...
