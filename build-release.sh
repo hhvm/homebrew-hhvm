@@ -101,10 +101,12 @@ else
   if [ "$PREV_VERSION" = "$VERSION" ]; then
     # if 1, other version was built; no recipe changes needed.
     if [ "$(grep -c 'sha256.\+ => :' "$RECIPE")" != 1 ]; then
+      # TODO: fix this and uncomment
       # Delete existing bottle references
-      gsed -i '/sha256.\+ => :/d' "${RECIPE}"
+      #gsed -i '/sha256.\+ => :/d' "${RECIPE}"
       # ...  in case there were no bottles
-      git commit -m "Deleting stale bottles for ${VERSION}" "$RECIPE" || true
+      #git commit -m "Deleting stale bottles for ${VERSION}" "$RECIPE" || true
+      echo "Would have deleted stale bottles but this is temporarily disabled."
     fi
   else
     # version number changed!
