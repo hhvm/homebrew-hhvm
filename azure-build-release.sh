@@ -46,7 +46,8 @@ brew update
 brew upgrade
 brew install gnu-sed awscli gnupg
 brew tap hhvm/hhvm
-brew install $(brew deps --include-build hhvm-nightly)
+DEPS=$(brew deps --include-build hhvm-nightly)
+brew install $DEPS || brew link --overwrite $DEPS
 
 gpg --import <<ENDKEY
 -----BEGIN PGP PUBLIC KEY BLOCK-----
