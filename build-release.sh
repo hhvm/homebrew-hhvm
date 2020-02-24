@@ -159,7 +159,9 @@ function commit_and_push_bottle() {
   brew bottle --keep-old --merge --write --no-commit *.json
   git add "$RECIPE"
   git commit -m "Added bottle for ${VERSION} on $(sw_vers -productVersion)"
-  git push origin HEAD:master
+  if [ -z "$SKIP_PUBLISH" ]; then
+    git push origin HEAD:master
+  fi
 }
 
 PUSHED=false
