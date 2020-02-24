@@ -13,5 +13,5 @@ source set-build-variables.sh
 git checkout master
 git pull --rebase
 
-PLATFORM="$PLATFORM" SKIP_IF_DONE="$SKIP_IF_DONE" \
+PLATFORM="$PLATFORM" SKIP_IF_DONE="$SKIP_IF_DONE" SKIP_PUBLISH="$SKIP_PUBLISH" \
   ./azure-build-release.sh "$VERSION"
