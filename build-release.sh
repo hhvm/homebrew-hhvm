@@ -30,6 +30,12 @@ set -ex
 
 DLDIR=$(mktemp -d)
 
+if [ -n "$SKIP_PUBLISH" ]; then
+  ALLOW_MISSING_SIG=true
+else
+  ALLOW_MISSING_SIG=false
+fi
+
 if $NIGHTLY; then
   REAL_URL="https://dl.hhvm.com/source/nightlies/hhvm-nightly-${VERSION}.tar.gz"
   (
@@ -42,11 +48,12 @@ else
   aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz" "$DLDIR/" || \
     aws s3 cp "s3://hhvm-downloads/source/hhvm-${VERSION}.tar.gz" "$DLDIR/"
   aws s3 cp "s3://hhvm-scratch/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/" || \
-    aws s3 cp "s3://hhvm-downloads/source/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/"
+    aws s3 cp "s3://hhvm-downloads/source/hhvm-${VERSION}.tar.gz.sig" "$DLDIR/" || \
+    $ALLOW_MISSING_SIG
   REAL_URL="https://dl.hhvm.com/source/hhvm-${VERSION}.tar.gz"
   URL="file://${DLDIR}/hhvm-${VERSION}.tar.gz"
 fi
-gpg --verify "$DLDIR"/*.sig
+gpg --verify "$DLDIR"/*.sig || $ALLOW_MISSING_SIG
 SHA="$(openssl sha256 "$DLDIR"/*.tar.gz | awk '{print $NF}')"
 
 # realpath is not available on MacOS
