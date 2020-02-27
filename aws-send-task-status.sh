@@ -41,7 +41,8 @@ case "$1" in
   failure)
     try_really_hard aws stepfunctions send-task-failure \
       --task-token "$TASK_TOKEN" \
-      --cause "$METADATA"
+      --cause "$METADATA" \
+      $FAIL_ARGS
     ;;
 
   *)
