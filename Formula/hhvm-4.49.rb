@@ -13,6 +13,7 @@ class Hhvm449 < Formula
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
+    sha256 "a93ce7ba094689bc850f0d3dff86da4f99f9ee36f0784392d64e98b1274f4d7f" => :mojave
   end
 
   class << Hardware::CPU
