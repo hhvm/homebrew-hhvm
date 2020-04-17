@@ -77,7 +77,7 @@ class Hhvm450 < Formula
   depends_on "tbb"
 
   def install
-    cmake_args = %W[
+    cmake_args = std_cmake_args + %W[
       -DCMAKE_INSTALL_PREFIX=#{prefix}
       -DCMAKE_INSTALL_SYSCONFDIR=#{etc}
       -DDEFAULT_CONFIG_DIR=#{etc}/hhvm
