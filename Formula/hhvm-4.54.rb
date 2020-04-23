@@ -10,6 +10,7 @@ class Hhvm454 < Formula
   head "https://github.com/facebook/hhvm.git"
   url "https://dl.hhvm.com/source/hhvm-4.54.0.tar.gz"
   sha256 "1166e5ce7e194d8877005ea7e43cf07f41fb6276222986ecb2628b71efbc5b67"
+  patch :DATA
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
@@ -275,3 +276,189 @@ EOF
     EOS
   end
 end
+
+__END__
+diff --git a/CMake/HPHPFindLibs.cmake b/CMake/HPHPFindLibs.cmake
+--- a/CMake/HPHPFindLibs.cmake
++++ b/CMake/HPHPFindLibs.cmake
+@@ -258,13 +258,6 @@
+ find_package(ZLIB REQUIRED)
+ include_directories(${ZLIB_INCLUDE_DIR})
+
+-# oniguruma
+-find_package(ONIGURUMA REQUIRED)
+-include_directories(${ONIGURUMA_INCLUDE_DIRS})
+-if (ONIGURUMA_STATIC)
+-  add_definitions("-DONIG_EXTERN=extern")
+-endif()
+-
+ # libpthreads
+ find_package(PThread REQUIRED)
+ include_directories(${LIBPTHREAD_INCLUDE_DIRS})
+@@ -362,30 +355,19 @@
+ include_directories(${HPHP_HOME}/hphp)
+
+ macro(hphp_link target)
+-  # oniguruma must remain first for OS X to work -- see below for a somewhat
+-  # dogscience explanation. If you deeply understand this, feel free to fix
+-  # properly; in particular, two-level namespaces on OS X should allow us to
+-  # say *which* copy of the disputed functions we want, but I don' t know
+-  # how to get that to work.
+-  #
+-  # oniguruma has some of its own implementations of POSIX regex functions,
+-  # like regcomp() an regexec(). We use onig everywhere, for both its own
+-  # sepcial functions and for the POSIX replacements. This means that the
+-  # linker needs to pick the implementions of the POSIX regex functions from
+-  # onig, not libc.
++  # oniguruma must be linked first for MacOS's linker to do the right thing -
++  # that's handled in HPHPSetup.cmake
+   #
+-  # On Linux, that works out fine, since the linker sees onig on the link
+-  # line before (implicitly) libc. However, on OS X, despide the manpage for
+-  # ld claiming otherwise about indirect dylib dependencies, as soon as we
+-  # include one of the libs here that pull in libSystem.B, the linker will
+-  # pick the implementations of those functions from libc, not from onig.
+-  # And since we've included the onig headers, which have very slightly
+-  # different definintions for some of the key data structures, things go
+-  # quite awry -- this manifests as infinite loops or crashes when calling
+-  # the PHP split() function.
+-  #
+-  # So make sure to link onig first, so its implementations are picked.
+-  target_link_libraries(${target} ${ONIGURUMA_LIBRARIES})
++  # That only handles linking - we still need to make sure that:
++  # - oniguruma is built first, if needed (so we have the header files)
++  # - we build with the header files in the include path
++  if(APPLE)
++    add_dependencies(${target} onig)
++    target_include_directories(${target} PRIVATE $<TARGET_PROPERTY:onig,INTERFACE_INCLUDE_DIRECTORIES>)
++  else()
++    # Otherwise, the linker does the right thing, which sometimes means putting it after things that use it
++    target_link_libraries(${target} onig)
++  endif()
+
+   if (LIBDL_LIBRARIES)
+     target_link_libraries(${target} ${LIBDL_LIBRARIES})
+diff --git a/hphp/CMakeLists.txt b/hphp/CMakeLists.txt
+--- a/hphp/CMakeLists.txt
++++ b/hphp/CMakeLists.txt
+@@ -82,8 +82,6 @@
+       "${ARCH_INCLUDE_PATH}"
+       "${CCLIENT_INCLUDE_PATH}"
+       "${JEMALLOC_INCLUDE_DIR}/jemalloc"
+-      "${ONIGURUMA_INCLUDE_DIR}/onigposix.h"
+-      "${ONIGURUMA_INCLUDE_DIR}/oniguruma.h"
+       "${LIBPNG_INCLUDE_DIRS}/png.h"
+       "${LDAP_INCLUDE_DIR}/ldap.h"
+       "${LIBSQLITE3_INCLUDE_DIR}/sqlite3ext.h"
+diff --git a/third-party/oniguruma/CMakeLists.txt b/third-party/oniguruma/CMakeLists.txt
+new file mode 100644
+--- /dev/null
++++ b/third-party/oniguruma/CMakeLists.txt
+@@ -0,0 +1,58 @@
++cmake_minimum_required(VERSION 2.8.0)
++include(ExternalProject)
++include(HPHPFunctions)
++
++SET_HHVM_THIRD_PARTY_SOURCE_ARGS(
++  ONIG_SOURCE_ARGS
++  SOURCE_URL
++  "https://github.com/kkos/oniguruma/releases/download/v6.9.5/onig-6.9.5.tar.gz"
++  SOURCE_HASH
++  "SHA512=2bdb24914e7069c6df9ab8a3d0190ddb58440d94b13860cdc36d259062ae0bc2aa85d564a4209ec596fc7ee47b0823d1b817d4f7ffcc3ea60e9870da84491dc1"
++)
++
++set(ONIG_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/onig-prefix")
++ExternalProject_add(
++  onigBuild
++  ${ONIG_SOURCE_ARGS}
++  PREFIX "${ONIG_PREFIX}"
++  CONFIGURE_COMMAND
++  "${ONIG_PREFIX}/src/onigBuild/configure"
++    "--prefix=${ONIG_PREFIX}"
++    --enable-posix-api=yes
++    # Oniguruma requires absolute paths for these. This is a bit unusual.
++    "--libdir=${ONIG_PREFIX}/lib"
++    "--includedir=${ONIG_PREFIX}/include"
++    --disable-dependency-tracking
++    --disable-shared
++    --enable-static
++)
++
++add_library(onig INTERFACE)
++
++find_package(ONIGURUMA)
++set(CMAKE_REQUIRED_INCLUDES ${ONIGURUMA_INCLUDE_DIRS})
++CHECK_CXX_SOURCE_COMPILES(
++"#include <onigposix.h>
++int main() {
++  return 0;
++}"
++  HAVE_ONIGPOSIX_H
++)
++set(CMAKE_REQUIRED_INCLUDES)
++
++if(HAVE_ONIGPOSIX_H)
++  message(STATUS "Using system oniguruma")
++  target_link_libraries(onig INTERFACE ${ONIGURUMA_LIBRARIES})
++  target_include_directories(onig INTERFACE ${ONIGURUMA_INCLUDE_DIRS})
++  if (ONIGURUMA_STATIC)
++    target_compile_definitions(onig INTERFACE "-DONIG_EXTERN=extern")
++  endif()
++else()
++  message(STATUS "Building oniguruma from third-party/")
++  add_dependencies(onig onigBuild)
++  target_include_directories(onig INTERFACE "${ONIG_PREFIX}/include")
++  target_link_libraries(onig INTERFACE
++    "${ONIG_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}onig${CMAKE_STATIC_LIBRARY_SUFFIX}"
++  )
++  target_compile_definitions(onig INTERFACE "-DONIG_EXTERN=extern")
++endif()
+diff --git a/third-party/CMakeLists.txt b/third-party/CMakeLists.txt
+--- a/third-party/CMakeLists.txt
++++ b/third-party/CMakeLists.txt
+@@ -14,6 +14,10 @@
+ #   +----------------------------------------------------------------------+
+ #
+
++# oniguruma/ is special: it is set up from HPHPFindLibs as it must be included
++# *first* to take precedence over libc regexp functions
++add_subdirectory(oniguruma)
++
+ ##### --- header --- #####
+ set(EXTRA_INCLUDE_PATHS)
+ set(THIRD_PARTY_MODULES)
+diff --git a/CMake/HPHPSetup.cmake b/CMake/HPHPSetup.cmake
+--- a/CMake/HPHPSetup.cmake
++++ b/CMake/HPHPSetup.cmake
+@@ -9,7 +9,31 @@
+
+ set(HHVM_WRAP_SYMS)
+
++# Oniguruma ('onig') must be first:
++#
++# oniguruma has some of its own implementations of POSIX regex functions,
++# like regcomp() and regexec(). We use onig everywhere, for both its own
++# special functions and for the POSIX replacements. This means that the
++# linker needs to pick the implementions of the POSIX regex functions from
++# onig, not libc.
++#
++# On Linux, that works out fine, since the linker sees onig on the link
++# line before (implicitly) libc. However, on OS X, despite the manpage for
++# ld claiming otherwise about indirect dylib dependencies, as soon as we
++# include one of the libs here that pull in libSystem.B, the linker will
++# pick the implementations of those functions from libc, not from onig.
++# And since we've included the onig headers, which have very slightly
++# different definintions for some of the key data structures, things go
++# quite awry -- this manifests as infinite loops or crashes when calling
++# the PHP split() function.
++#
++# So make sure to link onig first, so its implementations are picked.
++#
++# Using the generator expression to explicitly pull the path in early, otherwise
++# it gets resolved later and put later in the build arguments, and makes
++# hphp/test/slow/ext_preg segfault.
+ set(HHVM_LINK_LIBRARIES
++  $<TARGET_PROPERTY:onig,INTERFACE_LINK_LIBRARIES>
+   ${HHVM_WRAP_SYMS}
+   hphp_analysis
+   hphp_system
