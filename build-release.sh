@@ -80,6 +80,15 @@ else
   fi
 fi
 
+# delete any existing bottle references for the current OS version (from any
+# potential previous bad/outdated builds)
+source os-metadata.inc.sh
+function delete_existing_bottles() {
+  gsed -i "/sha256.\+ => :$OS_CODENAME/d" "${RECIPE}"
+  # || true in case there were no bottles (the common case)
+  git commit -m "Deleting stale bottles for ${VERSION}" "$RECIPE" || true
+}
+
 if [ ! -e "$RECIPE" ]; then
   if [ "${VERSION}" != "${MAJ_MIN}.0" ]; then
     echo "${RECIPE} does not exist, and ${VERSION} is not a .0 release"
@@ -111,10 +120,7 @@ else
     # bump-formula, but we still need to delete any existing bottle references
     # for the current OS version (from any potential previous bad/outdated
     # builds)
-    source os-metadata.inc.sh
-    gsed -i "/sha256.\+ => :$OS_CODENAME/d" "${RECIPE}"
-    # || true in case there were no bottles (the common case)
-    git commit -m "Deleting stale bottles for ${VERSION}" "$RECIPE" || true
+    delete_existing_bottles
   else
     # version number changed!
     # --dry-run: no git actions...
@@ -155,7 +161,9 @@ brew bottle \
 for file in *--*.bottle.tar.gz; do
   mv "$file" "$(echo "$file" | sed s/--/-/)"
 done
-aws s3 sync ./ s3://hhvm-downloads/homebrew-bottles/ --exclude '*' --include '*.bottle.tar.gz'
+if [ -z "$SKIP_PUBLISH" ]; then
+  aws s3 sync ./ s3://hhvm-downloads/homebrew-bottles/ --exclude '*' --include '*.bottle.tar.gz'
+fi
 
 PRE_BOTTLE_REV="$(git rev-parse HEAD)"
 
@@ -163,6 +171,11 @@ function commit_and_push_bottle() {
   set -e
   git reset --hard "${PRE_BOTTLE_REV}"
   git pull origin master --rebase || (git rebase --abort; git reset --hard origin/master)
+
+  # we've done this above, but that commit may get lost during the rebase if
+  # there are merge conflicts
+  delete_existing_bottles
+
   brew bottle --keep-old --merge --write --no-commit *.json
   git add "$RECIPE"
   git commit -m "Added bottle for ${VERSION} on $(sw_vers -productVersion)"
