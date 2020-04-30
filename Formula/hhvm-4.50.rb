@@ -8,15 +8,12 @@ class Hhvm450 < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
   head "https://github.com/facebook/hhvm.git"
-  url "https://dl.hhvm.com/source/hhvm-4.50.0.tar.gz"
-  sha256 "54cffb25631713abd3d414d9f26b5b316f10e12f78410c36d29304b550197dba"
+  url "https://dl.hhvm.com/source/hhvm-4.50.1.tar.gz"
+  sha256 "e3f3a5167d9bc5326f1af043b5edb4f9642846a3ed44a2192f1cf33b5724e8fb"
   patch :DATA
-  revision 1
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "2d9714f60bc2b6b85a9eda96ad060ae1de2a06904d027c69bec47df9e87eb663" => :catalina
-    sha256 "0f2dfa5a5768e5175a8ed2c795cd19a933cd6d1a5d58d4608d681659b375a5ae" => :mojave
   end
 
   class << Hardware::CPU
