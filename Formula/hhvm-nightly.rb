@@ -24,7 +24,7 @@ class HhvmNightly < Formula
       # but nehalem is 19x slower than sandybrdige at some real-world workloads,
       # and sandybridge is an old enough architecture that we're going to assume
       # that HHVM users have it.
-      upstream_optimization_flags.bind(self).().merge({
+      upstream_optimization_flags.merge({
         nehalem: "-march=sandybridge"
       })
     end
