@@ -3,7 +3,21 @@
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
-#
+
+# Homebrew doesn't support specifying anything more recent than 'nehalem',
+# but nehalem is 19x slower than sandybrdige at some real-world workloads,
+# and sandybridge is an old enough architecture that we're going to assume
+# that HHVM users have it.
+module MonkeyPatchCPU
+  def optimization_flags
+    super.merge({nehalem: "-march=sandybridge"}).freeze
+  end
+end
+
+class << Hardware::CPU
+  prepend MonkeyPatchCPU
+end
+
 class Hhvm455 < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
@@ -15,16 +29,6 @@ class Hhvm455 < Formula
     root_url "https://dl.hhvm.com/homebrew-bottles"
     sha256 "69864a3e6e24c888cffd4bf45babe5b4e87be0cd79fb1cd63f097558bd650ba8" => :catalina
     sha256 "1aec1b1b038455ff6cc113d91b344139be425ef608332959d56bb08221472008" => :mojave
-  end
-
-  class << Hardware::CPU
-    def optimization_flags
-      # Homebrew doesn't support specifying anything more recent than 'nehalem',
-      # but nehalem is 19x slower than sandybrdige at some real-world workloads,
-      # and sandybridge is an old enough architecture that we're going to assume
-      # that HHVM users have it.
-      OPTIMIZATION_FLAGS.merge({nehalem: "-march=sandybridge"})
-    end
   end
 
   option "with-debug", <<~EOS
