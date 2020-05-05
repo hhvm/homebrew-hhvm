@@ -18,15 +18,14 @@ class HhvmNightly < Formula
   end
 
   class << Hardware::CPU
-    alias_method :upstream_optimization_flags, :optimization_flags
     def optimization_flags
       # Homebrew doesn't support specifying anything more recent than 'nehalem',
       # but nehalem is 19x slower than sandybrdige at some real-world workloads,
       # and sandybridge is an old enough architecture that we're going to assume
       # that HHVM users have it.
-      upstream_optimization_flags.merge({
+      @optimization_flags.merge({
         nehalem: "-march=sandybridge"
-      })
+      }).freeze
     end
   end
 
