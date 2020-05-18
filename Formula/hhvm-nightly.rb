@@ -19,7 +19,9 @@ class << Hardware::CPU
 end
 
 # Work around https://github.com/Homebrew/brew/issues/7597
-Homebrew.args.bottle_arch = Homebrew.args.bottle_arch.to_sym
+if Homebrew.args.bottle_arch
+  Homebrew.args.bottle_arch = Homebrew.args.bottle_arch.to_sym
+end
 
 class HhvmNightly < Formula
   desc "JIT compiler and runtime for the Hack language"
