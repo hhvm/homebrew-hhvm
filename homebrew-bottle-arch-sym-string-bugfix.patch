@@ -11,3 +11,17 @@ index e4a15d299..36b84cf50 100644
      else
        Hardware.oldest_cpu
      end
+diff --git a/Library/Homebrew/formula_installer.rb b/Library/Homebrew/formula_installer.rb
+index 18ed7cb43..21946b64f 100644
+--- a/Library/Homebrew/formula_installer.rb
++++ b/Library/Homebrew/formula_installer.rb
+@@ -269,6 +269,9 @@ class FormulaInstaller
+ 
+     return if only_deps?
+ 
++    unless Homebrew.args.bottle_arch.nil?
++      Homebrew.args.bottle_arch = Homebrew.args.bottle_arch.to_sym
++    end
+     if build_bottle? && (arch = Homebrew.args.bottle_arch) && !Hardware::CPU.optimization_flags.include?(arch)
+       raise "Unrecognized architecture for --bottle-arch: #{arch}"
+     end
