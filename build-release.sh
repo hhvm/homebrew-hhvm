@@ -146,7 +146,7 @@ rm -f *.bottle *.json
 # build
 brew upgrade
 cd Formula
-brew install --bottle-arch=nehalem --build-bottle "$(basename "$RECIPE")"
+brew install --bottle-arch=sandybridge --build-bottle "$(basename "$RECIPE")"
 # Update the source-bump commit to reference dl.hhvm.com instead
 gsed -E -i 's,"file://.+/(hhvm-.+\.tar\.gz)"$,"'"${REAL_URL}"'",' "$RECIPE"
 git commit --amend "$RECIPE" --reuse-message HEAD

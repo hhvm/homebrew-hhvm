@@ -45,6 +45,14 @@ brew uninstall python@2 || true
 brew update
 brew upgrade
 brew install gnu-sed awscli gnupg
+
+WORKDIR="$(pwd)"
+(
+  cd /usr/local/Homebrew
+  patch -p1 < "$WORKDIR/homebrew-support-sandybridge.patch"
+  patch -p1 < "$WORKDIR/homebrew-bottle-arch-sym-string-bugfix.patch"
+)
+
 brew tap hhvm/hhvm
 DEPS=$(brew deps --include-build hhvm-nightly)
 brew install $DEPS || brew link --overwrite $DEPS

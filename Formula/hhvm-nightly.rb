@@ -4,25 +4,6 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-# Homebrew doesn't support specifying anything more recent than 'nehalem',
-# but nehalem is 19x slower than sandybrdige at some real-world workloads,
-# and sandybridge is an old enough architecture that we're going to assume
-# that HHVM users have it.
-module MonkeyPatchCPU
-  def optimization_flags
-    super.merge({nehalem: "-march=sandybridge"}).freeze
-  end
-end
-
-class << Hardware::CPU
-  prepend MonkeyPatchCPU
-end
-
-# Work around https://github.com/Homebrew/brew/issues/7597
-if Homebrew.args.bottle_arch
-  Homebrew.args.bottle_arch = Homebrew.args.bottle_arch.to_sym
-end
-
 class HhvmNightly < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
