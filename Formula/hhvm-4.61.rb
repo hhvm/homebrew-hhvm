@@ -13,6 +13,7 @@ class Hhvm461 < Formula
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
+    sha256 "3630337e1c27ae925a08a8a5b08b8c4501e16a271690cfef76554e40e6904392" => :catalina
     sha256 "b8ab1e6867e268a8d2ecf996566b105675a9002eadd66ea5b47ac07efc388fc0" => :mojave
   end
 
