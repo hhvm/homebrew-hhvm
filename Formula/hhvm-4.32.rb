@@ -22,14 +22,12 @@ class Hhvm432 < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
   head "https://github.com/facebook/hhvm.git"
-  url "https://dl.hhvm.com/source/hhvm-4.32.2.tar.gz"
-  sha256 "76091349557569348c17016df609ed0bad7dcea39eefd72fa0a13b237fa719c4"
+  url "https://dl.hhvm.com/source/hhvm-4.32.3.tar.gz"
+  sha256 "6299da85303d729445d909790b30759081cba36e033b5c6ce0dc8779db79b2e4"
   patch :DATA
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "e142b23e9cc9c0be6113b95b42181e4ba08130be56b3e7a4e656df9e4ad1f2dd" => :catalina
-    sha256 "e87d58bc88e879b259d15d3432ecf6fcf077a9529beec81883a183c4ac92f275" => :mojave
   end
 
   option "with-debug", <<~EOS
