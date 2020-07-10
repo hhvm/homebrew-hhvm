@@ -48,6 +48,18 @@ brew install gnu-sed awscli gnupg
 
 WORKDIR="$(pwd)"
 (
+  # This patch makes it possible to build bottles with -march=sandybridge,
+  # which gets us a 20x speedup on realistic workloads, at the cost of
+  # slightly worse compatibility (and having to maintain this patch).
+  #
+  # /usr/local/Homebrew is just a checkout of
+  # https://github.com/Homebrew/brew
+  #
+  # In case of issues applying this patch:
+  # - on a mac, run `brew upgrade`, and then try in your /usr/local/Homebrew
+  # - if not on a mac, you can try working in a fresh checkout of that
+  #   repository; you'll need a mac to test, but for trivial issues that
+  #   might not be needed.
   cd /usr/local/Homebrew
   patch -p1 < "$WORKDIR/homebrew-support-sandybridge.patch"
 )
