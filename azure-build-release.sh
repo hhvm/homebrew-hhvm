@@ -39,9 +39,11 @@ if [ -n "$SKIP_IF_DONE" ]; then
   fi
 fi
 
-# Azure High Sierra workers have python@2, which causes issues installing
-# python 3
-brew uninstall python@2 || true
+# Azure High Sierra workers have:
+#   - python@2, which causes issues installing python 3
+#   - currently conflicting bazel and bazelisk packages, and we don't need
+#     either
+brew uninstall python@2 bazel bazelisk || true
 brew update
 brew upgrade
 brew install gnu-sed awscli gnupg
