@@ -65,6 +65,7 @@ class HhvmNightly < Formula
   depends_on "postgresql"
   depends_on "sqlite"
   depends_on "tbb"
+  depends_on "zstd"
 
   def install
     cmake_args = std_cmake_args + %W[
