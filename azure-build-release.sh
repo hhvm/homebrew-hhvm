@@ -48,11 +48,12 @@ brew update
 brew upgrade
 brew install gnu-sed awscli gnupg
 
-WORKDIR="$(pwd)"
-(
-  cd /usr/local/Homebrew
-  patch -p1 < "$WORKDIR/brew-bump-formula-fix.patch" || true
-)
+# uncomment if we ever need another Homebrew patch
+#WORKDIR="$(pwd)"
+#(
+#  cd /usr/local/Homebrew
+#  patch -p1 < "$WORKDIR/filename.patch" || true
+#)
 
 brew tap hhvm/hhvm
 DEPS=$(brew deps --include-build hhvm-nightly)
