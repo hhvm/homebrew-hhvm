@@ -123,11 +123,10 @@ else
     delete_existing_bottles
   else
     # version number changed!
-    # --dry-run: no git actions...
-    # --write: ... but write to the local repo anyway
+    # --write: Make the expected file modifications without taking any Git actions.
     brew bump-formula-pr \
-      --dry-run \
       --write \
+      --no-audit \
       --url="${URL}" \
       --sha256="${SHA}" \
       "$RECIPE"
