@@ -44,6 +44,9 @@ fi
 #   - currently conflicting bazel and bazelisk packages, and we don't need
 #     either
 brew uninstall python@2 bazel bazelisk || true
+# ... and Catalina has an `openssl` 1.0 package that the 1.1 package doesn't
+#   play nicely with upgrading from as of 2020-10-12
+brew uninstall openssl || true
 brew update
 brew upgrade
 brew install gnu-sed awscli gnupg

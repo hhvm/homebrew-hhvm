@@ -59,7 +59,7 @@ class HhvmNightly < Formula
   depends_on "lz4"
   depends_on "mcrypt"
   depends_on "oniguruma"
-  depends_on "openssl"
+  depends_on "openssl@1.1"
   depends_on "pcre" # Used for Hack but not HHVM build - see #116
   depends_on "postgresql"
   depends_on "sqlite"
