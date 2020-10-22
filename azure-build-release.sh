@@ -43,10 +43,14 @@ fi
 #   - python@2, which causes issues installing python 3
 #   - currently conflicting bazel and bazelisk packages, and we don't need
 #     either
-brew uninstall python@2 bazel bazelisk || true
+for PKG in python@2 bazel bazelisk; do
+  brew uninstall $PKG || true
+done
 # ... and Catalina has an `openssl` 1.0 package that the 1.1 package doesn't
 #   play nicely with upgrading from as of 2020-10-12
 brew uninstall openssl || true
+# ... and as of 2020-10-22, the origin is removed
+( cd /usr/local/Homebrew; git remote add origin https://github.com/Homebrew/brew.git )
 brew update
 brew upgrade
 brew install gnu-sed awscli gnupg
