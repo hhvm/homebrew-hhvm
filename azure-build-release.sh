@@ -50,7 +50,8 @@ done
 #   play nicely with upgrading from as of 2020-10-12
 brew uninstall openssl || true
 brew upgrade
-brew install gnu-sed awscli gnupg
+# awscli is also needed, but now pre-installed, not via brew
+brew install gnu-sed gnupg
 
 # uncomment if we ever need another Homebrew patch
 #WORKDIR="$(pwd)"
