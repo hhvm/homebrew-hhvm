@@ -49,9 +49,6 @@ done
 # ... and Catalina has an `openssl` 1.0 package that the 1.1 package doesn't
 #   play nicely with upgrading from as of 2020-10-12
 brew uninstall openssl || true
-# ... and as of 2020-10-22, the origin is removed
-( cd /usr/local/Homebrew; git remote show origin )
-brew update
 brew upgrade
 brew install gnu-sed awscli gnupg
 
