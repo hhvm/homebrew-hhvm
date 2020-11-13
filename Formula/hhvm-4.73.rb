@@ -29,7 +29,7 @@ class Hhvm473 < Formula
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "cmake" => :build
-  depends_on "double-conversion" => :build
+  depends_on "double-conversion"
   depends_on "dwarfutils" => :build
   depends_on "gawk" => :build
   depends_on "libelf" => :build
