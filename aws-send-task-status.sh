@@ -26,6 +26,7 @@ try_really_hard() {
   exit 0
 }
 
+try_really_hard sudo apt-get update
 try_really_hard sudo apt-get install awscli
 
 TIME_SEC=$(( $(date +%s) - $(git log -1 --pretty=format:%ct) ))
