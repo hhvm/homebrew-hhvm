@@ -133,12 +133,12 @@ else
     #  --sha256="${SHA}" \
     #  "$RECIPE"
     NEW_LINE="  url \"$URL\""
-    gsed -i 's,^  url "[^"]*"$,'"$NEW_LINE", Formula/hhvm-nightly.rb
+    gsed -i 's,^  url "[^"]*"$,'"$NEW_LINE", "$RECIPE"
     # fail if gsed above didn't replace anything
-    grep -q "$NEW_LINE" Formula/hhvm-nightly.rb
+    grep -q "$NEW_LINE" "$RECIPE"
     NEW_LINE="  sha256 \"$SHA\""
-    gsed -i 's,^  sha256 "[0-9a-f]*"$,'"$NEW_LINE", Formula/hhvm-nightly.rb
-    grep -q "$NEW_LINE" Formula/hhvm-nightly.rb
+    gsed -i 's,^  sha256 "[0-9a-f]*"$,'"$NEW_LINE", "$RECIPE"
+    grep -q "$NEW_LINE" "$RECIPE"
     # Delete existing bottle references
     gsed -i '/sha256.\+ => :/d' "${RECIPE}"
     git commit -m "Updated $(basename "$RECIPE") recipe to ${VERSION}" "$RECIPE"
