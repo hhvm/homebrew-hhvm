@@ -123,13 +123,22 @@ else
     delete_existing_bottles
   else
     # version number changed!
+    # FIXME: This brew command is currently broken, but if it gets fixed we
+    # should use it again instead of the gsed commands below.
     # --write: Make the expected file modifications without taking any Git actions.
-    brew bump-formula-pr \
-      --write \
-      --no-audit \
-      --url="${URL}" \
-      --sha256="${SHA}" \
-      "$RECIPE"
+    # brew bump-formula-pr \
+    #  --write \
+    #  --no-audit \
+    #  --url="${URL}" \
+    #  --sha256="${SHA}" \
+    #  "$RECIPE"
+    NEW_LINE="  url \"$URL\""
+    gsed -i 's,^  url "[^"]*"$,'"$NEW_LINE", Formula/hhvm-nightly.rb
+    # fail if gsed above didn't replace anything
+    grep -q "$NEW_LINE" Formula/hhvm-nightly.rb
+    NEW_LINE="  sha256 \"$SHA\""
+    gsed -i 's,^  sha256 "[0-9a-f]*"$,'"$NEW_LINE", Formula/hhvm-nightly.rb
+    grep -q "$NEW_LINE" Formula/hhvm-nightly.rb
     # Delete existing bottle references
     gsed -i '/sha256.\+ => :/d' "${RECIPE}"
     git commit -m "Updated $(basename "$RECIPE") recipe to ${VERSION}" "$RECIPE"
