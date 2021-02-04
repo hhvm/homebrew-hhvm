@@ -4,20 +4,6 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-# Homebrew doesn't support specifying anything more recent than 'nehalem',
-# but nehalem is 19x slower than sandybrdige at some real-world workloads,
-# and sandybridge is an old enough architecture that we're going to assume
-# that HHVM users have it.
-module MonkeyPatchCPU
-  def optimization_flags
-    super.merge({nehalem: "-march=sandybridge"}).freeze
-  end
-end
-
-class << Hardware::CPU
-  prepend MonkeyPatchCPU
-end
-
 class Hhvm439 < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
@@ -44,7 +30,6 @@ class Hhvm439 < Formula
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "cmake" => :build
-  depends_on "double-conversion"
   depends_on "dwarfutils" => :build
   depends_on "gawk" => :build
   depends_on "libelf" => :build
@@ -58,6 +43,8 @@ class Hhvm439 < Formula
   # brittle
   depends_on "icu4c" => :build
   depends_on "boost"
+  depends_on "double-conversion"
+:xa
   depends_on "freetype"
   depends_on "gd"
   depends_on "gettext"
@@ -75,15 +62,15 @@ class Hhvm439 < Formula
   depends_on "lz4"
   depends_on "mcrypt"
   depends_on "oniguruma"
-  depends_on "openssl"
+  depends_on "openssl@1.1"
   depends_on "pcre" # Used for Hack but not HHVM build - see #116
   depends_on "postgresql"
   depends_on "sqlite"
   depends_on "tbb"
+  depends_on "zstd"
 
   def install
-    cmake_args = %W[
-      -DCMAKE_INSTALL_PREFIX=#{prefix}
+    cmake_args = std_cmake_args + %W[
       -DCMAKE_INSTALL_SYSCONFDIR=#{etc}
       -DDEFAULT_CONFIG_DIR=#{etc}/hhvm
     ]
