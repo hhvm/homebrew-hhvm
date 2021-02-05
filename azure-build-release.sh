@@ -49,6 +49,7 @@ done
 # ... and Catalina has an `openssl` 1.0 package that the 1.1 package doesn't
 #   play nicely with upgrading from as of 2020-10-12
 brew uninstall openssl || true
+brew update
 brew upgrade
 # awscli is also needed, but now pre-installed, not via brew
 brew install gnu-sed gnupg
