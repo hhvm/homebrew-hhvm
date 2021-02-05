@@ -7,10 +7,12 @@
 #
 
 VERSION="$1"
+REBUILD_NUM="$2"
 if [ -z "${VERSION}" ]; then
   VERSION="$(date +%Y.%m.%d)"
 fi
 echo "Attempting to build version: $VERSION"
+echo "Rebuild number: $REBUILD_NUM"
 
 set -ex
 
@@ -107,4 +109,4 @@ git config remote.origin.url git@github.com:hhvm/homebrew-hhvm.git
 git config user.name "HHVM Homebrew Bot (Azure)"
 git config user.email opensource+hhvm-homebrew-bot@fb.com
 
-exec ./build-release.sh "$VERSION"
+exec ./build-release.sh "$VERSION" "$REBUILD_NUM"

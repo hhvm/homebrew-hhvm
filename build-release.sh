@@ -11,11 +11,13 @@ if [ ! -e Aliases/hhvm ]; then
 fi
 
 VERSION="$1"
+REBUILD_NUM="$2"
 
 if [ -z "$VERSION" ]; then
-	echo "Usage: $0 VERSION"
-	echo "Example: $0 3.27.2"
-	exit 1
+  echo "Usage: $0 VERSION [REBUILD_NUM]"
+  echo "Example: $0 3.27.2"
+  echo "Example: $0 3.27.2 1"
+  exit 1
 fi
 
 if [[ "$VERSION" =~ ^20[0-9]{2}(\.[0-9]{2}){2}$ ]]; then
@@ -83,10 +85,17 @@ fi
 # delete any existing bottle references for the current OS version (from any
 # potential previous bad/outdated builds)
 source os-metadata.inc.sh
-function delete_existing_bottles() {
-  gsed -i "/sha256.\+ => :$OS_CODENAME/d" "${RECIPE}"
+function delete_existing_bottles_and_check_rebuild_num() {
+  gsed -i "/sha256.* :$OS_CODENAME/d" "${RECIPE}"
+  gsed -i "/sha256.* $OS_CODENAME:/d" "${RECIPE}"
+  # Remove old rebuild number if present
+  gsed -i '/^ *rebuild/d' "${RECIPE}"
+  if [ -n "$REBUILD_NUM" ]; then
+    gsed -i '/^ *bottle do$/a \    rebuild '"$REBUILD_NUM"
+  fi
   # || true in case there were no bottles (the common case)
   git commit -m "Deleting stale bottles for ${VERSION}" "$RECIPE" || true
+  git show
 }
 
 if [ ! -e "$RECIPE" ]; then
@@ -94,13 +103,18 @@ if [ ! -e "$RECIPE" ]; then
     echo "${RECIPE} does not exist, and ${VERSION} is not a .0 release"
     exit 1
   fi
+  if [ -n "$REBUILD_NUM" ]; then
+    echo "$VERSION is a new release, rebuild number ($REBUILD_NUM) must be empty"
+    exit 1
+  fi
   URL_LINE="  url \"${URL}\""
   SHA_LINE="  sha256 \"${SHA}\""
   sed "s/class HhvmNightly /class Hhvm${MAJ_MIN//.} /" \
     "$(dirname "$RECIPE")/hhvm-nightly.rb" \
-    | gsed '/sha256.\+ => :/d' \
+    | gsed '/sha256 .*:/d' \
     | gsed "s#^\s*url \".\+\"\$#${URL_LINE}#" \
     | gsed "s#^\s*sha256 \".\+\"\$#${SHA_LINE}#" \
+    | gsed '/^ *rebuild/d' \
     > "$RECIPE"
   # sanity check that the gsed replacements above were correctly applied
   if [ "$(grep -c "^${URL_LINE}\$" "$RECIPE")" != 1 -o \
@@ -112,6 +126,7 @@ if [ ! -e "$RECIPE" ]; then
   git add "$RECIPE"
   git add Aliases/hhvm
   git commit -m "Added recipe for ${VERSION}"
+  git show | head -n 50
 else
   PREV_VERSION=$(awk -F / '/^  url/{print $NF}' "$RECIPE" | gsed 's/^.\+-\([0-9].\+\)\.tar.\+/\1/')
   if [ "$PREV_VERSION" = "$VERSION" ]; then
@@ -120,9 +135,13 @@ else
     # bump-formula, but we still need to delete any existing bottle references
     # for the current OS version (from any potential previous bad/outdated
     # builds)
-    delete_existing_bottles
+    delete_existing_bottles_and_check_rebuild_num
   else
     # version number changed!
+    if [ -n "$REBUILD_NUM" ]; then
+      echo "$VERSION is a new version, rebuild number ($REBUILD_NUM) must be empty"
+      exit 1
+    fi
     # FIXME: This brew command is currently broken, but if it gets fixed we
     # should use it again instead of the gsed commands below.
     # --write: Make the expected file modifications without taking any Git actions.
@@ -140,8 +159,11 @@ else
     gsed -i 's,^  sha256 "[0-9a-f]*"$,'"$NEW_LINE", "$RECIPE"
     grep -q "$NEW_LINE" "$RECIPE"
     # Delete existing bottle references
-    gsed -i '/sha256.\+ => :/d' "${RECIPE}"
+    gsed -i '/sha256 .*:/d' "${RECIPE}"
+    # Remove rebuild number if present
+    gsed -i '/^ *rebuild/d' "${RECIPE}"
     git commit -m "Updated $(basename "$RECIPE") recipe to ${VERSION}" "$RECIPE"
+    git show
   fi
 fi
 
@@ -158,6 +180,7 @@ brew install --bottle-arch=sandybridge --build-bottle "$(basename "$RECIPE")"
 # Update the source-bump commit to reference dl.hhvm.com instead
 gsed -E -i 's,"file://.+/(hhvm-.+\.tar\.gz)"$,"'"${REAL_URL}"'",' "$RECIPE"
 git commit --amend "$RECIPE" --reuse-message HEAD
+git show | head -n 50
 
 brew bottle \
   $BOTTLE_FLAGS \
@@ -182,11 +205,12 @@ function commit_and_push_bottle() {
 
   # we've done this above, but that commit may get lost during the rebase if
   # there are merge conflicts
-  delete_existing_bottles
+  delete_existing_bottles_and_check_rebuild_num
 
   brew bottle --keep-old --merge --write --no-commit *.json
   git add "$RECIPE"
   git commit -m "Added bottle for ${VERSION} on $(sw_vers -productVersion)"
+  git show
   if [ -z "$SKIP_PUBLISH" ]; then
     git push origin HEAD:master
   fi
