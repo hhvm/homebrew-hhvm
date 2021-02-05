@@ -91,7 +91,7 @@ function delete_existing_bottles_and_check_rebuild_num() {
   # Remove old rebuild number if present
   gsed -i '/^ *rebuild/d' "${RECIPE}"
   if [ -n "$REBUILD_NUM" ]; then
-    gsed -i '/^ *bottle do$/a \    rebuild '"$REBUILD_NUM"
+    gsed -i '/^ *bottle do$/a \    rebuild '"$REBUILD_NUM" "${RECIPE}"
   fi
   # || true in case there were no bottles (the common case)
   git commit -m "Deleting stale bottles for ${VERSION}" "$RECIPE" || true
