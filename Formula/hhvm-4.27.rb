@@ -27,8 +27,8 @@ class Hhvm427 < Formula
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 "d2df23e360bcf6bf7cf74dd37eddcfdfb4492d9cbe6e70e5c75429a555dacd3a" => :mojave
-    sha256 "383b8e851feaa646f718c368660a93a08e58eaa4deeb1685256ba459ebd06d9b" => :high_sierra
+    sha256 mojave: "d2df23e360bcf6bf7cf74dd37eddcfdfb4492d9cbe6e70e5c75429a555dacd3a"
+    sha256 high_sierra: "383b8e851feaa646f718c368660a93a08e58eaa4deeb1685256ba459ebd06d9b"
   end
 
   option "with-debug", <<~EOS
