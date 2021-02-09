@@ -85,14 +85,11 @@ fi
 # delete any existing bottle references for the current OS version (from any
 # potential previous bad/outdated builds)
 source os-metadata.inc.sh
-function delete_existing_bottles_and_check_rebuild_num() {
+function delete_existing_bottles_and_rebuild_num() {
   gsed -i "/sha256.* :$OS_CODENAME/d" "${RECIPE}"
   gsed -i "/sha256.* $OS_CODENAME:/d" "${RECIPE}"
   # Remove old rebuild number if present
   gsed -i '/^ *rebuild/d' "${RECIPE}"
-  if [ -n "$REBUILD_NUM" ]; then
-    gsed -i '/^ *bottle do$/a \    rebuild '"$REBUILD_NUM" "${RECIPE}"
-  fi
   # || true in case there were no bottles (the common case)
   git commit -m "Deleting stale bottles for ${VERSION}" "$RECIPE" || true
   git show
@@ -135,7 +132,7 @@ else
     # bump-formula, but we still need to delete any existing bottle references
     # for the current OS version (from any potential previous bad/outdated
     # builds)
-    delete_existing_bottles_and_check_rebuild_num
+    delete_existing_bottles_and_rebuild_num
   else
     # version number changed!
     if [ -n "$REBUILD_NUM" ]; then
@@ -192,8 +189,15 @@ brew bottle \
 for file in *--*.bottle.tar.gz; do
   mv "$file" "$(echo "$file" | sed s/--/-/)"
 done
+
+if [ -n "$REBUILD_NUM" ]; then
+  for file in *--*.bottle.tar.gz; do
+    mv "$file" "$(echo "$file" | sed s/.bottle.tar.gz/.bottle.$REBUILD_NUM.tar.gz/)"
+  done
+fi
+
 if [ -z "$SKIP_PUBLISH" ]; then
-  aws s3 sync ./ s3://hhvm-downloads/homebrew-bottles/ --exclude '*' --include '*.bottle.tar.gz'
+  aws s3 sync ./ s3://hhvm-downloads/homebrew-bottles/ --exclude '*' --include '*.bottle*.tar.gz'
 fi
 
 PRE_BOTTLE_REV="$(git rev-parse HEAD)"
@@ -205,9 +209,17 @@ function commit_and_push_bottle() {
 
   # we've done this above, but that commit may get lost during the rebase if
   # there are merge conflicts
-  delete_existing_bottles_and_check_rebuild_num
+  delete_existing_bottles_and_rebuild_num
 
   brew bottle --keep-old --merge --write --no-commit *.json
+
+  # Manually update the rebuild number because brew cannot handle rebuild
+  # numbers in formulas without taps.
+  # https://github.com/Homebrew/brew/blob/3.0.0/Library/Homebrew/dev-cmd/bottle.rb#L273
+  if [ -n "$REBUILD_NUM" ]; then
+    gsed -i '/^ *bottle do$/a \    rebuild '"$REBUILD_NUM" "$RECIPE"
+  fi
+
   git add "$RECIPE"
   git commit -m "Added bottle for ${VERSION} on $(sw_vers -productVersion)"
   git show
