@@ -184,7 +184,6 @@ git show | head -n 50
 
 brew bottle \
   $BOTTLE_FLAGS \
-  --keep-old \
   --force-core-tap \
   --root-url=https://dl.hhvm.com/homebrew-bottles \
   --json \
