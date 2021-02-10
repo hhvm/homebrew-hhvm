@@ -191,7 +191,7 @@ for file in *--*.bottle.tar.gz; do
 done
 
 if [ -n "$REBUILD_NUM" ]; then
-  for file in *--*.bottle.tar.gz; do
+  for file in *.bottle.tar.gz; do
     mv "$file" "$(echo "$file" | sed s/.bottle.tar.gz/.bottle.$REBUILD_NUM.tar.gz/)"
   done
 fi
