@@ -12,9 +12,7 @@ class Hhvm491 < Formula
   sha256 "a4f22cbcd90f05cda685e7b1162501e354c9a5eca91e4d06eb6f9e7ed167100b"
 
   bottle do
-    rebuild 1
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 catalina: "d5d08f0dbde78af2f3fd71d6ed4d1e01bcf3b9008accd7a083c35b3e34e63899"
     sha256 mojave:   "24eaa493e7a17359ff75c9907620eabf88e1cdf3caa878e3f8fb642739548c16"
   end
 
