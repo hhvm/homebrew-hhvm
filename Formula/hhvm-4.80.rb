@@ -29,7 +29,6 @@ class Hhvm480 < Formula
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "cmake" => :build
-  depends_on "double-conversion"
   depends_on "dwarfutils" => :build
   depends_on "gawk" => :build
   depends_on "libelf" => :build
@@ -43,6 +42,8 @@ class Hhvm480 < Formula
   # brittle
   depends_on "icu4c" => :build
   depends_on "boost"
+  depends_on "double-conversion"
+:xa
   depends_on "freetype"
   depends_on "gd"
   depends_on "gettext"
