@@ -13,6 +13,7 @@ class HhvmNightly < Formula
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
+    sha256 mojave: "c808ed750187be796efc35d00529be23705e359a7ac3151290ab8703c1e69423"
   end
 
   option "with-debug", <<~EOS
