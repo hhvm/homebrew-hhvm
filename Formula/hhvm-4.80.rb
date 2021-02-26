@@ -8,8 +8,8 @@ class Hhvm480 < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
   head "https://github.com/facebook/hhvm.git"
-  url "https://dl.hhvm.com/source/hhvm-4.80.2.tar.gz"
-  sha256 "97cd062abb88712ff477a6e982ce0d7bb8ef11f6fa88b0c04cc689002b643013"
+  url "https://dl.hhvm.com/source/hhvm-4.80.3.tar.gz"
+  sha256 "efe3d8344320f56cfe51420f2b47adb1c627bb94d51348c90c375e247102b8e6"
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
