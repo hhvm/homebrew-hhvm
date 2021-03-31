@@ -10,6 +10,7 @@ class HhvmNightly < Formula
   head "https://github.com/facebook/hhvm.git"
   url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2021.03.30.tar.gz"
   sha256 "5018ea408c262a270e4b830dada63d5f34d9ef1a65191c404407bb56881651cd"
+  patch :DATA
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
@@ -267,3 +268,18 @@ EOF
     EOS
   end
 end
+
+__END__
+diff --git a/hphp/hack/scripts/build_rust_to_ocaml.sh b/hphp/hack/scripts/build_rust_to_ocaml.sh
+index 8e894a590a..3094a0a2fc 100755
+--- a/hphp/hack/scripts/build_rust_to_ocaml.sh
++++ b/hphp/hack/scripts/build_rust_to_ocaml.sh
+@@ -36,7 +36,7 @@ fi
+   cp ./.cargo/Cargo.toml.ocaml_build ./Cargo.toml && \
+   cargo build \
+     $LOCK_FLAG \
+-    --quiet \
++    --verbose \
+     --target-dir "${TARGET_DIR}" \
+     --package "$pkg" \
+     $profile_flags \
