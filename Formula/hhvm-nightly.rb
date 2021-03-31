@@ -274,16 +274,6 @@ diff --git a/hphp/hack/CMakeLists.txt b/hphp/hack/CMakeLists.txt
 index b95abc701f..2d8a4dee4c 100644
 --- a/hphp/hack/CMakeLists.txt
 +++ b/hphp/hack/CMakeLists.txt
-@@ -73,8 +73,7 @@ else()
-   # wrong version.  We can't just add the new path and a native_lib because we
-   # can't control the order (and -l won't accept the raw path to the lib).  By
-   # doing it this way we specify the path explicitly.
--  get_target_property(LZ4_LIBS lz4 INTERFACE_LINK_LIBRARIES)
--  list(APPEND extra_link_opts ${LZ4_LIBS})
-+  get_target_property(LZ4_LIBS lz4 INTERFACE_LINK_LIBRARIES) list(APPEND extra_link_opts ${LZ4_LIBS})
- endif()
- 
- if(PC_SQLITE3_FOUND)
 @@ -125,7 +124,9 @@ add_custom_target(
      ${CARGO_BUILD} compile_ffi compile_ffi
    COMMENT "Compiling Rust FFI"
