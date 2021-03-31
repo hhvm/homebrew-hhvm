@@ -10,7 +10,6 @@ class HhvmNightly < Formula
   head "https://github.com/facebook/hhvm.git"
   url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2021.03.31.tar.gz"
   sha256 "f6230e5983d739afc789f6605e519d4c50c0509556cbcb27cb0c1de25754a942"
-  patch :DATA
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
@@ -268,44 +267,3 @@ EOF
     EOS
   end
 end
-
-__END__
-diff --git a/hphp/hack/CMakeLists.txt b/hphp/hack/CMakeLists.txt
-index b95abc701f..2d8a4dee4c 100644
---- a/hphp/hack/CMakeLists.txt
-+++ b/hphp/hack/CMakeLists.txt
-@@ -125,7 +124,9 @@ add_custom_target(
-     ${CARGO_BUILD} compile_ffi compile_ffi
-   COMMENT "Compiling Rust FFI"
- )
--
-+# Not a true dependency, but we want to make sure we don't have two cargo
-+# processes running on the FFI files at the same time
-+add_dependencies(hack_dune hack_ffi)
- add_dependencies(hack_ffi rustc cargo)
- 
- if (NOT LZ4_FOUND)
-diff --git a/hphp/hack/scripts/build_rust_to_ocaml.sh b/hphp/hack/scripts/build_rust_to_ocaml.sh
-index 8e894a590a..a0ef98a498 100755
---- a/hphp/hack/scripts/build_rust_to_ocaml.sh
-+++ b/hphp/hack/scripts/build_rust_to_ocaml.sh
-@@ -28,6 +28,9 @@ profile=debug; profile_flags=
- if [ -z ${HACKDEBUG+1} ]; then
-   profile=release; profile_flags="--release"
- fi
-+
-+mkdir -p "${TARGET_DIR}/${profile}"
-+
- ( # add CARGO_BIN to PATH so that rustc and other tools can be invoked
-   [[ -n "$CARGO_BIN" ]] && PATH="$CARGO_BIN:$PATH";
-   trap "[ -e ./Cargo.toml ] && rm ./Cargo.toml" EXIT
-@@ -36,7 +39,7 @@ fi
-   cp ./.cargo/Cargo.toml.ocaml_build ./Cargo.toml && \
-   cargo build \
-     $LOCK_FLAG \
--    --quiet \
-+    --verbose \
-     --target-dir "${TARGET_DIR}" \
-     --package "$pkg" \
-     $profile_flags \
-
