@@ -270,11 +270,46 @@ EOF
 end
 
 __END__
+diff --git a/hphp/hack/CMakeLists.txt b/hphp/hack/CMakeLists.txt
+index b95abc701f..2d8a4dee4c 100644
+--- a/hphp/hack/CMakeLists.txt
++++ b/hphp/hack/CMakeLists.txt
+@@ -73,8 +73,7 @@ else()
+   # wrong version.  We can't just add the new path and a native_lib because we
+   # can't control the order (and -l won't accept the raw path to the lib).  By
+   # doing it this way we specify the path explicitly.
+-  get_target_property(LZ4_LIBS lz4 INTERFACE_LINK_LIBRARIES)
+-  list(APPEND extra_link_opts ${LZ4_LIBS})
++  get_target_property(LZ4_LIBS lz4 INTERFACE_LINK_LIBRARIES) list(APPEND extra_link_opts ${LZ4_LIBS})
+ endif()
+ 
+ if(PC_SQLITE3_FOUND)
+@@ -125,7 +124,9 @@ add_custom_target(
+     ${CARGO_BUILD} compile_ffi compile_ffi
+   COMMENT "Compiling Rust FFI"
+ )
+-
++# Not a true dependency, but we want to make sure we don't have two cargo
++# processes running on the FFI files at the same time
++add_dependencies(hack_dune hack_ffi)
+ add_dependencies(hack_ffi rustc cargo)
+ 
+ if (NOT LZ4_FOUND)
 diff --git a/hphp/hack/scripts/build_rust_to_ocaml.sh b/hphp/hack/scripts/build_rust_to_ocaml.sh
-index 8e894a590a..3094a0a2fc 100755
+index 8e894a590a..a0ef98a498 100755
 --- a/hphp/hack/scripts/build_rust_to_ocaml.sh
 +++ b/hphp/hack/scripts/build_rust_to_ocaml.sh
-@@ -36,7 +36,7 @@ fi
+@@ -28,6 +28,9 @@ profile=debug; profile_flags=
+ if [ -z ${HACKDEBUG+1} ]; then
+   profile=release; profile_flags="--release"
+ fi
++
++mkdir -p "${TARGET_DIR}/${profile}"
++
+ ( # add CARGO_BIN to PATH so that rustc and other tools can be invoked
+   [[ -n "$CARGO_BIN" ]] && PATH="$CARGO_BIN:$PATH";
+   trap "[ -e ./Cargo.toml ] && rm ./Cargo.toml" EXIT
+@@ -36,7 +39,7 @@ fi
    cp ./.cargo/Cargo.toml.ocaml_build ./Cargo.toml && \
    cargo build \
      $LOCK_FLAG \
@@ -283,3 +318,4 @@ index 8e894a590a..3094a0a2fc 100755
      --target-dir "${TARGET_DIR}" \
      --package "$pkg" \
      $profile_flags \
+
