@@ -13,6 +13,7 @@ class HhvmNightly < Formula
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
+    sha256 catalina: "c1cceadb71fc3f073845a952e07a8b0393ffdcda911836af2fb137796674f799"
   end
 
   option "with-debug", <<~EOS
