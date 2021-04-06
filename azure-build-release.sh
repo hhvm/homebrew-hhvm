@@ -105,6 +105,9 @@ MM3vIX/Fc/kuuaCWi2ysyKf7jyi/RiVIAKuLbxAB8eHsyo2G5lA=
 -----END PGP PUBLIC KEY BLOCK-----
 ENDKEY
 
+HOMEBREW_PREFIX="$(brew config --quiet | awk '/HOMEBREW_PREFIX/ {print $NF}')"
+cd "$HOMEBREW_PREFIX/Homebrew/Library/Taps/hhvm/homebrew-hhvm"
+
 git config remote.origin.url git@github.com:hhvm/homebrew-hhvm.git
 git config user.name "HHVM Homebrew Bot (Azure)"
 git config user.email opensource+hhvm-homebrew-bot@fb.com

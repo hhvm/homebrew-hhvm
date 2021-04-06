@@ -181,7 +181,6 @@ git show | head -n 50
 
 brew bottle \
   $BOTTLE_FLAGS \
-  --force-core-tap \
   --root-url=https://dl.hhvm.com/homebrew-bottles \
   --json \
   "$(basename "$RECIPE" .rb)"
