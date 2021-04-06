@@ -184,7 +184,7 @@ brew bottle \
   --force-core-tap \
   --root-url=https://dl.hhvm.com/homebrew-bottles \
   --json \
-  "$RECIPE"
+  "$(basename "$RECIPE" .rb)"
 # local naming != download naming
 for file in *--*.bottle.tar.gz; do
   mv "$file" "$(echo "$file" | sed s/--/-/)"
