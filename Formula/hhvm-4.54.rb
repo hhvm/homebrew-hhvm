@@ -79,7 +79,7 @@ class Hhvm454 < Formula
   depends_on "pcre" # Used for Hack but not HHVM build - see #116
   depends_on "postgresql"
   depends_on "sqlite"
-  depends_on "tbb"
+  depends_on "tbb@2020"
 
   def install
     cmake_args = std_cmake_args + %W[
@@ -126,13 +126,13 @@ class Hhvm454 < Formula
     # TBB looks for itself in a different place than brew installs to.
     ENV["TBB_ARCH_PLATFORM"] = "."
     cmake_args += %W[
-      -DTBB_INCLUDE_DIR=#{Formula["tbb"].opt_include}
-      -DTBB_INSTALL_DIR=#{Formula["tbb"].opt_prefix}
-      -DTBB_LIBRARY=#{Formula["tbb"].opt_lib}/libtbb.dylib
-      -DTBB_LIBRARY_DEBUG=#{Formula["tbb"].opt_lib}/libtbb.dylib
-      -DTBB_LIBRARY_DIR=#{Formula["tbb"].opt_lib}
-      -DTBB_MALLOC_LIBRARY=#{Formula["tbb"].opt_lib}/libtbbmalloc.dylib
-      -DTBB_MALLOC_LIBRARY_DEBUG=#{Formula["tbb"].opt_lib}/libtbbmalloc.dylib
+      -DTBB_INCLUDE_DIR=#{Formula["tbb@2020"].opt_include}
+      -DTBB_INSTALL_DIR=#{Formula["tbb@2020"].opt_prefix}
+      -DTBB_LIBRARY=#{Formula["tbb@2020"].opt_lib}/libtbb.dylib
+      -DTBB_LIBRARY_DEBUG=#{Formula["tbb@2020"].opt_lib}/libtbb.dylib
+      -DTBB_LIBRARY_DIR=#{Formula["tbb@2020"].opt_lib}
+      -DTBB_MALLOC_LIBRARY=#{Formula["tbb@2020"].opt_lib}/libtbbmalloc.dylib
+      -DTBB_MALLOC_LIBRARY_DEBUG=#{Formula["tbb@2020"].opt_lib}/libtbbmalloc.dylib
     ]
 
     system "cmake", *cmake_args, '.'
