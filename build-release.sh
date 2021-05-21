@@ -185,15 +185,9 @@ brew bottle \
   --json \
   "$(basename "$RECIPE" .rb)"
 # local naming != download naming
-for file in *--*.bottle.tar.gz; do
+for file in *--*.bottle*.tar.gz; do
   mv "$file" "$(echo "$file" | sed s/--/-/)"
 done
-
-if [ -n "$REBUILD_NUM" ]; then
-  for file in *.bottle.tar.gz; do
-    mv "$file" "$(echo "$file" | sed s/.bottle.tar.gz/.bottle.$REBUILD_NUM.tar.gz/)"
-  done
-fi
 
 if [ -z "$SKIP_PUBLISH" ]; then
   aws s3 sync ./ s3://hhvm-downloads/homebrew-bottles/ --exclude '*' --include '*.bottle*.tar.gz'
