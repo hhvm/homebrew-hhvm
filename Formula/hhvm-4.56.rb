@@ -12,10 +12,7 @@ class Hhvm456 < Formula
   sha256 "b4194bd149a499c96c2f8300f998cf4ff4d7da68ec6a19640804b41b1e2830c4"
 
   bottle do
-    rebuild 1
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    rebuild 1
-    sha256 catalina: "b0e6c06baad29c3b81ce23e34a1c538b9d2e88c5c38ea16890ba6822ad44a6d2"
   end
 
   option "with-debug", <<~EOS
