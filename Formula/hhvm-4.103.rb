@@ -13,7 +13,10 @@ class Hhvm4103 < Formula
   patch :DATA
 
   bottle do
+    rebuild 2
     root_url "https://dl.hhvm.com/homebrew-bottles"
+    rebuild 1
+    sha256 catalina: "3b73f57a78560aa5731f889c10498e7c15ec0b5668663dda062c2a6956e13345"
   end
 
   option "with-debug", <<~EOS
