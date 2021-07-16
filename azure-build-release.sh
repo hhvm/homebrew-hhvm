@@ -51,6 +51,8 @@ done
 # ... and Catalina has an `openssl` 1.0 package that the 1.1 package doesn't
 #   play nicely with upgrading from as of 2020-10-12
 brew uninstall openssl || true
+# Upgrading this causes a symlink conflict in /usr/local/bin as of 2021-07-16
+brew uninstall mongodb-community || true
 brew update
 brew upgrade
 # awscli is also needed, but now pre-installed, not via brew
