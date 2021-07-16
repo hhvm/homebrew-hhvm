@@ -52,6 +52,7 @@ done
 #   play nicely with upgrading from as of 2020-10-12
 brew uninstall openssl || true
 # Upgrading this causes a symlink conflict in /usr/local/bin as of 2021-07-16
+brew uninstall mongodb-compass || true
 brew uninstall mongodb-community || true
 brew update
 brew upgrade
