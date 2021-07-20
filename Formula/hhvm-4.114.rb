@@ -8,12 +8,11 @@ class Hhvm4114 < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
   head "https://github.com/facebook/hhvm.git"
-  url "https://dl.hhvm.com/source/hhvm-4.114.0.tar.gz"
-  sha256 "235a2877bd540a55cbc26ab06afb2aeee2b5b95806e107855207e4578fc13126"
+  url "https://dl.hhvm.com/source/hhvm-4.114.1.tar.gz"
+  sha256 "daf182c4286335e6a3251b8a53cda1d9d08ac3557e13ccbcb9be1165d9ccbdc8"
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 catalina: "a8e712c0fa42eb83d0dcfb1f17a74301a8ba7e5eb7b7bc9f99adedb8b524870d"
   end
 
   option "with-debug", <<~EOS
