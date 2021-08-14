@@ -8,12 +8,11 @@ class HhvmNightly < Formula
   desc "JIT compiler and runtime for the Hack language"
   homepage "http://hhvm.com/"
   head "https://github.com/facebook/hhvm.git"
-  url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2021.08.13.tar.gz"
-  sha256 "d7bb58c35531b00eb5d864e8ab6dc493087aa852f45dd5783682804dc1aa6847"
+  url "https://dl.hhvm.com/source/nightlies/hhvm-nightly-2021.08.14.tar.gz"
+  sha256 "12b30d5af07dfeb1f448c66a2b0c2228a5cd8db19f2c0c4701ab0180265f4880"
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
-    sha256 catalina: "0fcd19c8a5b21aec054f05e8937424b791db62399c11da5dd233afd7dc8436cf"
   end
 
   option "with-debug", <<~EOS
