@@ -34,6 +34,7 @@ class HhvmNightly < Formula
   depends_on "libtool" => :build
   depends_on "md5sha1sum" => :build
   depends_on "pkg-config" => :build
+  depends_on "re2c" => :build
   depends_on "wget" => :build
 
   # We statically link against icu4c as every non-bugfix release is not
