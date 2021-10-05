@@ -54,6 +54,8 @@ brew uninstall openssl || true
 # Upgrading this causes a symlink conflict in /usr/local/bin as of 2021-07-16
 brew uninstall mongodb-compass || true
 brew uninstall mongodb-community || true
+# Incompatible with libnghttp2, which curl depends on - 2021-10-05
+brew uninstall nghttp2 || true
 # ... and this is pointing in to /Library/Frameworks/ as of 2021-09-07
 rm -f /usr/local/bin/{2to3,py*}
 brew update
