@@ -123,7 +123,8 @@ class HhvmNightly < Formula
     ]
 
     system "cmake", *cmake_args, '.'
-    system "make"
+    system "make", "-j1", "hack", "hack_rust_ffi_bridge_targets"
+    system "make" # pickups up -jN from MAKEFLAGS from brew
     system "make", "install"
 
     tp_notices = (share/"doc/third_party_notices.txt")
