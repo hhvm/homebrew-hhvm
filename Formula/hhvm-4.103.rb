@@ -45,7 +45,7 @@ class Hhvm4103 < Formula
   depends_on "icu4c" => :build
   depends_on "boost"
   depends_on "double-conversion"
-:xa
+
   depends_on "freetype"
   depends_on "gd"
   depends_on "gettext"
