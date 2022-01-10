@@ -29,7 +29,7 @@ class Hhvm4135 < Formula
   depends_on "automake" => :build
   depends_on "bison" => :build
   depends_on "cmake" => :build
-  depends_on "dwarfutils" => :build
+  depends_on "dwarfutils"
   depends_on "gawk" => :build
   depends_on "libelf" => :build
   depends_on "libtool" => :build
