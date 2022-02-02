@@ -37,6 +37,9 @@ class HhvmNightly < Formula
   depends_on "pkg-config" => :build
   depends_on "re2c" => :build
   depends_on "wget" => :build
+  
+  # Provides the CLI utility `realpath`
+  depends_on "aardvark_shell_utils" => :build
 
   # We statically link against icu4c as every non-bugfix release is not
   # backwards compatible; needing to rebuild for every release is too
