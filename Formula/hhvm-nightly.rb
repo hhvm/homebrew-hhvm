@@ -126,7 +126,7 @@ class HhvmNightly < Formula
     ]
 
     system "cmake", *cmake_args, '.'
-    system "make", "-j1", "hack", "hack_rust_ffi_bridge_targets"
+    system "make", "-j1", "hack_rust_ffi_bridge_targets"
     system "make" # pickups up -jN from MAKEFLAGS from brew
     system "make", "install"
 
