@@ -13,6 +13,7 @@ class Hhvm4156 < Formula
 
   bottle do
     root_url "https://dl.hhvm.com/homebrew-bottles"
+    sha256 catalina: "83f39b0446436a7de052822a451d8d44f7cad996a589d9d555ccd6954b64bb64"
   end
 
   option "with-debug", <<~EOS
