@@ -56,6 +56,7 @@ class HhvmNightly < Formula
   depends_on "imagemagick@6"
   depends_on "jemalloc"
   depends_on "jpeg"
+  depends_on "krb5"
   depends_on "libevent"
   depends_on "libmemcached"
   depends_on "libsodium"
