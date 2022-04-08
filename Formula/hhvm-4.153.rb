@@ -48,6 +48,7 @@ class Hhvm4153 < Formula
   depends_on "boost"
   depends_on "double-conversion"
   depends_on "freetype"
+  depends_on "fribidi"
   depends_on "gd"
   depends_on "gettext"
   depends_on "glog"
